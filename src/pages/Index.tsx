@@ -1,4 +1,5 @@
-import Layout from "@/components/layout/Layout";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/home/HeroSection";
 import TrustSection from "@/components/home/TrustSection";
 import CategoriesSection from "@/components/home/CategoriesSection";
@@ -9,15 +10,19 @@ import CTABand from "@/components/home/CTABand";
 
 const Index = () => {
   return (
-    <Layout>
-      <HeroSection />
-      <TrustSection />
-      <CategoriesSection />
-      <ManufacturingSection />
-      <WhyDeltaSection />
-      <GallerySection />
-      <CTABand />
-    </Layout>
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-1">
+        <HeroSection />
+        <TrustSection />
+        <CategoriesSection />
+        <ManufacturingSection />
+        <WhyDeltaSection />
+        <GallerySection />
+        <CTABand />
+      </main>
+      <Footer />
+    </div>
   );
 };
 

@@ -1,47 +1,42 @@
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Factory, Calendar, Shield, MapPin, Package, Award } from "lucide-react";
-
-const stats = [
-  { icon: Calendar, label: "Established", value: "1998", desc: "27+ years of legacy" },
-  { icon: Factory, label: "Manufacturer", value: "In-House", desc: "Own production facility" },
-  { icon: Shield, label: "GST Registered", value: "Certified", desc: "Fully compliant business" },
-  { icon: MapPin, label: "Pan-India", value: "500+", desc: "Cities served" },
-  { icon: Package, label: "Bulk Orders", value: "10,000+", desc: "Orders fulfilled yearly" },
-  { icon: Award, label: "Product Range", value: "200+", desc: "SKUs across categories" },
-];
 
 const TrustSection = () => {
   return (
-    <section className="py-20 md:py-28">
-      <div className="container mx-auto px-4 md:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">Why Trust Us</span>
-          <h2 className="font-serif text-3xl md:text-4xl font-bold mt-3 text-foreground">
-            Built on Decades of Trust
-          </h2>
-        </motion.div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
-          {stats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
+    <section className="bg-[#1b1610] text-[#EFECE1] border-t border-[#EFECE1]/10 selection:bg-[#EFECE1] selection:text-[#1b1610]">
+      <div className="mx-auto px-6 md:px-12 py-24 md:py-32">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-start w-full">
+          {/* Left Title */}
+          <div className="md:col-span-4 lg:col-span-3">
+            <h3 className="text-lg md:text-xl font-medium tracking-tight mt-2 text-[#EFECE1]">
+              Who We Are
+            </h3>
+          </div>
+          
+          {/* Right Content */}
+          <div className="md:col-span-8 lg:col-span-9 space-y-12">
+            <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="skeu-card rounded-xl p-5 text-center space-y-2"
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="text-[2rem] md:text-5xl lg:text-[4.5rem] font-normal leading-[1.1] tracking-tight text-[#EFECE1]"
             >
-              <stat.icon className="w-6 h-6 mx-auto text-primary" />
-              <div className="font-serif text-xl font-bold text-foreground">{stat.value}</div>
-              <div className="text-xs font-medium text-foreground">{stat.label}</div>
-              <div className="text-[11px] text-muted-foreground">{stat.desc}</div>
+              Your recognition needs evolve. So do we. We deliver forward-looking manufacturing solutions built to anticipate what&#39;s next, not react to it.
+            </motion.h2>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Link to="/about" className="inline-flex items-center gap-4 text-xs md:text-sm font-semibold tracking-widest hover:opacity-70 transition-opacity uppercase border-b border-[#EFECE1] pb-2">
+                <span>More about Who We Are</span>
+                <span className="text-xl leading-none font-light">&rarr;</span>
+              </Link>
             </motion.div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
