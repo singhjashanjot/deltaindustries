@@ -26,7 +26,7 @@ const categories = [
 
 const CategoriesSection = () => {
   return (
-    <section className="py-24 md:py-32 bg-[#ffffe3] text-[#35020D] selection:bg-[#35020D] selection:text-[#ffffe3] border-t border-[#1b1610]/10">
+    <section className="w-full min-h-[800px] md:min-h-[900px] flex items-center py-40 md:py-64 bg-[#ffffe3] text-[#35020D] selection:bg-[#35020D] selection:text-[#ffffe3] border-t border-[#1b1610]/10">
       <div className="max-w-screen-2xl mx-auto w-full px-6 md:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -61,7 +61,7 @@ const CategoriesSection = () => {
                 to={`/products?category=${cat.slug}`}
                 className="group block"
               >
-                <div className="aspect-[4/5] overflow-hidden bg-[#35020D]/5 mb-6">
+                <div className="aspect-square overflow-hidden bg-[#35020D]/5 mb-6">
                   <img
                     src={cat.image}
                     alt={cat.name}

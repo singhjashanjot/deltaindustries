@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 
 const TrustSection = () => {
   return (
-    <section className="bg-[#ffffe3] text-[#35020D] border-t border-b border-[#35020D]/20 selection:bg-[#35020D] selection:text-[#fffff1] font-sans">
-      <div className="max-w-screen-2xl mx-auto px-6 md:px-12 py-16 md:py-24">
+    <section className="w-full min-h-[800px] md:min-h-[900px] flex items-center bg-[#ffffe3] text-[#35020D] border-t border-b border-[#35020D]/20 selection:bg-[#35020D] selection:text-[#fffff1] font-sans">
+      <div className="max-w-screen-2xl mx-auto px-6 md:px-12 py-40 md:py-64 w-full">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-start w-full">
           {/* Left Title */}
           <div className="md:col-span-4 lg:col-span-4">
@@ -20,7 +20,7 @@ const TrustSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10%" }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[2rem] md:text-5xl lg:text-[4.5rem] font-sans font-normal leading-[1.05] tracking-tight text-[#35020D]"
+              className="text-[1.8rem] md:text-5xl lg:text-[4rem] font-sans font-normal leading-[1.05] tracking-tight text-[#35020D]"
             >
               Your life evolves. So do we. We deliver forward-looking, adaptive wealth solutions built to anticipate what's next, not react to it.
             </motion.h2>

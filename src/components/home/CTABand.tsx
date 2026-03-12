@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 const CTABand = () => {
   return (
-    <section className="py-24 md:py-32 bg-[#ffffe3] text-[#35020D] selection:bg-[#35020D] selection:text-[#ffffe3]">
+    <section className="w-full min-h-[800px] md:min-h-[900px] flex items-center py-40 md:py-64 bg-[#ffffe3] text-[#35020D] selection:bg-[#35020D] selection:text-[#ffffe3]">
       <div className="max-w-screen-2xl mx-auto w-full px-6 md:px-12 flex flex-col items-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -17,7 +17,7 @@ const CTABand = () => {
             One Award at a Time
           </h2>
           <p className="mt-8 text-base md:text-xl font-medium text-[#35020D]/70 max-w-2xl mx-auto leading-relaxed">
-            Whether it&#39;s an annual sports day, corporate awards ceremony, or academic excellence program — we manufacture custom trophies tailored to your event.
+            Whether it&#39;s an annual sports day, corporate awards ceremony, or academic excellence program ï¿½ we manufacture custom trophies tailored to your event.
           </p>
           <div className="mt-12 flex flex-wrap justify-center gap-6">
             <Link to="/contact" className="bg-[#35020D] text-[#ffffe3] px-8 py-4 rounded-full uppercase text-xs md:text-sm tracking-widest font-semibold hover:bg-[#35020D]/80 transition-colors">

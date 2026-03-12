@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const reasons = [
   "27+ years of continuous manufacturing operations.",
-  "Direct manufacturer — no middlemen, best pricing.",
+  "Direct manufacturer ï¿½ no middlemen, best pricing.",
   "Consistent quality across every batch and order.",
   "200+ products across wood, metal, acrylic, crystal & more.",
   "Full customization: engraving, logos, sizes, materials.",
@@ -13,7 +13,7 @@ const reasons = [
 
 const WhyDeltaSection = () => {
   return (
-    <section className="py-24 md:py-32 bg-[#ffffe3] text-[#35020D] selection:bg-[#35020D] selection:text-[#ffffe3]">
+    <section className="w-full min-h-[800px] md:min-h-[900px] flex items-center py-40 md:py-64 bg-[#ffffe3] text-[#35020D] selection:bg-[#35020D] selection:text-[#ffffe3]">
       <div className="max-w-screen-2xl mx-auto w-full px-6 md:px-12">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
           <motion.div
@@ -21,9 +21,9 @@ const WhyDeltaSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-5"
+            className="lg:col-span-5 h-[max-content] self-start sticky top-32 lg:top-48"
           >
-            <h2 className="text-3xl md:text-5xl font-normal tracking-tight leading-[1.1] sticky top-32">
+            <h2 className="text-3xl md:text-5xl font-normal tracking-tight leading-[1.1]">
               The Delta Advantage
             </h2>
           </motion.div>

@@ -10,9 +10,9 @@ import CTABand from "@/components/home/CTABand";
 
 const Index = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen overflow-clip bg-[#ffffe3] text-[#35020D]">
      
-      <main className="flex-1">
+      <main className="flex-1 w-full">
         <HeroSection />
         <TrustSection />
         <CategoriesSection />

@@ -4,7 +4,7 @@ import { MapPin, Phone, Mail } from "lucide-react";
 const Footer = () => {
   return (
     <footer className="bg-[#35020D] text-[#ffffe3] border-t border-[#EFECE1]/10 selection:bg-[#ffffe3] selection:text-[#35020D] w-full">
-      <div className="max-w-screen-2xl mx-auto w-full px-6 md:px-12 py-16 md:py-24">
+      <div className="max-w-screen-2xl mx-auto w-full px-6 md:px-12 py-32 md:py-48">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-3 group w-max">
@@ -25,6 +25,8 @@ const Footer = () => {
                 { label: "Products", path: "/products" },
                 { label: "Manufacturing", path: "/custom-orders" },
                 { label: "About Us", path: "/about" },
+                { label: "Quality Focus", path: "/quality" },
+                { label: "Reviews", path: "/testimonials" },
                 { label: "Contact", path: "/contact" },
               ].map((link) => (
                 <Link key={link.path} to={link.path} className="text-sm font-medium text-[#ffffe3]/80 hover:text-[#ffffe3] transition-colors w-max">
@@ -50,11 +52,11 @@ const Footer = () => {
             <div className="flex flex-col gap-4">
               <div className="flex items-start gap-3 text-sm font-medium text-[#ffffe3]/80">
                 <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-[#ffffe3]/50" />
-                <span>Industrial Area, Jalandhar, Punjab 144004, India</span>
+                <span>No. 111, Janta Colony, G. T. Road, Jalandhar - 144008, Punjab, India</span>
               </div>
               <div className="flex items-center gap-3 text-sm font-medium text-[#ffffe3]/80">
                 <Phone className="w-4 h-4 shrink-0 text-[#ffffe3]/50" />
-                <span>+91 98765 43210</span>
+                <span>08048954176</span>
               </div>
               <div className="flex items-center gap-3 text-sm font-medium text-[#ffffe3]/80">
                 <Mail className="w-4 h-4 shrink-0 text-[#ffffe3]/50" />

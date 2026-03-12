@@ -6,19 +6,36 @@ import catWooden from "@/assets/cat-wooden.jpg";
 import catAcrylic from "@/assets/cat-acrylic.jpg";
 import catMetal from "@/assets/cat-metal.jpg";
 
+import catCrystal from "@/assets/cat-crystal.jpg";
+import catPlastic from "@/assets/cat-plastic.jpg";
+import catMedals from "@/assets/cat-medals.jpg";
+import catBases from "@/assets/cat-bases.jpg";
+import catCorporate from "@/assets/cat-corporate.jpg";
+import catShields from "@/assets/cat-shields.jpg";
+
 export const dummyProducts = [
   { slug: "classic-wooden-trophy", name: "Classic Wooden Trophy", category: "Wooden", image: catWooden, desc: "Handcrafted from premium hardwood with gold accents. A timeless symbol of enduring achievement, perfectly finished to highlight the natural grain of the wood. This luxurious piece is designed for monumental legacies.", price: "Luxury Collection", features: ["Solid Hardwood", "Brass Plate", "Hand-polished Form"] },
   { slug: "elegance-acrylic-award", name: "Elegance Acrylic Award", category: "Acrylic", image: catAcrylic, desc: "Modern transparent acrylic with vibrant color inlays. A forward-looking, adaptive recognition piece built to anticipate what's next. Clean lines with massive impact.", price: "Modern Collection", features: ["Shatter-resistant", "Custom Inlays", "Laser Engravable"] },
-  { slug: "champion-metal-cup", name: "Champion Metal Cup", category: "Metal", image: catMetal, desc: "Polished gold-finish metal cup with engraving plate. Exudes absolute prestige and weight. Designed for the pinnacle of excellence and corporate milestones.", price: "Prestige Collection", features: ["24k Gold Finish", "Weighted Base", "Ornate Handles"] }
+  { slug: "champion-metal-cup", name: "Champion Metal Cup", category: "Metal", image: catMetal, desc: "Polished gold-finish metal cup with engraving plate. Exudes absolute prestige and weight. Designed for the pinnacle of excellence and corporate milestones.", price: "Prestige Collection", features: ["24k Gold Finish", "Weighted Base", "Ornate Handles"] },
+  { slug: "crystal-star-award", name: "Crystal Star Award", category: "Crystal", image: catCrystal, desc: "Precision-cut crystal with laser-engraved details.", price: "Prestige Collection", features: ["Premium Crystal", "Laser Engravable", "Silk Lined Box"] },
+  { slug: "economy-plastic-trophy", name: "Economy Plastic Trophy", category: "Plastic", image: catPlastic, desc: "Lightweight, durable trophies for high-volume events.", price: "Classic Collection", features: ["Durable Material", "Custom Sticker", "Bulk Pricing"] },
+  { slug: "achievement-medal-set", name: "Achievement Medal Set", category: "Medals", image: catMedals, desc: "Gold, silver, and bronze medals with custom ribbons.", price: "Classic Collection", features: ["Custom Logo", "Woven Ribbon", "Metal Alloy"] },
+  { slug: "marble-trophy-base", name: "Marble Trophy Base", category: "Bases", image: catBases, desc: "Premium marble and wooden stands for all trophy types.", price: "Luxury Collection", features: ["Solid Marble", "Felt Bottom", "Weighted"] },
+  { slug: "executive-gift-set", name: "Executive Gift Set", category: "Corporate", image: catCorporate, desc: "Curated corporate gift sets with personalization.", price: "Modern Collection", features: ["Laser Etching", "Premium Packaging", "Curated Items"] },
+  { slug: "heritage-shield-plaque", name: "Heritage Shield Plaque", category: "Shields", image: catShields, desc: "Traditional wooden shield with brass engraving plate.", price: "Classic Collection", features: ["Solid Wood", "Brass Detailing", "Wall Mountable"] }
 ];
 
 const ProductDetail = () => {
   const { slug } = useParams();
-  const product = dummyProducts.find(p => p.slug === slug) || dummyProducts[0];
+  const product = dummyProducts.find(p => p.slug === slug) || {
+    ...dummyProducts[0],
+    name: slug ? slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : "Trophy",
+    slug: slug || "trophy"
+  };
 
   return (
     <Layout>
-      <section className="bg-[#ffffe3] text-[#35020D] min-h-screen pt-24 pb-32 font-sans selection:bg-[#35020D] selection:text-[#fffff1]">
+      <section className="w-full bg-[#ffffe3] text-[#35020D] min-h-screen pt-24 pb-32 font-sans selection:bg-[#35020D] selection:text-[#fffff1]">
         <div className="max-w-screen-2xl mx-auto px-6 md:px-12 w-full">
           <Link to="/products" className="inline-flex items-center gap-3 text-xs md:text-sm font-medium tracking-normal hover:opacity-70 transition-opacity mb-12">
             <span className="inline-block w-1.5 h-1.5 border-[1.5px] border-[#35020D] rounded-full"></span>

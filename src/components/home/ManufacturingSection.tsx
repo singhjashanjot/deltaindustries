@@ -6,13 +6,13 @@ import manufacturingImg from "@/assets/manufacturing.jpg";
 const features = [
   { icon: Cog, title: "Advanced Machinery", desc: "CNC, laser engraving, and precision tools for consistent output." },
   { icon: Paintbrush, title: "Custom Designs", desc: "Fully personalized engravings, logos, and bespoke shapes." },
-  { icon: Layers, title: "Material Expertise", desc: "Wood, metal, acrylic, crystal, marble — mastery across all." },
+  { icon: Layers, title: "Material Expertise", desc: "Wood, metal, acrylic, crystal, marble ï¿½ mastery across all." },
   { icon: Zap, title: "Bulk Production", desc: "Scalable manufacturing for orders of any volume." },
 ];
 
 const ManufacturingSection = () => {
   return (
-    <section className="py-24 md:py-32 bg-[#35020D] text-[#ffffe3] selection:bg-[#ffffe3] selection:text-[#35020D]">
+    <section className="w-full min-h-[800px] md:min-h-[900px] flex items-center py-40 md:py-64 bg-[#35020D] text-[#ffffe3] selection:bg-[#ffffe3] selection:text-[#35020D]">
       <div className="max-w-screen-2xl mx-auto w-full px-6 md:px-12">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           <motion.div
@@ -44,7 +44,7 @@ const ManufacturingSection = () => {
                 In-House Manufacturing &amp; Customization
               </h2>
               <p className="text-base md:text-lg font-medium text-[#ffffe3]/70 leading-relaxed max-w-lg">
-                Every trophy that leaves our Jalandhar facility is a product of precision engineering and artisan craftsmanship. From raw material to finished product — everything happens under one roof.
+                Every trophy that leaves our Jalandhar facility is a product of precision engineering and artisan craftsmanship. From raw material to finished product ï¿½ everything happens under one roof.
               </p>
             </div>
 

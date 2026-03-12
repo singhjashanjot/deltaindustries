@@ -154,6 +154,5 @@
 
 
 
-#root { @apply max-w-screen-2xl mx-auto w-full; }
 body { @apply bg-[#ffffe3]; }
 
