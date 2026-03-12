@@ -1,94 +1,96 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Phone } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
-  { label: "Home", path: "/" },
-  { label: "Products", path: "/products" },
-  { label: "Custom Orders", path: "/custom-orders" },
-  { label: "About", path: "/about" },
+  { label: "Our Range", path: "/products" },
+  { label: "Manufacturing", path: "/custom-orders" },
+  { label: "Who We Are", path: "/about" },
   { label: "Contact", path: "/contact" },
 ];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass">
-      <div className="container mx-auto flex items-center justify-between h-16 md:h-20 px-4 md:px-8">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-serif font-bold text-lg md:text-xl">Δ</span>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#1b1610]/90 backdrop-blur-md border-b border-[#EFECE1]/10 py-4" : "bg-transparent py-6"}`}>
+      <div className="px-6 md:px-12 mx-auto flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="w-8 h-8 flex items-center justify-center border border-[#EFECE1]/30 rounded-sm group-hover:border-[#EFECE1] transition-colors">
+            <span className="text-[#EFECE1] font-bold text-lg leading-none m-0 p-0">Δ</span>
           </div>
-          <div className="flex flex-col leading-none">
-            <span className="font-serif font-bold text-base md:text-lg text-foreground tracking-tight">Delta Industries</span>
-            <span className="text-[10px] md:text-xs text-muted-foreground tracking-widest uppercase">Since 1998</span>
-          </div>
+          <span className="font-semibold text-sm md:text-base text-[#EFECE1] tracking-wide uppercase">Delta</span>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-1">
+        {/* Desktop Nav */}
+        <nav className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               to={link.path}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+              className={`text-xs font-semibold tracking-widest uppercase transition-colors ${
                 location.pathname === link.path
-                  ? "text-primary bg-primary/5"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  ? "text-[#EFECE1]"
+                  : "text-[#EFECE1]/60 hover:text-[#EFECE1]"
               }`}
             >
               {link.label}
             </Link>
           ))}
+          <Link to="/contact" className="ml-4 bg-[#EFECE1] text-[#1b1610] px-6 py-2.5 rounded-full hover:bg-white transition-colors uppercase text-xs tracking-wider font-semibold">
+            Inquire Now
+          </Link>
         </nav>
 
-        <div className="hidden lg:flex items-center gap-3">
-          <a href="tel:+919876543210" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <Phone className="w-4 h-4" />
-            <span>+91 98765 43210</span>
-          </a>
-          <Link to="/contact">
-            <Button variant="hero" size="sm">Get Quote</Button>
-          </Link>
-        </div>
-
+        {/* Mobile Toggle */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="lg:hidden p-2 rounded-lg hover:bg-accent transition-colors"
+          className="lg:hidden p-2 text-[#EFECE1] hover:opacity-70 transition-opacity"
         >
-          {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
+      {/* Mobile Nav */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
+            animate={{ opacity: 1, height: "100vh" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden glass border-t border-border overflow-hidden"
+            className="lg:hidden absolute top-full left-0 w-full bg-[#1b1610] border-t border-[#EFECE1]/10 overflow-hidden flex flex-col"
           >
-            <nav className="container mx-auto px-4 py-4 flex flex-col gap-1">
+            <nav className="px-6 py-8 flex flex-col gap-6">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                  className={`text-2xl font-normal tracking-tight ${
                     location.pathname === link.path
-                      ? "text-primary bg-primary/5"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "text-[#EFECE1]"
+                      : "text-[#EFECE1]/60"
                   }`}
                 >
                   {link.label}
                 </Link>
               ))}
-              <Link to="/contact" onClick={() => setIsOpen(false)} className="mt-2">
-                <Button variant="hero" className="w-full">Get Quote</Button>
-              </Link>
+              <div className="pt-8 mt-4 border-t border-[#EFECE1]/10">
+                <Link to="/contact" onClick={() => setIsOpen(false)} className="inline-block bg-[#EFECE1] text-[#1b1610] px-8 py-3 rounded-full uppercase text-sm tracking-wider font-semibold w-full text-center">
+                  Inquire Now
+                </Link>
+              </div>
             </nav>
           </motion.div>
         )}
@@ -98,3 +100,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

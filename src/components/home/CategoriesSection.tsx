@@ -13,63 +13,66 @@ import catCorporate from "@/assets/cat-corporate.jpg";
 import catShields from "@/assets/cat-shields.jpg";
 
 const categories = [
-  { name: "Wooden Trophies & Mementos", image: catWooden, slug: "wooden" },
-  { name: "Acrylic Trophies & Awards", image: catAcrylic, slug: "acrylic" },
-  { name: "Metal Trophies & Cups", image: catMetal, slug: "metal" },
+  { name: "Wooden Trophies", image: catWooden, slug: "wooden" },
+  { name: "Acrylic Awards", image: catAcrylic, slug: "acrylic" },
+  { name: "Metal Cups", image: catMetal, slug: "metal" },
   { name: "Crystal Trophies", image: catCrystal, slug: "crystal" },
-  { name: "Plastic Trophies & Cups", image: catPlastic, slug: "plastic" },
-  { name: "Medals", image: catMedals, slug: "medals" },
-  { name: "Trophy Bases & Accessories", image: catBases, slug: "bases" },
-  { name: "Corporate Gifts & Mementos", image: catCorporate, slug: "corporate" },
-  { name: "Shields & Plaques", image: catShields, slug: "shields" },
+  { name: "Plastic Series", image: catPlastic, slug: "plastic" },
+  { name: "Custom Medals", image: catMedals, slug: "medals" },
+  { name: "Trophy Bases", image: catBases, slug: "bases" },
+  { name: "Corporate Mementos", image: catCorporate, slug: "corporate" },
+  { name: "Premium Shields", image: catShields, slug: "shields" },
 ];
 
 const CategoriesSection = () => {
   return (
-    <section className="py-20 md:py-28 bg-card">
-      <div className="container mx-auto px-4 md:px-8">
+    <section className="py-24 md:py-32 bg-[#EFECE1] text-[#1b1610] selection:bg-[#1b1610] selection:text-[#EFECE1] border-t border-[#1b1610]/10">
+      <div className="container mx-auto px-6 md:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14"
+          viewport={{ once: true, margin: "-10%" }}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 md:mb-24"
         >
-          <div>
-            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">Our Range</span>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold mt-3 text-foreground">Product Categories</h2>
+          <div className="max-w-xl">
+            <h2 className="text-3xl md:text-5xl font-normal tracking-tight leading-[1.1]">
+              Materials &amp; Categories
+            </h2>
+            <p className="mt-6 text-base md:text-lg font-medium text-[#1b1610]/70">
+              Explore our extensive range of premium materials, precisely crafted to celebrate milestones of every magnitude.
+            </p>
           </div>
-          <Link to="/products" className="flex items-center gap-2 text-sm font-medium text-primary hover:underline underline-offset-4">
-            View All Products <ArrowRight className="w-4 h-4" />
+          <Link to="/products" className="inline-flex items-center gap-3 text-xs md:text-sm font-semibold tracking-widest hover:opacity-70 transition-opacity uppercase border-b border-[#1b1610] pb-1 whitespace-nowrap">
+            <span>View Catalog</span>
+            <span className="text-lg leading-none font-light">&rarr;</span>
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12 md:gap-y-16">
           {categories.map((cat, i) => (
             <motion.div
               key={cat.slug}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ delay: i * 0.05, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
               <Link
                 to={`/products?category=${cat.slug}`}
-                className="group block skeu-card rounded-xl overflow-hidden hover:shadow-elevated transition-all duration-300"
+                className="group block"
               >
-                <div className="aspect-square overflow-hidden">
+                <div className="aspect-[4/5] overflow-hidden bg-[#1b1610]/5 mb-6">
                   <img
                     src={cat.image}
                     alt={cat.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-[0.16,1,0.3,1]"
                   />
                 </div>
-                <div className="p-4 md:p-5">
-                  <h3 className="font-serif text-sm md:text-base font-semibold text-foreground group-hover:text-primary transition-colors">
+                <div>
+                  <h3 className="text-lg md:text-xl font-medium tracking-tight">
                     {cat.name}
                   </h3>
-                  <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                    Explore <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                  </span>
+                  <div className="mt-3 w-8 h-[1px] bg-[#1b1610] group-hover:w-full transition-all duration-500 ease-[0.16,1,0.3,1]" />
                 </div>
               </Link>
             </motion.div>
@@ -81,3 +84,4 @@ const CategoriesSection = () => {
 };
 
 export default CategoriesSection;
+

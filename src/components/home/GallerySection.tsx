@@ -8,7 +8,7 @@ import catCorporate from "@/assets/cat-corporate.jpg";
 import catAcrylic from "@/assets/cat-acrylic.jpg";
 
 const images = [
-  { src: galleryImg, alt: "Trophy collection", span: "col-span-2 row-span-2" },
+  { src: galleryImg, alt: "Trophy collection", span: "md:col-span-2 md:row-span-2" },
   { src: catWooden, alt: "Wooden trophy" },
   { src: catCrystal, alt: "Crystal award" },
   { src: catMetal, alt: "Metal trophy cup" },
@@ -19,31 +19,38 @@ const images = [
 
 const GallerySection = () => {
   return (
-    <section className="py-20 md:py-28">
-      <div className="container mx-auto px-4 md:px-8">
+    <section className="py-24 md:py-32 bg-[#1b1610] text-[#EFECE1] selection:bg-[#EFECE1] selection:text-[#1b1610]">
+      <div className="container mx-auto px-6 md:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-14"
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col md:flex-row items-baseline justify-between gap-6 mb-16"
         >
-          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">Showcase</span>
-          <h2 className="font-serif text-3xl md:text-4xl font-bold mt-3 text-foreground">
+          <h2 className="text-3xl md:text-5xl font-normal tracking-tight leading-[1.1]">
             Our Craftsmanship
           </h2>
+          <p className="text-sm tracking-widest uppercase font-semibold text-[#EFECE1]/50 mb-2">
+            Selected Works
+          </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {images.map((img, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.06 }}
-              className={`${img.span || ""} rounded-xl overflow-hidden shadow-premium`}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ delay: i * 0.08, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className={`${img.span || ""} overflow-hidden bg-[#EFECE1]/5 aspect-square`}
             >
-              <img src={img.src} alt={img.alt} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+              <img 
+                src={img.src} 
+                alt={img.alt} 
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-[0.16,1,0.3,1] grayscale hover:grayscale-0" 
+              />
             </motion.div>
           ))}
         </div>
@@ -53,3 +60,4 @@ const GallerySection = () => {
 };
 
 export default GallerySection;
+

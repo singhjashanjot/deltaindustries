@@ -1,36 +1,30 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 const CTABand = () => {
   return (
-    <section className="relative py-20 md:py-28 bg-primary overflow-hidden">
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gold rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gold rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
-      </div>
-
-      <div className="container mx-auto px-4 md:px-8 relative z-10">
+    <section className="py-24 md:py-32 bg-[#EFECE1] text-[#1b1610] selection:bg-[#1b1610] selection:text-[#EFECE1]">
+      <div className="container mx-auto px-6 md:px-12 flex flex-col items-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center max-w-2xl mx-auto space-y-6"
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-4xl w-full"
         >
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary-foreground">
-            Planning an Event or Ceremony?
+          <h2 className="text-4xl md:text-6xl lg:text-[5rem] font-normal tracking-tight leading-[1.05]">
+            Architecting Legacies, <br className="hidden md:block"/>
+            One Award at a Time
           </h2>
-          <p className="text-primary-foreground/70 text-base md:text-lg leading-relaxed">
-            Whether it's an annual sports day, corporate awards ceremony, or academic excellence program â€” we manufacture custom trophies tailored to your event.
+          <p className="mt-8 text-base md:text-xl font-medium text-[#1b1610]/70 max-w-2xl mx-auto leading-relaxed">
+            Whether it&#39;s an annual sports day, corporate awards ceremony, or academic excellence program — we manufacture custom trophies tailored to your event.
           </p>
-          <div className="flex flex-wrap justify-center gap-4 pt-2">
-            <Link to="/contact">
-              <Button variant="gold" size="xl">Request Custom Trophies</Button>
+          <div className="mt-12 flex flex-wrap justify-center gap-6">
+            <Link to="/contact" className="bg-[#1b1610] text-[#EFECE1] px-8 py-4 rounded-full uppercase text-xs md:text-sm tracking-widest font-semibold hover:bg-[#1b1610]/80 transition-colors">
+              Request Custom Quote
             </Link>
-            <Link to="/custom-orders">
-              <Button variant="hero-outline" size="xl" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
-                Learn About Custom Orders
-              </Button>
+            <Link to="/custom-orders" className="border border-[#1b1610]/30 text-[#1b1610] px-8 py-4 rounded-full uppercase text-xs md:text-sm tracking-widest font-semibold hover:bg-[#1b1610]/5 transition-colors">
+              Learn Construction
             </Link>
           </div>
         </motion.div>
@@ -40,3 +34,4 @@ const CTABand = () => {
 };
 
 export default CTABand;
+
