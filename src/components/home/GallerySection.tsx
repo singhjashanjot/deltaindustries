@@ -19,8 +19,8 @@ const images = [
 
 const GallerySection = () => {
   return (
-    <section className="py-24 md:py-32 bg-[#1b1610] text-[#EFECE1] selection:bg-[#EFECE1] selection:text-[#1b1610]">
-      <div className="container mx-auto px-6 md:px-12">
+    <section className="py-24 md:py-32 bg-[#35020D] text-[#ffffe3] selection:bg-[#ffffe3] selection:text-[#35020D]">
+      <div className="max-w-screen-2xl mx-auto w-full px-6 md:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -31,7 +31,7 @@ const GallerySection = () => {
           <h2 className="text-3xl md:text-5xl font-normal tracking-tight leading-[1.1]">
             Our Craftsmanship
           </h2>
-          <p className="text-sm tracking-widest uppercase font-semibold text-[#EFECE1]/50 mb-2">
+          <p className="text-sm tracking-widest uppercase font-semibold text-[#ffffe3]/50 mb-2">
             Selected Works
           </p>
         </motion.div>
@@ -44,7 +44,7 @@ const GallerySection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10%" }}
               transition={{ delay: i * 0.08, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className={`${img.span || ""} overflow-hidden bg-[#EFECE1]/5 aspect-square`}
+              className={`${img.span || ""} overflow-hidden bg-[#ffffe3]/5 aspect-square`}
             >
               <img 
                 src={img.src} 
@@ -60,4 +60,6 @@ const GallerySection = () => {
 };
 
 export default GallerySection;
+
+
 

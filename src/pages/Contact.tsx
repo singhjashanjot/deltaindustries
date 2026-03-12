@@ -23,7 +23,7 @@ const Contact = () => {
   return (
     <Layout>
       <section className="py-12 md:py-20">
-        <div className="container mx-auto px-4 md:px-8">
+        <div className="max-w-screen-2xl mx-auto w-full px-4 md:px-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">Get In Touch</span>
             <h1 className="font-serif text-3xl md:text-4xl font-bold mt-3 text-foreground">Contact & Enquiry</h1>
@@ -103,3 +103,4 @@ const Contact = () => {
 };
 
 export default Contact;
+

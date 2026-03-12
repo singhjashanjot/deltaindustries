@@ -51,19 +51,19 @@ const Products = () => {
 
   return (
     <Layout>
-      <section className="py-12 md:py-20">
-        <div className="container mx-auto px-4 md:px-8">
+      <section className="py-24 md:py-32 font-sans bg-[#ffffe3] text-[#35020D]">
+        <div className="max-w-screen-2xl mx-auto px-6 md:px-12 w-full">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">Catalog</span>
-            <h1 className="font-serif text-3xl md:text-4xl font-bold mt-3 text-foreground">Our Products</h1>
-            <p className="mt-3 text-muted-foreground max-w-xl">
+            <h1 className="font-sans text-3xl md:text-4xl font-bold mt-3 text-[#35020D]">Our Products</h1>
+            <p className="mt-3 text-[#35020D]/70 max-w-xl">
               Browse our comprehensive range of trophies, awards, and recognition products. All items available for bulk orders with full customization.
             </p>
           </motion.div>
 
           {/* Filters */}
           <div className="flex items-center gap-2 mb-10 overflow-x-auto pb-2 scrollbar-hide">
-            <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
+            <Filter className="w-4 h-4 text-[#35020D]/70 shrink-0" />
             {categories.map((cat) => (
               <button
                 key={cat.slug}
@@ -94,10 +94,10 @@ const Products = () => {
                 </div>
                 <div className="p-5 space-y-2">
                   <span className="text-[10px] font-semibold tracking-widest uppercase text-primary">{product.category}</span>
-                  <h3 className="font-serif text-base font-semibold text-foreground">{product.name}</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{product.desc}</p>
-                  <Link to="/contact" className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline underline-offset-4 pt-1">
-                    Request Quote <ArrowRight className="w-3 h-3" />
+                  <h3 className="font-sans text-base font-semibold text-[#35020D]">{product.name}</h3>
+                  <p className="text-xs text-[#35020D]/70 leading-relaxed">{product.desc}</p>
+                  <Link to={`/product/${product.name.toLowerCase().replace(/ /g, '-')}`} target="_blank" className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline underline-offset-4 pt-1">
+                    View Details <ArrowRight className="w-3 h-3" />
                   </Link>
                 </div>
               </motion.div>
@@ -110,3 +110,6 @@ const Products = () => {
 };
 
 export default Products;
+
+
+

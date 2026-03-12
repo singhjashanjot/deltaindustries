@@ -3,37 +3,37 @@ import { motion } from "framer-motion";
 
 const TrustSection = () => {
   return (
-    <section className="bg-[#1b1610] text-[#EFECE1] border-t border-[#EFECE1]/10 selection:bg-[#EFECE1] selection:text-[#1b1610]">
-      <div className="mx-auto px-6 md:px-12 py-24 md:py-32">
+    <section className="bg-[#ffffe3] text-[#35020D] border-t border-b border-[#35020D]/20 selection:bg-[#35020D] selection:text-[#fffff1] font-sans">
+      <div className="max-w-screen-2xl mx-auto px-6 md:px-12 py-16 md:py-24">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-start w-full">
           {/* Left Title */}
-          <div className="md:col-span-4 lg:col-span-3">
-            <h3 className="text-lg md:text-xl font-medium tracking-tight mt-2 text-[#EFECE1]">
+          <div className="md:col-span-4 lg:col-span-4">
+            <h3 className="text-sm md:text-base font-semibold tracking-tight mt-2 text-[#35020D]">
               Who We Are
             </h3>
           </div>
-          
+
           {/* Right Content */}
-          <div className="md:col-span-8 lg:col-span-9 space-y-12">
-            <motion.h2 
+          <div className="md:col-span-8 lg:col-span-8 space-y-12">
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10%" }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[2rem] md:text-5xl lg:text-[4.5rem] font-normal leading-[1.1] tracking-tight text-[#EFECE1]"
+              className="text-[2rem] md:text-5xl lg:text-[4.5rem] font-sans font-normal leading-[1.05] tracking-tight text-[#35020D]"
             >
-              Your recognition needs evolve. So do we. We deliver forward-looking manufacturing solutions built to anticipate what&#39;s next, not react to it.
+              Your life evolves. So do we. We deliver forward-looking, adaptive wealth solutions built to anticipate what's next, not react to it.
             </motion.h2>
-            
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10%" }}
               transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
-              <Link to="/about" className="inline-flex items-center gap-4 text-xs md:text-sm font-semibold tracking-widest hover:opacity-70 transition-opacity uppercase border-b border-[#EFECE1] pb-2">
+              <Link to="/about" className="inline-flex items-center gap-3 text-xs md:text-sm font-semibold tracking-normal hover:opacity-70 transition-opacity">
+                <span className="inline-block w-1.5 h-1.5 border-[1.5px] border-[#35020D] rounded-full"></span>
                 <span>More about Who We Are</span>
-                <span className="text-xl leading-none font-light">&rarr;</span>
               </Link>
             </motion.div>
           </div>
@@ -44,3 +44,5 @@ const TrustSection = () => {
 };
 
 export default TrustSection;
+
+

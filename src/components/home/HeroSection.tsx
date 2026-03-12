@@ -3,43 +3,47 @@ import { motion } from "framer-motion";
 
 const HeroSection = () => {
   return (
-    <section className="bg-[#1b1610] text-[#EFECE1] min-h-[95vh] flex flex-col pt-24 pb-12 selection:bg-[#EFECE1] selection:text-[#1b1610] overflow-hidden justify-between">
+    <section className="bg-[#ffffe3] text-[#35020D] h-screen flex flex-col pt-0 pb-8 md:pb-12 selection:bg-[#35020D] selection:text-[#fffff1] overflow-hidden justify-between font-sans">
       {/* Top massive text */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full relative flex flex-col items-center justify-center mt-4 md:-mt-8"
+        className="w-full max-w-screen-2xl mx-auto relative flex flex-col pt-4 md:pt-8"
       >
-        <h1 className="text-[28vw] leading-[0.75] font-bold tracking-tighter w-full text-center lowercase pr-[2vw] mb-4">
-          delta
-        </h1>
-        
+        <h1 
+          className="leading-[0.8] md:leading-[0.85] lg:leading-[0.85] w-full text-left line-clamp-2 text-[#35020D] px-6 md:px-12 font-black"
+          style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: '-0.06em', fontSize: 'clamp(4rem, 13vw, 15rem)' }}
+        >
+          Delta<br />Industries
+        </h1> 
+         
         {/* Nav links right under the text */}
-        <div className="flex justify-center md:justify-end items-center gap-4 md:gap-8 lg:gap-12 w-full mt-4 md:mt-2 px-6 md:px-12 relative z-10 text-xs md:text-sm font-semibold tracking-wide flex-wrap">
-          <Link to="/products" className="hover:opacity-70 transition-opacity">Categories</Link>
+        <div className="flex justify-end items-center gap-6 md:gap-10 lg:gap-14 w-full mt-8 md:mt-12 px-6 md:px-12 relative z-10 text-sm md:text-base font-medium tracking-tight flex-wrap">
+          <Link to="/products" className="hover:opacity-70 transition-opacity">What We Do</Link>
           <Link to="/about" className="hover:opacity-70 transition-opacity">Who We Are</Link>
           <Link to="/contact" className="hover:opacity-70 transition-opacity">Our Perspectives</Link>
-          <Link to="/contact" className="bg-[#EFECE1] text-[#1b1610] px-6 py-2.5 rounded-full hover:bg-white transition-colors uppercase text-xs tracking-wider">
-            Request Quote
-          </Link>
+          <div className="flex items-center bg-[#35020D] text-[#fffff1] px-5 py-2.5 lg:px-6 lg:py-3 rounded-[2rem] hover:bg-[#35020D] transition-colors cursor-pointer shadow-sm ml-4">
+            <span className="font-semibold text-sm md:text-base tracking-tight mr-2">Client Login</span>
+            <span className="inline-block w-1.5 h-1.5 md:w-2 md:h-2 border-[1.5px] border-[#fffff1] rounded-full mt-[1px]"></span>
+          </div>
         </div>
       </motion.div>
 
       {/* Bottom text area */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-end px-6 md:px-12 mt-16 md:mt-24 w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-end px-6 md:px-12 mt-auto w-full max-w-screen-2xl mx-auto pb-2 md:pb-4">
         {/* Left: Huge tagline */}
         <motion.div 
            initial={{ opacity: 0, y: 20 }} 
            animate={{ opacity: 1, y: 0 }} 
            transition={{ delay: 0.3, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-           className="lg:col-span-8 space-y-6 md:space-y-8"
+           className="lg:col-span-8 space-y-4 md:space-y-6"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-[4.5rem] xl:text-[5.5rem] font-normal leading-[1.05] tracking-tight">
-            Crafting Recognition.<br/> Celebrating Excellence.
+          <h2 className="text-4xl md:text-5xl lg:text-7xl font-sans font-normal leading-[1.05] tracking-tight text-[#35020D]">
+            Crafting Recognition.<br/> Personally Guided.
           </h2>
-          <p className="max-w-md text-[#EFECE1]/80 text-base md:text-lg font-medium leading-relaxed">
-            A manufacturing firm that architects trophies, medals, and awards built to honor enduring legacies.
+          <p className="max-w-md text-[#35020D]/90 text-sm md:text-base font-medium leading-relaxed">
+            A manufacturing firm that architects legacies built to last.
           </p>
         </motion.div>
 
@@ -50,12 +54,14 @@ const HeroSection = () => {
            transition={{ delay: 0.5, duration: 1, ease: [0.16, 1, 0.3, 1] }}
            className="lg:col-span-4 flex justify-start lg:justify-end"
         >
-          <div className="border-t border-[#EFECE1]/30 pt-6 flex gap-6 max-w-sm w-full">
-            <p className="text-sm leading-relaxed text-[#EFECE1]/90 font-medium">
-              Delta expands manufacturing capacity with a new state-of-the-art facility in Mumbai to serve global clients.
+          <div className="border-t border-[#35020D]/30 pt-4 flex gap-6 max-w-[320px] w-full items-start">
+            <p className="text-xs md:text-sm leading-relaxed text-[#35020D] font-medium mt-1">
+              Delta Expands to New York<br />
+              City and Welcomes New<br />
+              Managing Partner
             </p>
-            <div className="w-16 h-16 shrink-0 bg-[#3a3226] rounded flex items-center justify-center p-2">
-              <div className="w-full h-full border border-[#EFECE1]/20 rounded-sm bg-[#EFECE1]/5" />
+            <div className="w-12 h-12 shrink-0 bg-[#35020D]/5 rounded-sm flex items-center justify-center p-1.5 ml-auto">
+              <div className="w-full h-full border border-[#35020D]/20 rounded-sm" />
             </div>
           </div>
         </motion.div>
@@ -65,3 +71,5 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+
+

@@ -13,8 +13,8 @@ const reasons = [
 
 const WhyDeltaSection = () => {
   return (
-    <section className="py-24 md:py-32 bg-[#EFECE1] text-[#1b1610] selection:bg-[#1b1610] selection:text-[#EFECE1]">
-      <div className="container mx-auto px-6 md:px-12">
+    <section className="py-24 md:py-32 bg-[#ffffe3] text-[#35020D] selection:bg-[#35020D] selection:text-[#ffffe3]">
+      <div className="max-w-screen-2xl mx-auto w-full px-6 md:px-12">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -38,10 +38,10 @@ const WhyDeltaSection = () => {
                 transition={{ delay: i * 0.05, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="py-6 border-b border-[#1b1610]/10 first:border-t flex items-start gap-6 group hover:translate-x-2 transition-transform duration-500 ease-out"
               >
-                <div className="text-xs font-semibold tracking-widest text-[#1b1610]/40 w-8 pt-1">
+                <div className="text-xs font-semibold tracking-widest text-[#35020D]/40 w-8 pt-1">
                   {(i + 1).toString().padStart(2, "0")}
                 </div>
-                <div className="text-base md:text-lg font-medium text-[#1b1610]/90">
+                <div className="text-base md:text-lg font-medium text-[#35020D]/90">
                   {reason}
                 </div>
               </motion.div>
@@ -54,4 +54,6 @@ const WhyDeltaSection = () => {
 };
 
 export default WhyDeltaSection;
+
+
 

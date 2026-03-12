@@ -26,8 +26,8 @@ const categories = [
 
 const CategoriesSection = () => {
   return (
-    <section className="py-24 md:py-32 bg-[#EFECE1] text-[#1b1610] selection:bg-[#1b1610] selection:text-[#EFECE1] border-t border-[#1b1610]/10">
-      <div className="container mx-auto px-6 md:px-12">
+    <section className="py-24 md:py-32 bg-[#ffffe3] text-[#35020D] selection:bg-[#35020D] selection:text-[#ffffe3] border-t border-[#1b1610]/10">
+      <div className="max-w-screen-2xl mx-auto w-full px-6 md:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -38,7 +38,7 @@ const CategoriesSection = () => {
             <h2 className="text-3xl md:text-5xl font-normal tracking-tight leading-[1.1]">
               Materials &amp; Categories
             </h2>
-            <p className="mt-6 text-base md:text-lg font-medium text-[#1b1610]/70">
+            <p className="mt-6 text-base md:text-lg font-medium text-[#35020D]/70">
               Explore our extensive range of premium materials, precisely crafted to celebrate milestones of every magnitude.
             </p>
           </div>
@@ -61,7 +61,7 @@ const CategoriesSection = () => {
                 to={`/products?category=${cat.slug}`}
                 className="group block"
               >
-                <div className="aspect-[4/5] overflow-hidden bg-[#1b1610]/5 mb-6">
+                <div className="aspect-[4/5] overflow-hidden bg-[#35020D]/5 mb-6">
                   <img
                     src={cat.image}
                     alt={cat.name}
@@ -72,7 +72,7 @@ const CategoriesSection = () => {
                   <h3 className="text-lg md:text-xl font-medium tracking-tight">
                     {cat.name}
                   </h3>
-                  <div className="mt-3 w-8 h-[1px] bg-[#1b1610] group-hover:w-full transition-all duration-500 ease-[0.16,1,0.3,1]" />
+                  <div className="mt-3 w-8 h-[1px] bg-[#35020D] group-hover:w-full transition-all duration-500 ease-[0.16,1,0.3,1]" />
                 </div>
               </Link>
             </motion.div>
@@ -84,4 +84,6 @@ const CategoriesSection = () => {
 };
 
 export default CategoriesSection;
+
+
 

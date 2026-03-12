@@ -1,4 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@font-face {
+  font-family: 'GT Standard';
+  src: url('/gt-standard-light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GT Standard';
+  src: url('/gt-standard-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GT Standard';
+  src: url('/gt-standard-regular-oblique.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'GT Standard';
+  src: url('/gt-standard-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GT Standard';
+  src: url('/gt-standard-semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
 
 @tailwind base;
 @tailwind components;
@@ -7,7 +38,7 @@
 @layer base {
   :root {
     /* Base: #fffff1 = hsl(60 100% 97%) */
-    --background: 60 100% 97%;
+    --background: 60 100% 95%; /* #ffffe3 approximation */
     --foreground: 20 10% 15%;
 
     /* Cards slightly warmer */
@@ -71,9 +102,7 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
-  }
+  h1, h2, h3, h4, h5, h6 { font-family: 'GT Standard', sans-serif; }
 }
 
 @layer utilities {
@@ -121,3 +150,10 @@
     box-shadow: inset 0 2px 4px hsla(20 10% 15% / 0.08), inset 0 0 0 1px hsla(20 10% 15% / 0.04);
   }
 }
+
+
+
+
+#root { @apply max-w-screen-2xl mx-auto w-full; }
+body { @apply bg-[#ffffe3]; }
+

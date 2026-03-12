@@ -11,7 +11,7 @@ import CTABand from "@/components/home/CTABand";
 const Index = () => {
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+     
       <main className="flex-1">
         <HeroSection />
         <TrustSection />
@@ -27,3 +27,4 @@ const Index = () => {
 };
 
 export default Index;
+

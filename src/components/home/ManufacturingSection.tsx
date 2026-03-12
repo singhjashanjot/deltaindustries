@@ -12,8 +12,8 @@ const features = [
 
 const ManufacturingSection = () => {
   return (
-    <section className="py-24 md:py-32 bg-[#1b1610] text-[#EFECE1] selection:bg-[#EFECE1] selection:text-[#1b1610]">
-      <div className="container mx-auto px-6 md:px-12">
+    <section className="py-24 md:py-32 bg-[#35020D] text-[#ffffe3] selection:bg-[#ffffe3] selection:text-[#35020D]">
+      <div className="max-w-screen-2xl mx-auto w-full px-6 md:px-12">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -22,11 +22,11 @@ const ManufacturingSection = () => {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
           >
-            <div className="overflow-hidden bg-[#EFECE1]/5 rounded-sm">
+            <div className="overflow-hidden bg-[#ffffe3]/5 rounded-sm">
               <img src={manufacturingImg} alt="Delta Industries manufacturing facility" className="w-full h-[600px] object-cover grayscale brightness-75 hover:grayscale-0 hover:brightness-100 transition-all duration-700 ease-[0.16,1,0.3,1]" />
             </div>
             {/* Absolute minimalist data tag */}
-            <div className="absolute -bottom-6 -right-6 md:-right-12 bg-[#EFECE1] text-[#1b1610] p-6 md:p-8 flex flex-col gap-1 w-48 shadow-2xl">
+            <div className="absolute -bottom-6 -right-6 md:-right-12 bg-[#ffffe3] text-[#35020D] p-6 md:p-8 flex flex-col gap-1 w-48 shadow-2xl">
               <div className="text-4xl font-normal tracking-tight">27+</div>
               <div className="text-xs font-semibold tracking-widest uppercase">Years</div>
             </div>
@@ -43,7 +43,7 @@ const ManufacturingSection = () => {
               <h2 className="text-3xl md:text-5xl font-normal tracking-tight leading-[1.1]">
                 In-House Manufacturing &amp; Customization
               </h2>
-              <p className="text-base md:text-lg font-medium text-[#EFECE1]/70 leading-relaxed max-w-lg">
+              <p className="text-base md:text-lg font-medium text-[#ffffe3]/70 leading-relaxed max-w-lg">
                 Every trophy that leaves our Jalandhar facility is a product of precision engineering and artisan craftsmanship. From raw material to finished product — everything happens under one roof.
               </p>
             </div>
@@ -51,9 +51,9 @@ const ManufacturingSection = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10 border-t border-[#EFECE1]/10 pt-10">
               {features.map((f, i) => (
                 <div key={f.title} className="space-y-3 group">
-                  <f.icon className="w-6 h-6 text-[#EFECE1]/50 group-hover:text-[#EFECE1] transition-colors" />
+                  <f.icon className="w-6 h-6 text-[#ffffe3]/50 group-hover:text-[#ffffe3] transition-colors" />
                   <h4 className="font-semibold text-sm tracking-wide uppercase">{f.title}</h4>
-                  <p className="text-sm text-[#EFECE1]/60 leading-relaxed">{f.desc}</p>
+                  <p className="text-sm text-[#ffffe3]/60 leading-relaxed">{f.desc}</p>
                 </div>
               ))}
             </div>
@@ -72,4 +72,6 @@ const ManufacturingSection = () => {
 };
 
 export default ManufacturingSection;
+
+
 
