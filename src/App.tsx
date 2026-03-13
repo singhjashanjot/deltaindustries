@@ -8,11 +8,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
-import CustomOrders from "./pages/CustomOrders";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Quality from "./pages/Quality";
-import Testimonial from "./pages/Testimonial";
+import ComingSoon from "./pages/ComingSoon";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,11 +25,11 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/products" element={<Products />} />
           <Route path="/product/:slug" element={<ProductDetail />} />
-          <Route path="/custom-orders" element={<CustomOrders />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/quality" element={<Quality />} />
-          <Route path="/testimonials" element={<Testimonial />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/custom-orders" element={<ComingSoon />} />
+          <Route path="/about" element={<ComingSoon />} />
+          <Route path="/quality" element={<ComingSoon />} />
+          <Route path="/testimonials" element={<ComingSoon />} />
+          <Route path="/contact" element={<ComingSoon />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
