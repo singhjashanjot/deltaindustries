@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
@@ -59,6 +59,9 @@ const Navbar = () => {
                   <div className="w-0 h-[1.5px] bg-[#35020D] group-hover:w-full transition-all duration-300 ease-out" />
                 </Link>
               ))}
+              <Link to="/search" className="p-2 hover:bg-[#35020D]/5 rounded-sm transition-colors" title="Search">
+                <Search className="w-5 h-5" />
+              </Link>
               <Link to="/contact" className="ml-4 bg-[#35020D] text-[#fffff1] px-5 py-2.5 lg:px-6 lg:py-3 rounded-full hover:bg-[rgb(35,2,13)] transition-colors text-sm md:text-base tracking-tight font-semibold shadow-sm">
                 Contact
               </Link>
@@ -93,6 +96,9 @@ const Navbar = () => {
                       {link.label}
                     </Link>
                   ))}
+                  <Link to="/search" onClick={() => setIsOpen(false)} className="text-2xl font-normal tracking-tight text-[#35020D] flex items-center gap-2">
+                    <Search className="w-5 h-5" /> Search
+                  </Link>
                   <div className="pt-8 mt-4 border-t border-[#35020D]/10">
                     <Link to="/contact" onClick={() => setIsOpen(false)} className="inline-block bg-[#35020D] text-[#fffff1] px-8 py-3 rounded-full text-lg tracking-tight font-semibold w-full text-center">
                       Contact

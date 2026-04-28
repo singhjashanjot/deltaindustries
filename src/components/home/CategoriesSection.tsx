@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { trpc } from "@/lib/trpc";
 
 import catWooden from "@/assets/cat-wooden.jpg";
 import catAcrylic from "@/assets/cat-acrylic.jpg";
@@ -12,19 +12,34 @@ import catBases from "@/assets/cat-bases.jpg";
 import catCorporate from "@/assets/cat-corporate.jpg";
 import catShields from "@/assets/cat-shields.jpg";
 
-const categories = [
-  { name: "Wooden Trophies", image: catWooden, slug: "wooden" },
-  { name: "Acrylic Awards", image: catAcrylic, slug: "acrylic" },
-  { name: "Metal Cups", image: catMetal, slug: "metal" },
-  { name: "Crystal Trophies", image: catCrystal, slug: "crystal" },
-  { name: "Plastic Series", image: catPlastic, slug: "plastic" },
-  { name: "Custom Medals", image: catMedals, slug: "medals" },
-  { name: "Trophy Bases", image: catBases, slug: "bases" },
-  { name: "Corporate Mementos", image: catCorporate, slug: "corporate" },
-  { name: "Premium Shields", image: catShields, slug: "shields" },
+const staticImages: Record<string, string> = {
+  "wooden-trophies": catWooden,
+  "acrylic-awards": catAcrylic,
+  "metal-cups-trophies": catMetal,
+  "crystal-trophies": catCrystal,
+  "plastic-trophy-series": catPlastic,
+  "custom-medals": catMedals,
+  "trophy-bases-accessories": catBases,
+  "corporate-gift-mementos": catCorporate,
+  "shields-plaques": catShields,
+};
+
+const fallbackCategories = [
+  { name: "Wooden Trophies", slug: "wooden-trophies" },
+  { name: "Acrylic Awards", slug: "acrylic-awards" },
+  { name: "Metal Cups & Trophies", slug: "metal-cups-trophies" },
+  { name: "Crystal Trophies", slug: "crystal-trophies" },
+  { name: "Plastic Series", slug: "plastic-trophy-series" },
+  { name: "Custom Medals", slug: "custom-medals" },
+  { name: "Trophy Bases", slug: "trophy-bases-accessories" },
+  { name: "Corporate Mementos", slug: "corporate-gift-mementos" },
+  { name: "Premium Shields", slug: "shields-plaques" },
 ];
 
 const CategoriesSection = () => {
+  const { data: apiCategories } = trpc.category.getAll.useQuery();
+  const categories = apiCategories ?? fallbackCategories;
+
   return (
     <section className="w-full min-h-[800px] md:min-h-[900px] flex items-center py-40 md:py-64 bg-[#ffffe3] text-[#35020D] selection:bg-[#35020D] selection:text-[#ffffe3] border-t border-[#1b1610]/10">
       <div className="max-w-screen-2xl mx-auto w-full px-6 md:px-12">
@@ -63,7 +78,7 @@ const CategoriesSection = () => {
               >
                 <div className="aspect-square overflow-hidden bg-[#35020D]/5 mb-6">
                   <img
-                    src={cat.image}
+                    src={staticImages[cat.slug] ?? catWooden}
                     alt={cat.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-[0.16,1,0.3,1]"
                   />

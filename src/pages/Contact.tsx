@@ -1,21 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { trpc } from "@/lib/trpc";
+
+const emptyForm = { name: "", organization: "", email: "", phone: "", product: "", quantity: "", message: "" };
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "", organization: "", email: "", phone: "", product: "", quantity: "", message: "",
+  const [searchParams] = useSearchParams();
+  const productIdParam = searchParams.get("product");
+  const productId = productIdParam ? parseInt(productIdParam, 10) : undefined;
+  const { data: product } = trpc.product.getById.useQuery({ id: productId! }, { enabled: !!productId });
+  const [formData, setFormData] = useState(() => ({
+    ...emptyForm,
+    product: product?.name || "",
+  }));
+
+  const submitEnquiry = trpc.enquiry.submit.useMutation({
+    onSuccess: () => {
+      toast.success("Thank you! We'll get back to you within 24 hours.");
+      setFormData(emptyForm);
+    },
+    onError: (err) => {
+      toast.error(err.message || "Submission failed. Please try again.");
+    },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Thank you! We'll get back to you within 24 hours.");
-    setFormData({ name: "", organization: "", email: "", phone: "", product: "", quantity: "", message: "" });
+    submitEnquiry.mutate({
+      productId: productId,
+      customerName: formData.name,
+      organization: formData.organization || undefined,
+      email: formData.email,
+      phone: formData.phone,
+      message: formData.message || undefined,
+      quantity: formData.quantity ? parseInt(formData.quantity, 10) : undefined,
+    });
   };
 
   const update = (field: string, value: string) => setFormData((prev) => ({ ...prev, [field]: value }));
+
+  useEffect(() => {
+    if (product) {
+      setFormData((prev) => ({ ...prev, product: product.name }));
+    }
+  }, [product]);
 
   return (
     <Layout>
@@ -50,7 +81,7 @@ const Contact = () => {
                   </div>
                   <div className="space-y-3">
                     <label className="text-xs font-bold uppercase tracking-widest text-[#35020D]">Phone *</label>
-                    <input type="tel" value={formData.phone} onChange={(e) => update("phone", e.target.value)} required placeholder="+91 98765 43210" className="w-full bg-transparent border-b border-[#35020D]/30 py-2 focus:outline-none focus:border-[#35020D] transition-colors placeholder:text-[#35020D]/30" />
+                    <input type="tel" value={formData.phone} onChange={(e) => update("phone", e.target.value)} required placeholder="10-digit mobile number" className="w-full bg-transparent border-b border-[#35020D]/30 py-2 focus:outline-none focus:border-[#35020D] transition-colors placeholder:text-[#35020D]/30" />
                   </div>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-8">
@@ -68,8 +99,8 @@ const Contact = () => {
                   <textarea value={formData.message} onChange={(e) => update("message", e.target.value)} placeholder="Tell us about your requirements..." rows={4} className="w-full bg-transparent border-b border-[#35020D]/30 py-2 focus:outline-none focus:border-[#35020D] transition-colors placeholder:text-[#35020D]/30 resize-none" />
                 </div>
                 
-                <button type="submit" className="inline-flex flex-1 w-full justify-center items-center gap-3 text-sm md:text-base font-semibold tracking-normal hover:bg-transparent hover:text-[#35020D] bg-[#35020D] border-2 border-[#35020D] text-[#fffff1] px-8 py-4 rounded-[2rem] transition-colors">
-                  <span>Submit Enquiry</span>
+                <button type="submit" disabled={submitEnquiry.isPending} className="inline-flex flex-1 w-full justify-center items-center gap-3 text-sm md:text-base font-semibold tracking-normal hover:bg-transparent hover:text-[#35020D] bg-[#35020D] border-2 border-[#35020D] text-[#fffff1] px-8 py-4 rounded-[2rem] transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+                  <span>{submitEnquiry.isPending ? "Submitting…" : "Submit Enquiry"}</span>
                   <span className="inline-block w-1.5 h-1.5 border-[1.5px] border-current rounded-full"></span>
                 </button>
               </form>
