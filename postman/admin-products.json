@@ -1,0 +1,195 @@
+{
+  "info": {
+    "name": "Delta - Admin Products",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"admin@deltaindustries.in\",\"password\":\"admin123\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/admin.login",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "admin.login"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List All Products (Admin)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/trpc/product.listAll?input=%7B%22limit%22%3A5%2C%22offset%22%3A0%7D",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "product.listAll"],
+          "query": [
+            {
+              "key": "input",
+              "value": "{\"limit\":5,\"offset\":0}"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Product",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"categoryId\":1,\"name\":\"Postman Test Product\",\"slug\":\"postman-prod-{{$timestamp}}\",\"material\":\"Wood\",\"shortDesc\":\"Test from Postman\",\"description\":\"Full test description from Postman\",\"isCustomizable\":false,\"isFeatured\":false,\"isActive\":true}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/product.create",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "product.create"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+              "var jsonData = pm.response.json();",
+              "pm.collectionVariables.set('testProductId', jsonData.result.data.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Toggle Product Active",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":{{testProductId}},\"isActive\":false}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/product.toggleActive",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "product.toggleActive"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Toggle Product Active (Restore)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":{{testProductId}},\"isActive\":true}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/product.toggleActive",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "product.toggleActive"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Product",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":{{testProductId}}}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/product.delete",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "product.delete"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    }
+  ]
+}

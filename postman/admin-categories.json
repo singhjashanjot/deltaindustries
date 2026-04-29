@@ -1,0 +1,159 @@
+{
+  "info": {
+    "name": "Delta - Admin Categories",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"admin@deltaindustries.in\",\"password\":\"admin123\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/admin.login",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "admin.login"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List All Categories (Admin)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/trpc/category.listAll",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "category.listAll"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Category",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Test Category Postman\",\"slug\":\"test-cat-{{$timestamp}}\",\"description\":\"Created from Postman test\",\"sortOrder\":99}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/category.create",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "category.create"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+              "var jsonData = pm.response.json();",
+              "pm.collectionVariables.set('testCategoryId', jsonData.result.data.id);",
+              "pm.collectionVariables.set('testCategorySlug', jsonData.result.data.slug);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Category",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":{{testCategoryId}},\"name\":\"Updated Test Category\",\"slug\":\"{{testCategorySlug}}\",\"description\":\"Updated from Postman\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/category.update",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "category.update"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Category",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":{{testCategoryId}}}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/category.delete",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "category.delete"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    }
+  ]
+}

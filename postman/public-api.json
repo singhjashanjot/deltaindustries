@@ -1,0 +1,195 @@
+{
+  "info": {
+    "name": "Delta - Public API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Categories - Get All",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/trpc/category.getAll",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "category.getAll"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products - Get By Category",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/trpc/product.getByCategory?input=%7B%7D",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "product.getByCategory"],
+          "query": [
+            {
+              "key": "input",
+              "value": "{}"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products - Get Featured",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/trpc/product.getFeatured",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "product.getFeatured"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products - Get By Slug",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/trpc/product.getBySlug?input=%7B%22slug%22%3A%22wooden-executive-trophy%22%7D",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "product.getBySlug"],
+          "query": [
+            {
+              "key": "input",
+              "value": "{\"slug\":\"wooden-executive-trophy\"}"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products - Get By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/trpc/product.getById?input=%7B%22id%22%3A1%7D",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "product.getById"],
+          "query": [
+            {
+              "key": "input",
+              "value": "{\"id\":1}"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search - Products",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/trpc/search.products?input=%7B%22q%22%3A%22trophy%22%2C%22limit%22%3A5%7D",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "search.products"],
+          "query": [
+            {
+              "key": "input",
+              "value": "{\"q\":\"trophy\",\"limit\":5}"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Enquiry - Submit",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"customerName\":\"Test User\",\"email\":\"test@example.com\",\"phone\":\"9876543210\",\"message\":\"Test enquiry from Postman\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/enquiry.submit",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "enquiry.submit"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    }
+  ]
+}

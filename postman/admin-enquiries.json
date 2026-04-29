@@ -1,0 +1,155 @@
+{
+  "info": {
+    "name": "Delta - Admin Enquiries",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Submit Public Enquiry",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"customerName\":\"Postman Test\",\"email\":\"postman@test.com\",\"phone\":\"9876543210\",\"message\":\"Test enquiry for admin testing\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/enquiry.submit",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "enquiry.submit"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+              "var jsonData = pm.response.json();",
+              "pm.collectionVariables.set('testEnquiryId', jsonData.result.data.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"admin@deltaindustries.in\",\"password\":\"admin123\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/admin.login",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "admin.login"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List Enquiries",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/trpc/enquiry.list?input=%7B%22limit%22%3A5%2C%22offset%22%3A0%7D",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "enquiry.list"],
+          "query": [
+            {
+              "key": "input",
+              "value": "{\"limit\":5,\"offset\":0}"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Enquiry Stats",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/trpc/enquiry.stats",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "enquiry.stats"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Enquiry Status",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":{{testEnquiryId}},\"status\":\"in_progress\",\"notes\":\"Updated from Postman\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/enquiry.updateStatus",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "enquiry.updateStatus"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    }
+  ]
+}

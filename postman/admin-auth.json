@@ -1,0 +1,92 @@
+{
+  "info": {
+    "name": "Delta - Admin Auth",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"admin@deltaindustries.in\",\"password\":\"admin123\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/admin.login",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "admin.login"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Current Admin",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/trpc/admin.me",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "admin.me"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/trpc/admin.logout",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["trpc", "admin.logout"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('Status is 200', function() { pm.response.to.have.status(200); });"]
+          }
+        }
+      ]
+    }
+  ]
+}

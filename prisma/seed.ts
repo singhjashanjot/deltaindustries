@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const db = new PrismaClient();
 
@@ -213,17 +214,22 @@ async function main() {
   // ─── Default Admin ────────────────────────────────────────────────────────
   const adminEmail = "admin@deltaindustries.in";
   const existingAdmin = await db.admin.findUnique({ where: { email: adminEmail } });
+  const adminPasswordHash = await bcrypt.hash("admin123", 12);
   if (!existingAdmin) {
     await db.admin.create({
       data: {
         email: adminEmail,
-        password: "$2a$12$abcdefghijklmnopqrstuv", // placeholder: use bcrypt hash in production
+        password: adminPasswordHash,
         name: "System Admin",
       },
     });
     console.log(`  ✓ Default admin created: ${adminEmail}`);
   } else {
-    console.log(`  ✓ Admin already exists: ${adminEmail}`);
+    await db.admin.update({
+      where: { email: adminEmail },
+      data: { password: adminPasswordHash },
+    });
+    console.log(`  ✓ Admin password updated: ${adminEmail}`);
   }
 
   console.log(`\n🎉 Seeding complete!`);
