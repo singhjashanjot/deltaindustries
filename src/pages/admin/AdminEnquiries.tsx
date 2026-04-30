@@ -69,6 +69,7 @@ const AdminEnquiries = () => {
                     <th className="text-left px-4 py-3 font-medium opacity-60">Customer</th>
                     <th className="text-left px-4 py-3 font-medium opacity-60 hidden md:table-cell">Contact</th>
                     <th className="text-left px-4 py-3 font-medium opacity-60 hidden lg:table-cell">Product</th>
+                    <th className="text-left px-4 py-3 font-medium opacity-60 hidden xl:table-cell">Qty</th>
                     <th className="text-left px-4 py-3 font-medium opacity-60">Status</th>
                     <th className="text-left px-4 py-3 font-medium opacity-60 hidden sm:table-cell">Date</th>
                     <th className="px-4 py-3"></th>
@@ -92,6 +93,9 @@ const AdminEnquiries = () => {
                       </td>
                       <td className="px-4 py-3 hidden lg:table-cell text-xs opacity-60">
                         {e.product?.name || "—"}
+                      </td>
+                      <td className="px-4 py-3 hidden xl:table-cell text-xs opacity-60">
+                        {e.quantity || "—"}
                       </td>
                       <td className="px-4 py-3">
                         <StatusBadge status={e.status} />
@@ -183,6 +187,13 @@ const AdminEnquiries = () => {
               <div className="mb-4 p-3 bg-[#35020D]/[0.02] rounded-sm border border-[#35020D]/5">
                 <div className="text-xs font-semibold uppercase tracking-widest opacity-50 mb-1">Linked Product</div>
                 <div className="font-medium text-sm">{selectedEnquiry.product.name}</div>
+              </div>
+            )}
+
+            {selectedEnquiry.quantity && (
+              <div className="mb-4">
+                <div className="text-xs font-semibold uppercase tracking-widest opacity-50 mb-1">Quantity</div>
+                <div className="font-medium text-sm">{selectedEnquiry.quantity} pieces</div>
               </div>
             )}
 

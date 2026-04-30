@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { motion } from "framer-motion";
 import { Package, Search, Plus, ArrowLeft, ArrowRight, Loader2, Eye, EyeOff, Pencil, Trash2, X, Upload } from "lucide-react";
@@ -11,6 +11,7 @@ const AdminProducts = () => {
   const [search, setSearch] = useState("");
   const [offset, setOffset] = useState(0);
   const [editing, setEditing] = useState<EditingProduct | null>(null);
+  const editDrawerRef = useRef<HTMLDivElement>(null);
   const limit = PAGINATION.DEFAULT_LIMIT;
 
   const { data, isLoading } = trpc.product.listAll.useQuery(
@@ -24,6 +25,13 @@ const AdminProducts = () => {
   const deleteMutation = trpc.product.delete.useMutation({
     onSuccess: () => utils.product.listAll.invalidate(),
   });
+
+  // Scroll to edit drawer when it opens
+  useEffect(() => {
+    if (editing && editDrawerRef.current) {
+      editDrawerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [editing]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
@@ -103,7 +111,7 @@ const AdminProducts = () => {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
                           <button
-                            onClick={() => setEditing({ ...p, isNew: false })}
+                            onClick={() => setEditing({ ...p, isNew: false } as EditingProduct)}
                             className="p-1.5 hover:bg-[#35020D]/5 rounded-sm opacity-50 hover:opacity-100"
                           >
                             <Pencil className="w-4 h-4" />
@@ -155,7 +163,9 @@ const AdminProducts = () => {
 
         {/* Edit Drawer */}
         {editing && (
-          <ProductEditDrawer product={editing} onClose={() => setEditing(null)} />
+          <div ref={editDrawerRef}>
+            <ProductEditDrawer product={editing} onClose={() => setEditing(null)} />
+          </div>
         )}
       </motion.div>
     </div>
@@ -172,26 +182,22 @@ const ProductEditDrawer = ({ product, onClose }: { product: EditingProduct; onCl
   const [categoryId, setCategoryId] = useState(product.categoryId || "");
   const [imageUrl, setImageUrl] = useState(product.imageUrl || "");
   const [isUploading, setIsUploading] = useState(false);
+  const [availableSizes, setAvailableSizes] = useState(product.sizes?.map((s: any) => s.label).join(", ") || "");
+  const [minOrderQty, setMinOrderQty] = useState(product.sizes?.[0]?.moq || 1);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setIsUploading(true);
       try {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", CLOUDINARY.UPLOAD_PRESET);
-        
-        const response = await fetch(
-          `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
-          {
-            method: "POST",
-            body: formData,
+        // Convert image to base64 for local storage
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (event.target?.result) {
+            setImageUrl(event.target.result as string);
           }
-        );
-        
-        const data = await response.json();
-        setImageUrl(data.secure_url);
+        };
+        reader.readAsDataURL(file);
       } catch (error) {
         console.error("Upload error:", error);
         alert("Upload failed. Please try again.");
@@ -218,9 +224,29 @@ const ProductEditDrawer = ({ product, onClose }: { product: EditingProduct; onCl
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const data = { name, slug, material, shortDesc, description, categoryId: Number(categoryId), imageUrl };
+    // Parse available sizes into array
+    const sizesArray = availableSizes
+      .split(",")
+      .map(s => s.trim())
+      .filter(s => s.length > 0)
+      .map(label => ({
+        label,
+        moq: minOrderQty,
+        inStock: true,
+      }));
+
+    const data = {
+      name,
+      slug,
+      material,
+      shortDesc,
+      description,
+      categoryId: Number(categoryId),
+      imageUrl,
+      sizes: sizesArray.length > 0 ? sizesArray : undefined,
+    };
     if (isNew) {
-      createMutation.mutate({ ...data, sizes: [] });
+      createMutation.mutate(data);
     } else {
       updateMutation.mutate({ id: product.id, ...data });
     }
@@ -259,6 +285,25 @@ const ProductEditDrawer = ({ product, onClose }: { product: EditingProduct; onCl
         <div>
           <label className="text-xs font-semibold uppercase tracking-widest opacity-50 mb-1 block">Material</label>
           <input value={material} onChange={(e) => setMaterial(e.target.value)} className="w-full px-3 py-2 border border-[#35020D]/10 rounded-sm text-sm focus:outline-none focus:border-[#35020D]/30" />
+        </div>
+        <div>
+          <label className="text-xs font-semibold uppercase tracking-widest opacity-50 mb-1 block">Available Sizes</label>
+          <input
+            value={availableSizes}
+            onChange={(e) => setAvailableSizes(e.target.value)}
+            placeholder="e.g. Small, Medium, Large"
+            className="w-full px-3 py-2 border border-[#35020D]/10 rounded-sm text-sm focus:outline-none focus:border-[#35020D]/30"
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold uppercase tracking-widest opacity-50 mb-1 block">Min. Order Qty</label>
+          <input
+            type="number"
+            min="1"
+            value={minOrderQty}
+            onChange={(e) => setMinOrderQty(Number(e.target.value))}
+            className="w-full px-3 py-2 border border-[#35020D]/10 rounded-sm text-sm focus:outline-none focus:border-[#35020D]/30"
+          />
         </div>
         <div className="sm:col-span-2">
           <label className="text-xs font-semibold uppercase tracking-widest opacity-50 mb-1 block">Short Description</label>
