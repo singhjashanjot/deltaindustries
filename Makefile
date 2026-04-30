@@ -15,13 +15,13 @@ help: ## Show this help message
 	@echo "  make prisma-migrate - Run Prisma migrations"
 
 up: ## Start Docker services
-	docker-compose up -d
+	docker compose up -d
 
 down: ## Stop Docker services
-	docker-compose down
+	docker compose down
 
 restart: ## Restart Docker services
-	docker-compose restart
+	docker compose restart
 
 install: ## Install npm dependencies
 	npm install
