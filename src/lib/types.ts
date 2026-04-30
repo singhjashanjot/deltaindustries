@@ -19,6 +19,7 @@ export type EditingProduct = {
   description?: string;
   categoryId?: number | string;
   imageUrl?: string;
+  sizes?: Array<{ id?: number; productId?: number; label?: string; priceMin?: string; priceMax?: string; moq?: number; inStock?: boolean }>;
 };
 
 // Search result type

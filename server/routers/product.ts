@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure, adminProcedure } from "../trpc";
+import { indexProducts } from "../meilisearch";
 
 const productCreateInput = z.object({
   categoryId: z.number().int(),
@@ -145,6 +146,29 @@ export const productRouter = router({
     if (sizes && sizes.length > 0) {
       await ctx.db.productSize.createMany({ data: sizes.map((s) => ({ ...s, productId: product.id })) });
     }
+    // Sync to Meilisearch
+    const productWithCategory = await ctx.db.product.findUnique({
+      where: { id: product.id },
+      include: { category: true, sizes: { orderBy: { priceMin: "asc" }, take: 1 } },
+    });
+    if (productWithCategory) {
+      await indexProducts([{
+        id: productWithCategory.id,
+        name: productWithCategory.name,
+        slug: productWithCategory.slug,
+        categoryName: productWithCategory.category.name,
+        categorySlug: productWithCategory.category.slug,
+        material: productWithCategory.material,
+        shortDesc: productWithCategory.shortDesc,
+        description: productWithCategory.description,
+        imageUrl: productWithCategory.imageUrl,
+        isCustomizable: productWithCategory.isCustomizable,
+        isFeatured: productWithCategory.isFeatured,
+        viewCount: productWithCategory.viewCount,
+        sizeLabel: productWithCategory.sizes[0]?.label ?? null,
+        priceMin: productWithCategory.sizes[0]?.priceMin ? Number(productWithCategory.sizes[0].priceMin) : null,
+      }]);
+    }
     return ctx.db.product.findUnique({ where: { id: product.id }, include: { sizes: true } });
   }),
 
@@ -157,6 +181,29 @@ export const productRouter = router({
       if (sizes.length > 0) {
         await ctx.db.productSize.createMany({ data: sizes.map((s) => ({ ...s, productId: id })) });
       }
+    }
+    // Sync to Meilisearch
+    const productWithCategory = await ctx.db.product.findUnique({
+      where: { id },
+      include: { category: true, sizes: { orderBy: { priceMin: "asc" }, take: 1 } },
+    });
+    if (productWithCategory && productWithCategory.isActive) {
+      await indexProducts([{
+        id: productWithCategory.id,
+        name: productWithCategory.name,
+        slug: productWithCategory.slug,
+        categoryName: productWithCategory.category.name,
+        categorySlug: productWithCategory.category.slug,
+        material: productWithCategory.material,
+        shortDesc: productWithCategory.shortDesc,
+        description: productWithCategory.description,
+        imageUrl: productWithCategory.imageUrl,
+        isCustomizable: productWithCategory.isCustomizable,
+        isFeatured: productWithCategory.isFeatured,
+        viewCount: productWithCategory.viewCount,
+        sizeLabel: productWithCategory.sizes[0]?.label ?? null,
+        priceMin: productWithCategory.sizes[0]?.priceMin ? Number(productWithCategory.sizes[0].priceMin) : null,
+      }]);
     }
     return ctx.db.product.findUnique({ where: { id }, include: { sizes: true } });
   }),
