@@ -58,79 +58,147 @@ Delta Industries (Delta Trophies), Jalandhar, currently operates through a **sta
 | Components | shadcn/ui, Radix UI primitives | Accessible, polished UI |
 | State | TanStack Query (React Query) | Server state management |
 | API | tRPC v11 | End-to-end type-safe APIs |
-| ORM | Prisma 6.6 | Type-safe database access |
-| Database | PostgreSQL 16 | Relational data with 3NF schema |
-| Search | Meilisearch | Full-text search with typo tolerance |
+| ORM | Prisma 7.8 | Type-safe database access |
+| Database | Prisma Postgres (Deno Deploy) | Serverless PostgreSQL |
+| Search | Prisma OR + contains | Free full-text search, no external deps |
 | Images | Cloudinary | CDN image upload & optimization |
 | Charts | Recharts | Admin analytics dashboards |
 | Auth | bcrypt + httpOnly cookies | Secure admin session management |
+| Backend Runtime | Deno Deploy | Serverless edge deployment |
+| Frontend Hosting | Vercel | Static SPA with edge CDN |
 
-## Quick Start
+## Quick Start (Local Development)
 
 ### Prerequisites
-- Docker and Docker Compose
-- Node.js 18+
-- npm
+- Deno v2.0+
+- Node.js 18+ (for Vite frontend build)
 
 ### Setup
 
-1. **Start Docker services** (PostgreSQL, Meilisearch):
+1. **Install Deno dependencies**:
 ```bash
-make up
+deno install
 ```
 
-2. **Install dependencies**:
-```bash
-make install
+2. **Set up environment variables** (`.env`):
+```
+# For local development with Prisma Postgres
+DATABASE_URL="postgresql://USER:PASS@db.prisma.io:5432?sslmode=verify-full"
+DIRECT_DATABASE_URL="postgresql://USER:PASS@db.prisma.io:5432?sslmode=verify-full"
+ADMIN_SECRET="your-admin-secret"
 ```
 
-3. **Set up database**:
+3. **Push schema and generate Prisma client**:
 ```bash
-make prisma-push
-make prisma-generate
-make seed
+deno run -A --env=.env npm:prisma db push
+deno run -A --env=.env npm:prisma generate
 ```
 
-4. **Start development server**:
+4. **Seed the database**:
 ```bash
-make dev
+deno run -A --env=.env seed-deno.ts
 ```
 
-The app will be available at `http://localhost:5173`
+5. **Start backend server**:
+```bash
+deno run -A --env=.env --unstable-sloppy-imports server/deno-deploy.ts
+```
 
-### Available Make Commands
+6. **Start frontend (separate terminal)**:
+```bash
+npm run dev
+```
 
-- `make help` - Show all available commands
-- `make up` - Start Docker services
-- `make down` - Stop Docker services
-- `make restart` - Restart Docker services
-- `make install` - Install npm dependencies
-- `make build` - Build the application
-- `make dev` - Start development server
-- `make seed` - Seed the database
-- `make clean` - Clean build artifacts and node_modules
-- `make prisma-generate` - Generate Prisma client
-- `make prisma-push` - Push Prisma schema to database
-- `make prisma-migrate` - Run Prisma migrations
+The app will be available at `http://localhost:5173` (frontend) and `http://localhost:8000` (backend)
+
+## Deployment
+
+### Backend — Deno Deploy
+
+**Important**: To prevent backend from deploying on frontend changes, disable "Automatic Deployments" in Deno Deploy GitHub settings and use GitHub Actions instead.
+
+1. In Deno Deploy dashboard → **Databases** → Attach **Prisma Postgres**
+2. Copy the connection string from the database dashboard
+3. Go to **Settings → Environment Variables** and add:
+```
+DATABASE_URL=postgresql://... (your Prisma Postgres connection string)
+```
+4. Set build command: `deno run -A npm:prisma generate`
+5. Entrypoint: `server/deno-deploy.ts`
+6. Disable "Automatic Deployments" in GitHub integration settings
+7. Add `DENO_PROJECT_ID` to GitHub repository secrets (from Deno Deploy project settings)
+8. Redeploy
+
+The GitHub Actions workflow (`.github/workflows/deploy-backend.yml`) will automatically deploy only when backend files change (`server/`, `prisma/`, `deno.json`, etc.).
+
+### Frontend — Vercel
+
+1. Import your GitHub repo on Vercel
+2. Add environment variable:
+```
+VITE_API_URL=https://your-backend.deno.net/trpc
+```
+3. Deploy — Vercel will build the React SPA automatically
+
+### Environment Variables Reference
+
+| Variable | Platform | Value Example |
+|----------|----------|---------------|
+| `DATABASE_URL` | Deno Deploy | `postgresql://user:pass@db.prisma.io:5432?sslmode=verify-full` |
+| `DIRECT_DATABASE_URL` | Local only | Same as DATABASE_URL (for Prisma CLI migrations) |
+| `VITE_API_URL` | Vercel | `https://your-backend.deno.net/trpc` |
+| `ADMIN_SECRET` | Deno Deploy | Any strong random string |
+
+## API Testing (Newman)
+
+All Postman collections are in `postman/` folder. Run against deployed backend:
+
+```bash
+# Public API
+newman run postman/public-api.json --global-var "baseUrl=https://your-backend.deno.net"
+
+# Admin Auth
+newman run postman/admin-auth.json --global-var "baseUrl=https://your-backend.deno.net"
+
+# Admin Categories
+newman run postman/admin-categories.json --global-var "baseUrl=https://your-backend.deno.net"
+
+# Admin Products
+newman run postman/admin-products.json --global-var "baseUrl=https://your-backend.deno.net"
+
+# Admin Enquiries
+newman run postman/admin-enquiries.json --global-var "baseUrl=https://your-backend.deno.net"
+```
+
+**Default admin credentials:** `admin@deltaindustries.in` / `admin123`
 
 ## Project Structure
 
 ```
 ├── prisma/              # Database schema, migrations, seed scripts
 │   ├── schema.prisma    # 7 models: Category, Product, ProductSize, ProductImage, Enquiry, Admin, Session
-│   └── seed.ts          # 9 categories + 45 products with full data
-├── server/              # tRPC API backend
+│   ├── seed.ts          # Original seed script (Node.js version)
+│   └── seed-deno.ts     # Deno-compatible seed script for deployment
+├── server/              # tRPC API backend (Deno Deploy compatible)
 │   ├── routers/         # category, product, enquiry, admin, search
 │   ├── trpc.ts          # Context & middleware (publicProcedure, adminProcedure)
-│   ├── meilisearch.ts   # Search index configuration & sync
-│   └── scripts/         # sync-search.ts (PostgreSQL → Meilisearch)
+│   ├── db.ts            # Prisma Client with PrismaPg adapter
+│   ├── deno-deploy.ts   # Express entrypoint for Deno Deploy
+│   └── meilisearch.ts   # Search using Prisma OR+contains (no external service)
 ├── src/
-│   ├── pages/           # Route pages (Home, Products, ProductDetail, Contact, About, Quality, Testimonials, Admin)
+│   ├── pages/           # Route pages
 │   ├── components/      # Reusable UI components (shadcn/ui + custom)
 │   ├── hooks/           # Custom React hooks
-│   └── lib/             # tRPC client setup, utilities
+│   └── lib/             # tRPC client setup (VITE_API_URL configurable)
+├── postman/             # API test collections (Newman)
+│   ├── public-api.json
+│   ├── admin-auth.json
+│   ├── admin-categories.json
+│   ├── admin-products.json
+│   └── admin-enquiries.json
 ├── public/              # Static assets
-└── docker-compose.yml   # PostgreSQL 16 + Meilisearch services
+├── deno.json            # Deno imports and tasks
+└── prisma.config.ts     # Prisma 7 configuration
 ```
 
 ## Key Features
@@ -139,7 +207,7 @@ The app will be available at `http://localhost:5173`
 - **Homepage**: Hero, category grid (fetched from DB), testimonials, trust badges, manufacturing showcase
 - **Product Catalog**: Category-filtered browsing with animated grid, price ranges, MOQ display
 - **Product Detail**: Full specs, size variants, image gallery, related products, "Request Quote" CTA
-- **Live Search**: Meilisearch-powered instant search with typo tolerance and category filtering
+- **Live Search**: Prisma OR + contains search — free, no external dependencies, works in Deno Deploy
 - **Contact/Enquiry**: Zod-validated form, product pre-fill from URL, auto-linked to product pages
 - **SEO**: Dynamic meta tags, OpenGraph images, structured data on every product page
 
@@ -153,8 +221,8 @@ The app will be available at `http://localhost:5173`
 
 ### Data Pipeline
 - **3NF Relational Schema**: Categories → Products → Sizes/Images, Enquiries linked to products
-- **Meilisearch Sync**: `npm run search:sync` denormalizes products for instant full-text search
-- **Seed Scripts**: Idempotent upserts for 9 categories + 45 products across all trophy types
+- **Search**: Prisma OR + `contains` with `mode: 'insensitive'` — no external service needed
+- **Seed Scripts**: `seed-deno.ts` for Deno runtime (idempotent upserts for 9 categories + 15 products + testimonials + admin)
 
 ## Evaluation Roadmap
 
@@ -164,6 +232,44 @@ The app will be available at `http://localhost:5173`
 | **II** (Current) | Week 7–12 | Admin dashboard with auth + CRUD, Cloudinary uploads, live search, analytics, real content pages, enquiry lifecycle |
 | **III** (Planned) | Weeks 13–24 | AI chatbot (RAG-powered customer support), AI description generator, AI visual recommendations, WhatsApp integration, order/quote/invoice pipeline, full deployment |
 
+## Deployment Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Vercel (Frontend)                        │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐           │
+│  │  Home   │ │Products │ │ Search  │ │  Admin  │           │
+│  │  Page   │ │  Page   │ │  Page   │ │Dashboard│           │
+│  └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘           │
+│       └───────────┴───────────┴───────────┘                │
+│                   tRPC Client (React Query)                  │
+└───────────────────────────┬─────────────────────────────────┘
+                        │ HTTPS + CORS
+┌───────────────────────────┴─────────────────────────────────┐
+│              Deno Deploy (Backend)                           │
+│              Express + tRPC v11 API Server                   │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐           │
+│  │category │ │ product │ │ enquiry │ │  admin  │           │
+│  │ router  │ │ router  │ │ router  │ │ router  │           │
+│  └─────────┘ └─────────┘ └─────────┘ └─────────┘           │
+│                    Prisma ORM 7.8                           │
+│       ┌───────────┴───────────┐                            │
+│       ▼                       ▼                            │
+│  Prisma Postgres        Prisma Postgres                    │
+│  (production)           (preview per branch)               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## Why This Architecture
+
+| Decision | Reason |
+|----------|--------|
+| **Deno Deploy** | Serverless edge runtime with native TypeScript, zero cold starts |
+| **Prisma Postgres** | Built into Deno Deploy — no separate database hosting needed |
+| **Prisma ORM + `contains` search** | Meilisearch requires a separate service; Prisma `OR` + `contains` is free and works in serverless |
+| **Express on Deno** | Familiar middleware (cors, cookie-parser, json) with Deno's permission model |
+| **Vercel + VITE_API_URL** | Frontend static hosting with environment-variable API target |
+
 ## What Makes This Different from IndiaMART
 
 IndiaMART hosts thousands of similar manufacturers on identical templates. This platform gives Delta Industries:
@@ -172,7 +278,7 @@ IndiaMART hosts thousands of similar manufacturers on identical templates. This 
 2. **Direct Customer Relationships**: Enquiries come straight to their dashboard — no IndiaMART middleman fees
 3. **Analytics**: Know which products are trending, which categories get most enquiries
 4. **Scalability**: Ready for 1000+ products with AI-assisted description generation (Eval III)
-5. **Search**: Customers find products instantly with typo-tolerant full-text search — no 80MB PDF to download
+5. **Search**: Customers find products instantly with free Prisma search — no 80MB PDF to download
 6. **Admin Control**: Add, edit, deactivate products in real-time without depending on IndiaMART's update cycle
 
 ## License

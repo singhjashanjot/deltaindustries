@@ -1,0 +1,13 @@
+# Exclude backend from Vercel deployment
+# This ensures Vercel only builds and deploys the frontend
+server/
+prisma/
+scripts/
+postman/
+DENO_DEPLOY_MIGRATION_PROMPT.md
+EVALUATION_REPORT.md
+Makefile
+seed-deno.ts
+deno.json
+deno.lock
+docker-compose.yml
