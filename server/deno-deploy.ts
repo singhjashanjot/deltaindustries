@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { appRouter } from "./routers/index.ts";
-import { createTRPCContext } from "./trpc.ts";
+import { appRouter } from "./routers";
+import { createTRPCContext } from "./trpc";
 
 const app = express();
 
