@@ -23,16 +23,16 @@ const AdminLayout = () => {
   const location = useLocation();
   const utils = trpc.useUtils();
 
-  const { data: me, isLoading } = trpc.admin.me.useQuery(undefined, {
+  const { data: me, isLoading, isFetching } = trpc.admin.me.useQuery(undefined, {
     staleTime: 0,
     refetchOnMount: "always",
   });
 
   useEffect(() => {
-    if (!isLoading && !me) {
+    if (!isLoading && !isFetching && !me) {
       navigate("/admin/login", { replace: true });
     }
-  }, [me, isLoading, navigate]);
+  }, [me, isLoading, isFetching, navigate]);
 
   const logout = trpc.admin.logout.useMutation({
     onSuccess: () => {

@@ -14,7 +14,7 @@ const AdminLogin = () => {
 
   const loginMutation = trpc.admin.login.useMutation({
     onSuccess: async () => {
-      await utils.admin.me.invalidate();
+      await utils.admin.me.refetch();
       navigate("/admin/dashboard");
     },
     onError: (err) => {
