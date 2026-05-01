@@ -34,5 +34,8 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// Export for Deno Deploy
-export default app;
+const PORT = Number(process.env.PORT) || 8000;
+
+app.listen(PORT, () => {
+  console.log(`[server] Delta Industries API running on port ${PORT}`);
+});
