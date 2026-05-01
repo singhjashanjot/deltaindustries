@@ -1,8 +1,5 @@
 import { db } from "./db.ts";
 
-/**
- * Product search result structure
- */
 export interface ProductSearchResult {
   id: number;
   name: string;
@@ -21,7 +18,7 @@ export interface ProductSearchResult {
 }
 
 /**
- * Search products using Supabase/PostgreSQL full-text search
+ * Search products using Prisma OR + contains (no external dependencies)
  */
 export async function searchProducts(
   query: string,
@@ -30,68 +27,61 @@ export async function searchProducts(
   const startTime = Date.now();
   const limit = options?.limit ?? 20;
   const offset = options?.offset ?? 0;
+  const q = query.trim();
 
-  // Build the search query using PostgreSQL full-text search
-  const searchQuery = query
-    .split(" ")
-    .filter((word) => word.length > 0)
-    .join(" & "); // AND operator for all terms
+  const where: any = {
+    isActive: true,
+    OR: [
+      { name: { contains: q, mode: "insensitive" } },
+      { material: { contains: q, mode: "insensitive" } },
+      { shortDesc: { contains: q, mode: "insensitive" } },
+      { description: { contains: q, mode: "insensitive" } },
+    ],
+  };
 
-  const categoryFilter = options?.categorySlug ? `AND c.slug = '${options.categorySlug}'` : "";
+  if (options?.categorySlug) {
+    where.category = { slug: options.categorySlug };
+  }
 
-  const searchResults = await db.$queryRaw<ProductSearchResult[]>`
-    SELECT 
-      p.id,
-      p.name,
-      p.slug,
-      c.name AS "categoryName",
-      c.slug AS "categorySlug",
-      p.material,
-      p.short_desc AS "shortDesc",
-      p.description,
-      p.image_url AS "imageUrl",
-      p.is_customizable AS "isCustomizable",
-      p.is_featured AS "isFeatured",
-      p.view_count AS "viewCount",
-      (SELECT label FROM product_sizes WHERE product_id = p.id ORDER BY price_min ASC LIMIT 1) AS "sizeLabel",
-      (SELECT MIN(price_min) FROM product_sizes WHERE product_id = p.id) AS "priceMin"
-    FROM products p
-    JOIN categories c ON p.category_id = c.id
-    WHERE 
-      p.is_active = true
-      AND (
-        to_tsvector('english', p.name || ' ' || COALESCE(p.material, '') || ' ' || COALESCE(p.short_desc, '') || ' ' || COALESCE(p.description, '')) 
-        @@ to_tsquery('english', ${searchQuery})
-      )
-      ${categoryFilter}
-    ORDER BY 
-      p.is_featured DESC,
-      p.view_count DESC,
-      p.name ASC
-    LIMIT ${limit}
-    OFFSET ${offset}
-  `;
+  const [products, count] = await Promise.all([
+    db.product.findMany({
+      where,
+      orderBy: [
+        { isFeatured: "desc" },
+        { viewCount: "desc" },
+        { name: "asc" },
+      ],
+      take: limit,
+      skip: offset,
+      include: {
+        category: { select: { name: true, slug: true } },
+        sizes: { orderBy: { priceMin: "asc" }, take: 1 },
+      },
+    }),
+    db.product.count({ where }),
+  ]);
 
-  const countResult = await db.$queryRaw<{ count: bigint }[]>`
-    SELECT COUNT(*) as count
-    FROM products p
-    JOIN categories c ON p.category_id = c.id
-    WHERE 
-      p.is_active = true
-      AND (
-        to_tsvector('english', p.name || ' ' || COALESCE(p.material, '') || ' ' || COALESCE(p.short_desc, '') || ' ' || COALESCE(p.description, '')) 
-        @@ to_tsquery('english', ${searchQuery})
-      )
-      ${categoryFilter}
-  `;
-
-  const processingTimeMs = Date.now() - startTime;
-  const totalHits = Number(countResult[0]?.count || 0);
+  const hits: ProductSearchResult[] = products.map((p) => ({
+    id: p.id,
+    name: p.name,
+    slug: p.slug,
+    categoryName: p.category.name,
+    categorySlug: p.category.slug,
+    material: p.material,
+    shortDesc: p.shortDesc,
+    description: p.description,
+    imageUrl: p.imageUrl,
+    isCustomizable: p.isCustomizable,
+    isFeatured: p.isFeatured,
+    viewCount: p.viewCount,
+    sizeLabel: p.sizes[0]?.label ?? null,
+    priceMin: p.sizes[0]?.priceMin ? Number(p.sizes[0].priceMin) : null,
+  }));
 
   return {
-    hits: searchResults,
-    estimatedTotalHits: totalHits,
-    processingTimeMs,
+    hits,
+    estimatedTotalHits: count,
+    processingTimeMs: Date.now() - startTime,
   };
 }
 
