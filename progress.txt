@@ -648,7 +648,7 @@ PERSON 3 (Backend Heavy Full Stack):
 
 TEAM ACHIEVEMENT:
 - Built complete full-stack platform replacing IndiaMART
-- 26 API endpoints with 100% test pass rate
+- 26 API endpoints with 100% test pass rate (local)
 - Zero TypeScript errors
 - Production-ready with comprehensive testing
 - Complete admin dashboard with analytics
@@ -656,3 +656,116 @@ TEAM ACHIEVEMENT:
 - Secure authentication system
 - Fast search with Meilisearch
 - Scalable architecture for future growth
+
+================================================================================
+DEPLOYMENT STATUS (May 1, 2026)
+================================================================================
+
+CURRENT DEPLOYMENT SETUP:
+- Frontend: Vercel (https://deltaindustries.vercel.app)
+- Backend: Deno Deploy (https://deltaindustries.singhjashanjot.deno.net)
+- Database: PostgreSQL (to be attached to Deno Deploy)
+
+ENVIRONMENT VARIABLES REQUIRED:
+
+For Deno Deploy (Backend):
+- DATABASE_URL: PostgreSQL connection string (auto-injected when database attached)
+- NODE_ENV: Set to "production" (optional, for logging)
+- PORT: Defaults to 8000 if not set (optional)
+
+For Vercel (Frontend):
+- API_URL: Deno Deploy backend URL (https://deltaindustries.singhjashanjot.deno.net)
+  Note: Vercel doesn't allow VITE_ prefix, use API_URL instead
+
+CORS CONFIGURATION:
+- Deno Deploy backend CORS allowed origin: https://deltaindustries.vercel.app
+- Need to update server/deno-deploy.ts to include additional origins if needed
+
+CURRENT ISSUES:
+
+1. DATABASE NOT ATTACHED TO DENO DEPLOY
+   - Status: CRITICAL - No database attached to Deno Deploy project
+   - Impact: All API endpoints returning 500 Internal Server Error
+   - Root cause: Backend tries to connect to DATABASE_URL but no database exists
+   - Solution: Click "Attach SQL Database" in Deno Deploy dashboard
+   - After attaching: DATABASE_URL will be auto-injected by Deno
+
+2. FRONTEND API URL CONFIGURATION
+   - Status: PENDING - Frontend using relative path "/trpc"
+   - Impact: Frontend cannot connect to Deno Deploy backend
+   - Current: src/lib/trpc.ts uses url: "/trpc" (relative path)
+   - Required: Update to use environment variable for Deno URL
+   - Solution: 
+     * Add API_URL environment variable in Vercel
+     * Update src/lib/trpc.ts to: url: import.meta.env.VITE_API_URL || "/trpc"
+     * Add .env file locally with VITE_API_URL for local development
+
+3. POSTMAN COLLECTIONS UPDATED
+   - Status: DONE - All collections updated to use baseUrl variable
+   - Changed: All hardcoded localhost:8080 URLs replaced with {{baseUrl}}
+   - Files updated:
+     * postman/admin-auth.json
+     * postman/admin-categories.json
+     * postman/admin-enquiries.json
+     * postman/admin-products.json
+     * postman/public-api.json
+
+4. API TEST RESULTS (May 1, 2026):
+   - Test command: newman run postman/*.json --global-var "baseUrl=https://deltaindustries.singhjashanjot.deno.net"
+   - Results: All tests failing due to 500 errors (database not attached)
+   - Admin Auth: Login 500, Logout/Me 200 (working but no session)
+   - Admin Categories/Products/Enquiries: Login 500, subsequent 401 (expected)
+   - Public API: All endpoints 500 (categories, products, search, enquiry)
+   - Conclusion: Backend reachable but database connection failing
+
+NEXT STEPS:
+
+1. Attach SQL Database to Deno Deploy project
+   - Go to Deno Deploy dashboard > Databases
+   - Click "Attach SQL Database"
+   - Deno will provision PostgreSQL and inject DATABASE_URL
+
+2. Run Prisma migrations on production database
+   - Need to run migrations to create tables in production database
+   - May need to use Deno tunnel or direct connection
+   - Run: npx prisma migrate deploy (or equivalent for Deno)
+
+3. Seed production database
+   - Run seed script to populate initial data
+   - May need to adapt seed script for Deno environment
+   - Ensure admin user is created for authentication
+
+4. Update frontend API configuration
+   - Add API_URL environment variable in Vercel
+   - Update src/lib/trpc.ts to use environment variable
+   - Test frontend-backend connection
+
+5. Re-run Postman tests after database is attached
+   - Verify all endpoints return 200 OK
+   - Check authentication flow works
+   - Verify CRUD operations work
+
+6. Update CORS if needed
+   - Add any additional frontend URLs to allowedOrigins in deno-deploy.ts
+   - Ensure credentials: true is set for cookies
+   - Test cross-origin requests
+
+7. Monitor Deno Deploy logs
+   - Check for any runtime errors after database attachment
+   - Verify database connection is stable
+   - Monitor for any performance issues
+
+DEPLOYMENT CHECKLIST:
+[ ] Attach SQL Database to Deno Deploy
+[ ] Run Prisma migrations on production database
+[ ] Seed production database with initial data
+[ ] Add API_URL environment variable to Vercel
+[ ] Update src/lib/trpc.ts to use environment variable
+[ ] Update CORS origins in deno-deploy.ts if needed
+[ ] Re-run Postman tests - all should pass
+[ ] Test frontend-backend integration
+[ ] Test authentication flow in browser
+[ ] Test all admin functionality
+[ ] Test all public API endpoints
+[ ] Monitor Deno Deploy logs for errors
+[ ] Verify search functionality (Meilisearch may need separate setup)

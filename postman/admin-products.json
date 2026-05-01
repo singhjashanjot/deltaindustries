@@ -19,9 +19,8 @@
           "raw": "{\"email\":\"admin@deltaindustries.in\",\"password\":\"admin123\"}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/admin.login",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/admin.login",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "admin.login"]
         }
       },
@@ -41,9 +40,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/trpc/product.listAll?input=%7B%22limit%22%3A5%2C%22offset%22%3A0%7D",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/product.listAll?input=%7B%22limit%22%3A5%2C%22offset%22%3A0%7D",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "product.listAll"],
           "query": [
             {
@@ -78,9 +76,8 @@
           "raw": "{\"categoryId\":1,\"name\":\"Postman Test Product\",\"slug\":\"postman-prod-{{$timestamp}}\",\"material\":\"Wood\",\"shortDesc\":\"Test from Postman\",\"description\":\"Full test description from Postman\",\"isCustomizable\":false,\"isFeatured\":false,\"isActive\":true}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/product.create",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/product.create",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "product.create"]
         }
       },
@@ -113,9 +110,8 @@
           "raw": "{\"id\":{{testProductId}},\"isActive\":false}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/product.toggleActive",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/product.toggleActive",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "product.toggleActive"]
         }
       },
@@ -144,9 +140,8 @@
           "raw": "{\"id\":{{testProductId}},\"isActive\":true}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/product.toggleActive",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/product.toggleActive",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "product.toggleActive"]
         }
       },
@@ -175,9 +170,8 @@
           "raw": "{\"id\":{{testProductId}}}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/product.delete",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/product.delete",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "product.delete"]
         }
       },

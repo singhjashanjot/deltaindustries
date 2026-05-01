@@ -19,9 +19,8 @@
           "raw": "{\"email\":\"admin@deltaindustries.in\",\"password\":\"admin123\"}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/admin.login",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/admin.login",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "admin.login"]
         }
       },
@@ -41,9 +40,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/trpc/category.listAll",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/category.listAll",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "category.listAll"]
         }
       },
@@ -72,9 +70,8 @@
           "raw": "{\"name\":\"Test Category Postman\",\"slug\":\"test-cat-{{$timestamp}}\",\"description\":\"Created from Postman test\",\"sortOrder\":99}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/category.create",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/category.create",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "category.create"]
         }
       },
@@ -108,9 +105,8 @@
           "raw": "{\"id\":{{testCategoryId}},\"name\":\"Updated Test Category\",\"slug\":\"{{testCategorySlug}}\",\"description\":\"Updated from Postman\"}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/category.update",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/category.update",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "category.update"]
         }
       },
@@ -139,9 +135,8 @@
           "raw": "{\"id\":{{testCategoryId}}}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/category.delete",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/category.delete",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "category.delete"]
         }
       },

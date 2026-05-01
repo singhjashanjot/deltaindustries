@@ -19,9 +19,8 @@
           "raw": "{\"customerName\":\"Postman Test\",\"email\":\"postman@test.com\",\"phone\":\"9876543210\",\"message\":\"Test enquiry for admin testing\"}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/enquiry.submit",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/enquiry.submit",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "enquiry.submit"]
         }
       },
@@ -54,9 +53,8 @@
           "raw": "{\"email\":\"admin@deltaindustries.in\",\"password\":\"admin123\"}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/admin.login",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/admin.login",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "admin.login"]
         }
       },
@@ -76,9 +74,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/trpc/enquiry.list?input=%7B%22limit%22%3A5%2C%22offset%22%3A0%7D",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/enquiry.list?input=%7B%22limit%22%3A5%2C%22offset%22%3A0%7D",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "enquiry.list"],
           "query": [
             {
@@ -104,9 +101,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/trpc/enquiry.stats",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/enquiry.stats",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "enquiry.stats"]
         }
       },
@@ -135,9 +131,8 @@
           "raw": "{\"id\":{{testEnquiryId}},\"status\":\"in_progress\",\"notes\":\"Updated from Postman\"}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/enquiry.updateStatus",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/enquiry.updateStatus",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "enquiry.updateStatus"]
         }
       },

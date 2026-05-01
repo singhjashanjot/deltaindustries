@@ -27,6 +27,10 @@ app.use(
   createExpressMiddleware({
     router: appRouter,
     createContext: ({ req, res }) => createTRPCContext({ req, res }),
+    onError: ({ path, error, req }) => {
+      console.error(`[tRPC ERROR] ${path ?? "unknown"}: ${error.message}`);
+      if (error.cause) console.error(`[tRPC CAUSE]`, error.cause);
+    },
   })
 );
 

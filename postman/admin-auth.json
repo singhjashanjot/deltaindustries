@@ -19,9 +19,8 @@
           "raw": "{\"email\":\"admin@deltaindustries.in\",\"password\":\"admin123\"}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/admin.login",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/admin.login",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "admin.login"]
         }
       },
@@ -41,9 +40,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/trpc/admin.me",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/admin.me",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "admin.me"]
         }
       },
@@ -72,9 +70,8 @@
           "raw": "{}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/admin.logout",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/admin.logout",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "admin.logout"]
         }
       },

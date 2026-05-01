@@ -10,9 +10,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/trpc/category.getAll",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/category.getAll",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "category.getAll"]
         }
       },
@@ -32,9 +31,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/trpc/product.getByCategory?input=%7B%7D",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/product.getByCategory?input=%7B%7D",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "product.getByCategory"],
           "query": [
             {
@@ -60,9 +58,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/trpc/product.getFeatured",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/product.getFeatured",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "product.getFeatured"]
         }
       },
@@ -82,9 +79,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/trpc/product.getBySlug?input=%7B%22slug%22%3A%22wooden-executive-trophy%22%7D",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/product.getBySlug?input=%7B%22slug%22%3A%22wooden-executive-trophy%22%7D",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "product.getBySlug"],
           "query": [
             {
@@ -110,9 +106,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/trpc/product.getById?input=%7B%22id%22%3A1%7D",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/product.getById?input=%7B%22id%22%3A1%7D",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "product.getById"],
           "query": [
             {
@@ -138,9 +133,8 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/trpc/search.products?input=%7B%22q%22%3A%22trophy%22%2C%22limit%22%3A5%7D",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/search.products?input=%7B%22q%22%3A%22trophy%22%2C%22limit%22%3A5%7D",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "search.products"],
           "query": [
             {
@@ -175,9 +169,8 @@
           "raw": "{\"customerName\":\"Test User\",\"email\":\"test@example.com\",\"phone\":\"9876543210\",\"message\":\"Test enquiry from Postman\"}"
         },
         "url": {
-          "raw": "http://localhost:8080/trpc/enquiry.submit",
-          "host": ["localhost"],
-          "port": "8080",
+          "raw": "{{baseUrl}}/trpc/enquiry.submit",
+          "host": ["{{baseUrl}}"],
           "path": ["trpc", "enquiry.submit"]
         }
       },
