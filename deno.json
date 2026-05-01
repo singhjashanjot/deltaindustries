@@ -2,7 +2,8 @@
   "nodeModulesDir": "auto",
   "compilerOptions": {
     "lib": ["deno.window"],
-    "types": ["node"]
+    "types": ["node"],
+    "allowImportingTsExtensions": true
   },
   "imports": {
     "@prisma/client": "npm:@prisma/client@^7.0.0",
