@@ -1,0 +1,20 @@
+{
+  "nodeModulesDir": "auto",
+  "compilerOptions": {
+    "lib": ["deno.window"],
+    "types": ["node"]
+  },
+  "imports": {
+    "@prisma/client": "npm:@prisma/client@^7.0.0",
+    "express": "npm:express@^5.2.1",
+    "cors": "npm:cors@^2.8.6",
+    "cookie-parser": "npm:cookie-parser@^1.4.7",
+    "@trpc/server": "npm:@trpc/server@^11.1.0",
+    "@trpc/server/adapters/express": "npm:@trpc/server/adapters/express@^11.1.0",
+    "bcryptjs": "npm:bcryptjs@^3.0.3"
+  },
+  "tasks": {
+    "dev": "deno run -A --env=.env --watch server/index.ts",
+    "server": "deno run -A --env=.env server/index.ts"
+  }
+}

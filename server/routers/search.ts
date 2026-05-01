@@ -3,7 +3,7 @@ import { router, publicProcedure } from "../trpc";
 import { searchProducts } from "../meilisearch";
 
 export const searchRouter = router({
-  /** Search products via Meilisearch */
+  /** Search products via Supabase/PostgreSQL full-text search */
   products: publicProcedure
     .input(
       z.object({
@@ -21,7 +21,7 @@ export const searchRouter = router({
       });
       return {
         hits: results.hits,
-        totalHits: (results as { estimatedTotalHits?: number; totalHits?: number }).estimatedTotalHits ?? (results as { estimatedTotalHits?: number; totalHits?: number }).totalHits ?? 0,
+        totalHits: results.estimatedTotalHits,
         query: input.q,
         processingTimeMs: results.processingTimeMs,
       };

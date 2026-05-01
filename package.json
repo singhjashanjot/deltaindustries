@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:server": "node scripts/run-with-dev-env.mjs tsx watch server/index.ts",
+    "dev:server": "deno run -A --env=.env --watch server/index.ts",
     "dev:all": "node scripts/dev-all.mjs",
     "build": "vite build",
     "build:dev": "vite build --mode development",
@@ -19,7 +19,7 @@
     "db:seed": "node scripts/run-with-dev-env.mjs tsx prisma/seed.ts",
     "db:studio": "node scripts/run-with-dev-env.mjs prisma studio",
     "db:reset": "node scripts/run-with-dev-env.mjs prisma migrate reset",
-    "search:sync": "node scripts/run-with-dev-env.mjs tsx server/scripts/sync-search.ts",
+    "search:sync": "echo 'Supabase search is real-time - no sync needed'",
     "server": "tsx server/index.ts"
   },
   "prisma": {
@@ -74,7 +74,7 @@
     "lucide-react": "^0.462.0",
     "meilisearch": "^0.55.0",
     "next-themes": "^0.3.0",
-    "prisma": "^6.6.0",
+    "prisma": "^7.0.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
