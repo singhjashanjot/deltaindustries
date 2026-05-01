@@ -7,6 +7,28 @@ import { Link } from "react-router-dom";
 import { SEARCH } from "@/lib/constants";
 import type { SearchResultProduct } from "@/lib/types";
 
+import catWooden from "@/assets/cat-wooden.jpg";
+import catAcrylic from "@/assets/cat-acrylic.jpg";
+import catMetal from "@/assets/cat-metal.jpg";
+import catCrystal from "@/assets/cat-crystal.jpg";
+import catPlastic from "@/assets/cat-plastic.jpg";
+import catMedals from "@/assets/cat-medals.jpg";
+import catBases from "@/assets/cat-bases.jpg";
+import catCorporate from "@/assets/cat-corporate.jpg";
+import catShields from "@/assets/cat-shields.jpg";
+
+const categoryImages: Record<string, string> = {
+  "wooden-trophies": catWooden,
+  "acrylic-awards": catAcrylic,
+  "metal-cups-trophies": catMetal,
+  "crystal-trophies": catCrystal,
+  "plastic-trophy-series": catPlastic,
+  "custom-medals": catMedals,
+  "trophy-bases-accessories": catBases,
+  "corporate-gift-mementos": catCorporate,
+  "shields-plaques": catShields,
+};
+
 const SearchPage = () => {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -68,13 +90,11 @@ const SearchPage = () => {
                     className="group block border border-[#35020D]/10 rounded-sm overflow-hidden hover:border-[#35020D]/30 transition-colors bg-white"
                   >
                     <div className="aspect-[4/3] bg-[#35020D]/5 overflow-hidden">
-                      {product.imageUrl ? (
-                        <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[#35020D]/30">
-                          <Search className="w-8 h-8" />
-                        </div>
-                      )}
+                      <img
+                        src={categoryImages[product.categorySlug] ?? catWooden}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
                     </div>
                     <div className="p-4">
                       <div className="text-xs font-semibold tracking-widest uppercase opacity-60 mb-1">{product.categoryName}</div>

@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const reasons = [
   "27+ years of continuous manufacturing operations.",
-  "Direct manufacturer � no middlemen, best pricing.",
+  "Direct manufacturer, no middlemen, best pricing.",
   "Consistent quality across every batch and order.",
   "200+ products across wood, metal, acrylic, crystal & more.",
   "Full customization: engraving, logos, sizes, materials.",

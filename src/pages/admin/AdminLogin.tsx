@@ -6,13 +6,15 @@ import { Shield, Eye, EyeOff, AlertCircle } from "lucide-react";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
+  const utils = trpc.useUtils();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
   const loginMutation = trpc.admin.login.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await utils.admin.me.invalidate();
       navigate("/admin/dashboard");
     },
     onError: (err) => {

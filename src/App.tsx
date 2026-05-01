@@ -15,6 +15,7 @@ import Quality from "./pages/Quality";
 import Testimonial from "./pages/Testimonial";
 import SearchPage from "./pages/Search";
 import NotFound from "./pages/NotFound";
+import CustomOrders from "./pages/CustomOrders";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -56,6 +57,8 @@ const App = () => (
               <Route path="/quality" element={<Quality />} />
               <Route path="/testimonials" element={<Testimonial />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/custom-orders" element={<CustomOrders />} />
+              <Route path="/manufacturing" element={<CustomOrders />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="*" element={<NotFound />} />
             </Route>

@@ -28,6 +28,7 @@ export type SearchResultProduct = {
   slug: string;
   name: string;
   categoryName: string;
+  categorySlug: string;
   priceMin: number | null;
   imageUrl: string | null;
 };

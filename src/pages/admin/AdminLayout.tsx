@@ -23,7 +23,10 @@ const AdminLayout = () => {
   const location = useLocation();
   const utils = trpc.useUtils();
 
-  const { data: me, isLoading } = trpc.admin.me.useQuery();
+  const { data: me, isLoading } = trpc.admin.me.useQuery(undefined, {
+    staleTime: 0,
+    refetchOnMount: "always",
+  });
 
   useEffect(() => {
     if (!isLoading && !me) {
