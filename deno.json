@@ -16,7 +16,8 @@
     "postgres": "npm:postgres@^3.4.0"
   },
   "tasks": {
-    "dev": "deno run -A --env=.env --watch server/index.ts",
-    "server": "deno run -A --env=.env server/index.ts"
+    "dev": "deno run -A --env=.env --unstable-sloppy-imports --watch server/index.ts",
+    "server": "deno run -A --env=.env --unstable-sloppy-imports server/deno-deploy.ts",
+    "db:generate": "deno run -A npm:prisma generate"
   }
 }
