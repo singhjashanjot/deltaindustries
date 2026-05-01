@@ -4,10 +4,12 @@ import type { AppRouter } from "../../server/routers";
 
 export const trpc = createTRPCReact<AppRouter>();
 
+const apiUrl = import.meta.env.VITE_API_URL || "/trpc";
+
 export const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: "/trpc",
+      url: apiUrl,
       fetch: (input: RequestInfo | URL, init?: RequestInit) =>
         fetch(input, { ...(init || {}), credentials: "include" }),
     }),
