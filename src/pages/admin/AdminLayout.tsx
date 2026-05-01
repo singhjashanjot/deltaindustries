@@ -41,7 +41,7 @@ const AdminLayout = () => {
     },
   });
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div className="min-h-screen bg-[#35020D] text-[#ffffe3] flex items-center justify-center">
         <div className="animate-pulse text-sm opacity-60">Loading...</div>
