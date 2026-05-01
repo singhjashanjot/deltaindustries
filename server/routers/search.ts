@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { router, publicProcedure } from "../trpc";
-import { searchProducts } from "../meilisearch";
+import { router, publicProcedure } from "../trpc.ts";
+import { searchProducts } from "../meilisearch.ts";
 
 export const searchRouter = router({
   /** Search products via Supabase/PostgreSQL full-text search */

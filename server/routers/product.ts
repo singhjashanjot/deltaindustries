@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { router, publicProcedure, adminProcedure } from "../trpc";
-import { indexProducts } from "../meilisearch";
+import { router, publicProcedure, adminProcedure } from "../trpc.ts";
+import { indexProducts } from "../meilisearch.ts";
 
 const productCreateInput = z.object({
   categoryId: z.number().int(),

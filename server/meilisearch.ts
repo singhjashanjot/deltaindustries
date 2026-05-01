@@ -1,4 +1,4 @@
-import { db } from "./db";
+import { db } from "./db.ts";
 
 /**
  * Product search result structure

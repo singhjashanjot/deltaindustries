@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, publicProcedure, adminProcedure } from "../trpc";
+import { router, publicProcedure, adminProcedure } from "../trpc.ts";
 
 export const categoryRouter = router({
   /** Returns all active categories ordered by sort_order */

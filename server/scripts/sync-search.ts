@@ -3,7 +3,7 @@
  * Supabase/PostgreSQL full-text search is real-time and doesn't require indexing.
  * This script is kept for compatibility but does nothing.
  */
-import { configureProductIndex } from "../meilisearch";
+import { configureProductIndex } from "../meilisearch.ts";
 
 async function main() {
   console.log("[sync-search] Using Supabase/PostgreSQL full-text search - no sync needed");

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, publicProcedure, adminProcedure } from "../trpc";
+import { router, publicProcedure, adminProcedure } from "../trpc.ts";
 
 const enquiryInput = z.object({
   productId: z.number().int().positive().optional(),

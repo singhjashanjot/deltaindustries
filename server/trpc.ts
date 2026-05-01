@@ -1,6 +1,6 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import type { Request, Response } from "express";
-import { db } from "./db";
+import { db } from "./db.ts";
 
 export interface TRPCContext {
   req: Request;

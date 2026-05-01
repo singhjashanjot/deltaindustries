@@ -1,9 +1,9 @@
-import { router } from "../trpc";
-import { categoryRouter } from "./category";
-import { productRouter } from "./product";
-import { enquiryRouter } from "./enquiry";
-import { adminRouter } from "./admin";
-import { searchRouter } from "./search";
+import { router } from "../trpc.ts";
+import { categoryRouter } from "./category.ts";
+import { productRouter } from "./product.ts";
+import { enquiryRouter } from "./enquiry.ts";
+import { adminRouter } from "./admin.ts";
+import { searchRouter } from "./search.ts";
 
 export const appRouter = router({
   category: categoryRouter,
