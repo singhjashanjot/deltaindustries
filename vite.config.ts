@@ -15,6 +15,23 @@ export default defineConfig(({ mode }) => ({
       "/trpc": {
         target: "http://localhost:3001",
         changeOrigin: true,
+        configure: (proxy, _options) => {
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader('Cookie', req.headers.cookie);
+            }
+          });
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            if (proxyRes.headers['set-cookie']) {
+              const cookies = Array.isArray(proxyRes.headers['set-cookie'])
+                ? proxyRes.headers['set-cookie']
+                : [proxyRes.headers['set-cookie']];
+              proxyRes.headers['set-cookie'] = cookies.map(cookie =>
+                cookie.replace(/; Secure/gi, '').replace(/; SameSite=None/gi, '')
+              );
+            }
+          });
+        },
       },
     },
   },
