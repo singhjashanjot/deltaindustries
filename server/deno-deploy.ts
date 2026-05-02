@@ -9,7 +9,8 @@ const app = express();
 
 // CORS configuration for Deno Deploy
 const allowedOrigins = [
-  "https://deltaindustries.vercel.app"
+  "https://deltaindustries.vercel.app",
+  "https://deltaindustries.singhjashanjot.deno.net"
 ];
 
 app.use(cors({ 

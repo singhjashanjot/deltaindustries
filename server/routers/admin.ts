@@ -29,8 +29,9 @@ export const adminRouter = router({
       ctx.res.cookie("session_id", session.id, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         maxAge: SESSION_DAYS * 24 * 60 * 60 * 1000,
+        path: "/",
       });
 
       return { success: true, name: admin.name };
