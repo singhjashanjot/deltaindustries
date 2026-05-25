@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { motion } from "framer-motion";
-import { Package, Search, Plus, ArrowLeft, ArrowRight, Loader2, Eye, EyeOff, Pencil, Trash2, X, Upload } from "lucide-react";
+import { Package, Search, Plus, ArrowLeft, ArrowRight, Loader2, Eye, EyeOff, Pencil, Trash2, X, Upload, Wand2 } from "lucide-react";
 import { PAGINATION, CLOUDINARY } from "@/lib/constants";
 import type { EditingProduct } from "@/lib/types";
 
@@ -312,6 +312,12 @@ const ProductEditDrawer = ({ product, onClose }: { product: EditingProduct; onCl
         <div className="sm:col-span-2">
           <label className="text-xs font-semibold uppercase tracking-widest opacity-50 mb-1 block">Description</label>
           <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="w-full px-3 py-2 border border-[#35020D]/10 rounded-sm text-sm focus:outline-none focus:border-[#35020D]/30" />
+          <AIGenerateButton
+            name={name}
+            material={material}
+            categoryName={categories?.find((c: any) => c.id === Number(categoryId))?.name}
+            onGenerated={(text) => setDescription(text)}
+          />
         </div>
         <div className="sm:col-span-2">
           <label className="text-xs font-semibold uppercase tracking-widest opacity-50 mb-1 block">Image</label>
@@ -356,3 +362,53 @@ const ProductEditDrawer = ({ product, onClose }: { product: EditingProduct; onCl
 };
 
 export default AdminProducts;
+
+// ─── AI Generate Description Button ────────────────────────────────────────
+
+function AIGenerateButton({
+  name,
+  material,
+  categoryName,
+  onGenerated,
+}: {
+  name: string;
+  material: string;
+  categoryName?: string;
+  onGenerated: (text: string) => void;
+}) {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const genMutation = trpc.ai.generateDescription.useMutation();
+
+  const handleGenerate = async () => {
+    if (!name) return;
+    setIsGenerating(true);
+    try {
+      const result = await genMutation.mutateAsync({
+        name,
+        material: material || undefined,
+        category: categoryName || undefined,
+      });
+      onGenerated(result.description);
+    } catch {
+      // silent fail
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleGenerate}
+      disabled={!name || isGenerating}
+      className="mt-2 flex items-center gap-1.5 text-xs font-medium text-[#35020D]/50 hover:text-[#35020D] disabled:opacity-30 transition-colors"
+    >
+      {isGenerating ? (
+        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+      ) : (
+        <Wand2 className="w-3.5 h-3.5" />
+      )}
+      <span>{isGenerating ? "Generating..." : "Generate with AI"}</span>
+    </button>
+  );
+}

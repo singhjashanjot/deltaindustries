@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { motion } from "framer-motion";
 import {
@@ -9,6 +10,7 @@ import {
   TrendingUp,
   AlertCircle,
   CheckCircle2,
+  Sparkles,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -146,6 +148,13 @@ const AdminDashboard = () => {
           </div>
         </div>
 
+        {/* AI Insights */}
+        <AIInsightsCard
+          totalEnquiries={totalEnquiries}
+          newEnquiries={newEnquiries}
+          enquiryStats={enquiryStats}
+        />
+
         {/* Recent Enquiries */}
         <div className="bg-white border border-[#35020D]/10 rounded-sm p-6">
           <div className="flex items-center justify-between mb-6">
@@ -237,3 +246,59 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 export default AdminDashboard;
+
+// ─── AI Insights Card ──────────────────────────────────────────────────────
+
+function AIInsightsCard({
+  totalEnquiries,
+  newEnquiries,
+  enquiryStats,
+}: {
+  totalEnquiries: number;
+  newEnquiries: number;
+  enquiryStats: { recent?: Array<{ customerName: string; status: string }>; byStatus?: Array<{ status: string; _count: { status: number } }> } | undefined;
+}) {
+  const [insights, setInsights] = useState<string[]>([]);
+  const [summary, setSummary] = useState("");
+  const insightsMutation = trpc.ai.dashboardInsights.useMutation();
+
+  useEffect(() => {
+    const recentMessages = enquiryStats?.recent?.map((e) => e.customerName).slice(0, 5) || [];
+    if (totalEnquiries === 0) return;
+
+    insightsMutation
+      .mutateAsync({
+        totalEnquiries,
+        newEnquiries,
+        recentProducts: [],
+        recentEnquiryMessages: recentMessages,
+      })
+      .then((res) => {
+        setInsights(res.insights || []);
+        setSummary(res.summary || "");
+      })
+      .catch(() => {});
+  }, [totalEnquiries]);
+
+  if (insights.length === 0) return null;
+
+  return (
+    <div className="mb-8 bg-white border border-[#35020D]/10 rounded-sm p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <Sparkles className="w-4 h-4 text-[#35020D]/50" />
+        <h3 className="font-medium text-sm uppercase tracking-widest text-[#35020D]/60">AI Insights</h3>
+      </div>
+      {summary && (
+        <p className="text-sm font-medium text-[#35020D] mb-4">{summary}</p>
+      )}
+      <ul className="space-y-2">
+        {insights.map((insight, i) => (
+          <li key={i} className="flex items-start gap-3 text-sm text-[#35020D]/70">
+            <span className="mt-1.5 w-1 h-1 rounded-full bg-[#35020D]/30 shrink-0" />
+            {insight}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

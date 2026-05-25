@@ -122,6 +122,21 @@ const Contact = () => {
                   </div>
                 </div>
               ))}
+
+              {/* WhatsApp Quick Connect */}
+              <div className="pt-2">
+                <a
+                  href="https://wa.me/918048954176?text=Hello%20Delta%20Industries%2C%20I%20am%20interested%20in%20your%20trophy%20and%20awards%20products.%20Could%20you%20please%20share%20more%20details%3F"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-[#35020D] border border-[#35020D]/20 rounded-sm px-4 py-2.5 hover:bg-[#35020D]/5 transition-colors"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                  </svg>
+                  Quick Connect on WhatsApp
+                </a>
+              </div>
             </motion.div>
           </div>
         </div>

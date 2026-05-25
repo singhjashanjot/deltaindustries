@@ -2,50 +2,70 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Layout from "@/components/layout/Layout";
 import { trpc } from "@/lib/trpc";
-import { Search, X, Loader2 } from "lucide-react";
+import { Search, X, Loader2, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEARCH } from "@/lib/constants";
 import type { SearchResultProduct } from "@/lib/types";
 
-import catWooden from "@/assets/cat-wooden.jpg";
-import catAcrylic from "@/assets/cat-acrylic.jpg";
-import catMetal from "@/assets/cat-metal.jpg";
-import catCrystal from "@/assets/cat-crystal.jpg";
-import catPlastic from "@/assets/cat-plastic.jpg";
-import catMedals from "@/assets/cat-medals.jpg";
-import catBases from "@/assets/cat-bases.jpg";
-import catCorporate from "@/assets/cat-corporate.jpg";
-import catShields from "@/assets/cat-shields.jpg";
+import { getProductImageUrl } from "@/lib/product-images";
 
-const categoryImages: Record<string, string> = {
-  "wooden-trophies": catWooden,
-  "acrylic-awards": catAcrylic,
-  "metal-cups-trophies": catMetal,
-  "crystal-trophies": catCrystal,
-  "plastic-trophy-series": catPlastic,
-  "custom-medals": catMedals,
-  "trophy-bases-accessories": catBases,
-  "corporate-gift-mementos": catCorporate,
-  "shields-plaques": catShields,
-};
+interface AISearchResult {
+  interpretedAs?: string;
+  category?: string | null;
+  material?: string | null;
+  budget?: string | null;
+  useCase?: string | null;
+  size?: string | null;
+  keywords?: string[];
+}
 
 const SearchPage = () => {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [aiResult, setAiResult] = useState<AISearchResult | null>(null);
+  const [isAiProcessing, setIsAiProcessing] = useState(false);
+
+  const smartSearchMutation = trpc.ai.smartSearch.useMutation();
 
   const { data, isLoading } = trpc.search.products.useQuery(
     { q: debouncedQuery, limit: SEARCH.DEFAULT_LIMIT },
     { enabled: debouncedQuery.length > 0, retry: false }
   );
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    setDebouncedQuery(query.trim());
+    const trimmed = query.trim();
+    if (!trimmed) return;
+
+    // If query looks like natural language (has spaces, more than 2 words), try AI
+    if (trimmed.split(" ").length >= 3) {
+      setIsAiProcessing(true);
+      setAiResult(null);
+      try {
+        const result = await smartSearchMutation.mutateAsync({ query: trimmed });
+        setAiResult(result);
+        // Use extracted keywords or original query for search
+        const searchTerms = result.keywords?.join(" ") || trimmed;
+        setDebouncedQuery(searchTerms);
+      } catch {
+        setDebouncedQuery(trimmed);
+      }
+      setIsAiProcessing(false);
+    } else {
+      setAiResult(null);
+      setDebouncedQuery(trimmed);
+    }
   };
 
   const clearSearch = () => {
     setQuery("");
     setDebouncedQuery("");
+    setAiResult(null);
+  };
+
+  const removeAiFilter = () => {
+    setAiResult(null);
+    setDebouncedQuery(query.trim());
   };
 
   return (
@@ -59,7 +79,7 @@ const SearchPage = () => {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search trophies, medals, awards..."
+                placeholder="Try: golden trophy for cricket tournament under 500 rupees..."
                 className="w-full px-6 py-4 pr-24 rounded-sm border border-[#35020D]/20 bg-white text-[#35020D] placeholder:text-[#35020D]/40 focus:outline-none focus:border-[#35020D]/50 text-lg"
               />
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -73,6 +93,63 @@ const SearchPage = () => {
                 </button>
               </div>
             </form>
+
+            {/* AI Interpretation */}
+            <AnimatePresence>
+              {isAiProcessing && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center gap-2 mt-4 text-sm text-[#35020D]/50"
+                >
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Understanding your request...</span>
+                </motion.div>
+              )}
+
+              {aiResult && !isAiProcessing && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 p-4 border border-[#35020D]/10 rounded-sm bg-white"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2 text-xs font-semibold text-[#35020D]/60 uppercase tracking-wide">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Search understood as</span>
+                    </div>
+                    <button onClick={removeAiFilter} className="text-xs text-[#35020D]/40 hover:text-[#35020D] transition-colors">
+                      Clear
+                    </button>
+                  </div>
+                  <p className="text-sm text-[#35020D] mb-3">{aiResult.interpretedAs || query}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {aiResult.category && (
+                      <span className="text-xs px-2.5 py-1 rounded-full bg-[#35020D]/5 text-[#35020D] border border-[#35020D]/10">
+                        Category: {aiResult.category.replace(/-/g, " ")}
+                      </span>
+                    )}
+                    {aiResult.material && (
+                      <span className="text-xs px-2.5 py-1 rounded-full bg-[#35020D]/5 text-[#35020D] border border-[#35020D]/10">
+                        Material: {aiResult.material}
+                      </span>
+                    )}
+                    {aiResult.budget && (
+                      <span className="text-xs px-2.5 py-1 rounded-full bg-[#35020D]/5 text-[#35020D] border border-[#35020D]/10">
+                        Budget: {aiResult.budget}
+                      </span>
+                    )}
+                    {aiResult.useCase && (
+                      <span className="text-xs px-2.5 py-1 rounded-full bg-[#35020D]/5 text-[#35020D] border border-[#35020D]/10">
+                        Event: {aiResult.useCase}
+                      </span>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {isLoading && (
               <div className="flex justify-center mt-8">
                 <Loader2 className="w-6 h-6 animate-spin text-[#35020D]/60" />
@@ -89,18 +166,18 @@ const SearchPage = () => {
                     to={`/product/${product.slug}`}
                     className="group block border border-[#35020D]/10 rounded-sm overflow-hidden hover:border-[#35020D]/30 transition-colors bg-white"
                   >
-                    <div className="aspect-[4/3] bg-[#35020D]/5 overflow-hidden">
+                    <div className="aspect-square bg-[#35020D]/5 overflow-hidden">
                       <img
-                        src={categoryImages[product.categorySlug] ?? catWooden}
+                        src={getProductImageUrl(product.imageUrl, product.slug, product.categorySlug, product.id)}
                         alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover mix-blend-multiply opacity-90 group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
                     <div className="p-4">
                       <div className="text-xs font-semibold tracking-widest uppercase opacity-60 mb-1">{product.categoryName}</div>
                       <h3 className="font-medium text-[#35020D] line-clamp-2">{product.name}</h3>
                       {product.priceMin !== null && (
-                        <p className="text-sm mt-2 opacity-80">From ₹{product.priceMin}</p>
+                        <p className="text-sm mt-2 opacity-80">From Rs {product.priceMin}</p>
                       )}
                     </div>
                   </Link>
@@ -120,6 +197,7 @@ const SearchPage = () => {
             <div className="text-center py-16 opacity-50">
               <Search className="w-12 h-12 mx-auto mb-4" />
               <p className="text-lg">Type a keyword and press Enter to search</p>
+              <p className="text-sm mt-2 opacity-60">You can use natural language — for example, &ldquo;plastic trophies for school sports day under Rs 100&rdquo;</p>
             </div>
           )}
         </div>

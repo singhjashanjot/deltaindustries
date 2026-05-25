@@ -1,30 +1,10 @@
 import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Layout from "@/components/layout/Layout";
 import { trpc } from "@/lib/trpc";
 
-import catWooden from "@/assets/cat-wooden.jpg";
-import catAcrylic from "@/assets/cat-acrylic.jpg";
-import catMetal from "@/assets/cat-metal.jpg";
-import catCrystal from "@/assets/cat-crystal.jpg";
-import catPlastic from "@/assets/cat-plastic.jpg";
-import catMedals from "@/assets/cat-medals.jpg";
-import catBases from "@/assets/cat-bases.jpg";
-import catCorporate from "@/assets/cat-corporate.jpg";
-import catShields from "@/assets/cat-shields.jpg";
-
-const categoryImages: Record<string, string> = {
-  "wooden-trophies": catWooden,
-  "acrylic-awards": catAcrylic,
-  "metal-cups-trophies": catMetal,
-  "crystal-trophies": catCrystal,
-  "plastic-trophy-series": catPlastic,
-  "custom-medals": catMedals,
-  "trophy-bases-accessories": catBases,
-  "corporate-gift-mementos": catCorporate,
-  "shields-plaques": catShields,
-};
+import { getProductImageUrl } from "@/lib/product-images";
 
 const featuresByMaterial: Record<string, string[]> = {
   wood: ["Handcrafted Hardwood", "Brass Engraving Plate", "Hand-polished Finish"],
@@ -78,9 +58,11 @@ const ProductDetail = () => {
     { enabled: !!slug }
   );
 
-  const productImage = product ? (categoryImages[product.category.slug] ?? catWooden) : catWooden;
+  const productImage = product
+    ? getProductImageUrl(product.imageUrl, product.slug, product.category.slug, product.id)
+    : "";
   const [activeImage, setActiveImage] = useState<string | null>(null);
-  const displayImage = activeImage ?? productImage;
+  const displayImage = activeImage || productImage || undefined;
 
   if (isLoading) return <DetailSkeleton />;
 
@@ -129,19 +111,12 @@ const ProductDetail = () => {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               className="lg:col-span-5"
             >
-              <div className="bg-[#35020D]/5 aspect-square relative overflow-hidden">
-                <img src={displayImage} alt={product.name} className="w-full h-full object-cover mix-blend-multiply opacity-90" />
-              </div>
-              <div className="grid grid-cols-3 gap-2 mt-2">
-                {[productImage, catBases, catShields].map((img, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveImage(img)}
-                    className={`aspect-square overflow-hidden border-2 transition-all ${displayImage === img ? "border-[#35020D]" : "border-transparent opacity-60 hover:opacity-100"}`}
-                  >
-                    <img src={img} alt={`${product.name} view ${i + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
+              <div className="bg-[#35020D]/5 aspect-square relative overflow-hidden rounded-sm">
+                {displayImage ? (
+                  <img src={displayImage} alt={product.name} className="w-full h-full object-cover mix-blend-multiply opacity-90" />
+                ) : (
+                  <span className="flex items-center justify-center w-full h-full text-[#35020D]/10 text-8xl font-bold">Δ</span>
+                )}
               </div>
             </motion.div>
 
@@ -215,6 +190,9 @@ const ProductDetail = () => {
               </Link>
             </motion.div>
           </div>
+
+          {/* AI Similar Products */}
+          <SimilarProducts slug={product.slug} />
         </div>
       </section>
     </Layout>
@@ -222,4 +200,60 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
+
+// ─── AI Similar Products ──────────────────────────────────────────────────
+
+function SimilarProducts({ slug }: { slug: string }) {
+  const [recommendations, setRecommendations] = useState<Array<{
+    id: number;
+    name: string;
+    slug: string;
+    category: string;
+    material: string;
+    shortDesc: string;
+    imageUrl: string;
+    priceHint: string;
+  }> | null>(null);
+
+  const similarMutation = trpc.ai.similarProducts.useMutation();
+
+  useEffect(() => {
+    similarMutation.mutateAsync({ productSlug: slug })
+      .then((res) => setRecommendations(res.recommendations))
+      .catch(() => setRecommendations([]));
+  }, [slug]);
+
+  if (!recommendations || recommendations.length === 0) return null;
+
+  return (
+    <div className="mt-24 pt-16 border-t border-[#35020D]/10">
+      <h3 className="text-xs font-bold uppercase tracking-widest mb-8 text-[#35020D]/60">Similar Products</h3>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {recommendations.map((p) => (
+          <Link
+            key={p.id}
+            to={`/product/${p.slug}`}
+            className="group block border border-[#35020D]/10 rounded-sm overflow-hidden hover:border-[#35020D]/30 transition-colors bg-white"
+          >
+            <div className="aspect-[4/3] bg-[#35020D]/5 overflow-hidden">
+              {(() => {
+                const img = getProductImageUrl(p.imageUrl, p.slug, "", p.id);
+                return img ? (
+                  <img src={img} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-[#35020D]/10 text-4xl font-bold">Δ</div>
+                );
+              })()}
+            </div>
+            <div className="p-4">
+              <div className="text-[10px] font-semibold tracking-widest uppercase opacity-50 mb-1">{p.category}</div>
+              <h4 className="text-sm font-semibold text-[#35020D] line-clamp-2">{p.name}</h4>
+              {p.priceHint && <p className="text-xs mt-1.5 opacity-70">{p.priceHint}</p>}
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
 

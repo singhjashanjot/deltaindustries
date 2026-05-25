@@ -12,6 +12,17 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
+  const { data: me, isLoading } = trpc.admin.me.useQuery(undefined, {
+    staleTime: 0,
+    refetchOnMount: "always",
+  });
+
+  // Already logged in — redirect to dashboard
+  if (!isLoading && me) {
+    navigate("/admin/dashboard", { replace: true });
+    return null;
+  }
+
   const loginMutation = trpc.admin.login.useMutation({
     onSuccess: () => {
       utils.admin.me.invalidate();
