@@ -156,3 +156,14 @@
 
 body { @apply bg-[#ffffe3]; }
 
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: hsl(20 8% 78%); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(20 8% 60%); }
+* { scrollbar-width: thin; scrollbar-color: hsl(20 8% 78%) transparent; }
+
+/* Chat chips scrollbar - hidden by default, subtle on hover */
+.chips-scroll::-webkit-scrollbar { height: 3px; }
+.chips-scroll::-webkit-scrollbar-thumb { background: hsl(20 8% 85%); border-radius: 10px; }
+
