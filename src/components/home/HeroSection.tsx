@@ -1,24 +1,30 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
+const stats = [
+  { value: "27+", label: "Years of Craft" },
+  { value: "1.5Cr+", label: "Trophies Delivered" },
+  { value: "5,000", label: "Sq Ft Facility" },
+];
+
 const HeroSection = () => {
   return (
-    <section className="w-full bg-[#ffffe3] text-[#35020D] h-[700px] md:h-[800px] 2xl:h-[900px] flex flex-col pt-0 pb-8 md:pb-12 selection:bg-[#35020D] selection:text-[#fffff1] overflow-hidden justify-between font-sans">
+    <section className="w-full bg-[#ffffe3] text-[#35020D] min-h-[700px] md:min-h-[800px] 2xl:min-h-[900px] flex flex-col pt-0 pb-8 md:pb-12 selection:bg-[#35020D] selection:text-[#fffff1] overflow-hidden justify-between font-sans">
       {/* Top massive text */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-screen-2xl mx-auto relative flex flex-col pt-4 md:pt-8"
       >
-        <h1 
+        <h1
           className="leading-[0.8] md:leading-[0.85] lg:leading-[0.85] w-full text-left line-clamp-2 text-[#35020D] px-6 md:px-12 font-black"
           style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: '-0.06em', fontSize: 'clamp(4rem, 13vw, 15rem)' }}
         >
           Delta<br />Industries
-        </h1> 
-         
-        {/* Nav links right under the text - They fade out when scrolled and Global Navbar takes over */}
+        </h1>
+
+        {/* Nav links */}
         <div className="flex justify-end items-center gap-6 md:gap-8 lg:gap-10 w-full mt-8 md:mt-12 px-6 md:px-12 relative z-10 text-sm md:text-base font-medium tracking-tight flex-wrap">
           <Link to="/products" className="group flex flex-col items-center">
             <span className="mb-0.5">Our Range</span>
@@ -46,39 +52,37 @@ const HeroSection = () => {
         </div>
       </motion.div>
 
-      {/* Bottom text area */}
+      {/* Bottom area — tagline + stats */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-end px-6 md:px-12 mt-auto w-full max-w-screen-2xl mx-auto pb-2 md:pb-4">
-        {/* Left: Huge tagline */}
-        <motion.div 
-           initial={{ opacity: 0, y: 20 }} 
-           animate={{ opacity: 1, y: 0 }} 
-           transition={{ delay: 0.3, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-           className="lg:col-span-8 space-y-4 md:space-y-6"
+        {/* Left: Tagline */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="lg:col-span-7 space-y-4 md:space-y-6"
         >
           <h2 className="text-3xl md:text-5xl lg:text-[4rem] font-sans font-normal leading-[1.05] tracking-tight text-[#35020D]">
-            Crafting Recognition.<br/> Personally Guided.
+            Crafting Recognition.<br /> Personally Guided.
           </h2>
           <p className="max-w-md text-[#35020D]/90 text-sm md:text-base font-medium leading-relaxed">
-            A manufacturing firm that architects legacies built to last.
+            A manufacturing firm architecting legacies since 1998 in Jalandhar, Punjab.
           </p>
         </motion.div>
 
-        {/* Right: Small card */}
-        <motion.div 
-           initial={{ opacity: 0, y: 20 }} 
-           animate={{ opacity: 1, y: 0 }} 
-           transition={{ delay: 0.5, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-           className="lg:col-span-4 flex justify-start lg:justify-end"
+        {/* Right: Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="lg:col-span-5 flex justify-start lg:justify-end"
         >
-          <div className="border-t border-[#35020D]/30 pt-4 flex gap-6 max-w-[320px] w-full items-start">
-            <p className="text-xs md:text-sm leading-relaxed text-[#35020D] font-medium mt-1">
-              Delta Expands to New York<br />
-              City and Welcomes New<br />
-              Managing Partner
-            </p>
-            <div className="w-12 h-12 shrink-0 bg-[#35020D]/5 rounded-sm flex items-center justify-center p-1.5 ml-auto">
-              <div className="w-full h-full border border-[#35020D]/20 rounded-sm" />
-            </div>
+          <div className="flex gap-8 md:gap-12 border-t border-[#35020D]/20 pt-4 w-full max-w-[420px]">
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-left">
+                <div className="text-xl md:text-2xl font-semibold text-[#35020D] tracking-tight">{stat.value}</div>
+                <div className="text-[10px] md:text-xs text-[#35020D]/60 font-medium tracking-wide uppercase mt-0.5">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </motion.div>
       </div>
@@ -87,5 +91,3 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
-
-
