@@ -152,6 +152,7 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
       );
     } finally {
       setIsLoading(false);
+      setTimeout(() => inputRef.current?.focus(), 100);
     }
   };
 

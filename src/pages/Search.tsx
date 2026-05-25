@@ -44,8 +44,9 @@ const SearchPage = () => {
       try {
         const result = await smartSearchMutation.mutateAsync({ query: trimmed });
         setAiResult(result);
-        // Use extracted keywords or original query for search
-        const searchTerms = result.keywords?.join(" ") || trimmed;
+        // Use broader search: original query + extracted keywords + category
+        const keywords = result.keywords?.join(" ") || "";
+        const searchTerms = [trimmed, keywords].filter(Boolean).join(" ");
         setDebouncedQuery(searchTerms);
       } catch {
         setDebouncedQuery(trimmed);
@@ -80,7 +81,7 @@ const SearchPage = () => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Try: golden trophy for cricket tournament under 500 rupees..."
-                className="w-full px-6 py-4 pr-24 rounded-sm border border-[#35020D]/20 bg-white text-[#35020D] placeholder:text-[#35020D]/40 focus:outline-none focus:border-[#35020D]/50 text-lg"
+                className="w-full px-6 py-4 pr-24 rounded-sm border border-[#35020D]/20 bg-[#fffff1] text-[#35020D] placeholder:text-[#35020D]/40 focus:outline-none focus:border-[#35020D]/50 text-lg"
               />
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                 {query && (
@@ -112,7 +113,7 @@ const SearchPage = () => {
                 <motion.div
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-4 p-4 border border-[#35020D]/10 rounded-sm bg-white"
+                  className="mt-4 p-4 border border-[#35020D]/10 rounded-sm bg-[#fffff1]"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2 text-xs font-semibold text-[#35020D]/60 uppercase tracking-wide">
@@ -164,7 +165,7 @@ const SearchPage = () => {
                   <Link
                     key={product.id}
                     to={`/product/${product.slug}`}
-                    className="group block border border-[#35020D]/10 rounded-sm overflow-hidden hover:border-[#35020D]/30 transition-colors bg-white"
+                    className="group block border border-[#35020D]/10 rounded-sm overflow-hidden hover:border-[#35020D]/30 transition-colors bg-[#fffff1]"
                   >
                     <div className="aspect-square bg-[#35020D]/5 overflow-hidden">
                       <img

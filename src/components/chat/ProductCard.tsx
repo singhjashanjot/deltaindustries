@@ -26,23 +26,19 @@ const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Link
       to={`/product/${product.slug}`}
-      className="block bg-[#fffff1] border border-[#35020D]/10 rounded-sm overflow-hidden hover:border-[#35020D]/30 transition-colors"
+      className="block bg-[#ffffe3] border border-[#35020D]/10 rounded-sm overflow-hidden hover:border-[#35020D]/30 transition-colors"
     >
       <div className="flex gap-3 p-3">
         <div className="w-16 h-16 shrink-0 bg-[#35020D]/5 rounded-sm overflow-hidden">
           {displayImage ? (
             <img
-              src={encodeURI(displayImage)}
+              src={displayImage}
               alt={product.name}
               className="w-full h-full object-cover"
               loading="lazy"
               onError={(e) => {
                 const el = e.target as HTMLImageElement;
-                el.style.display = "none";
-                const parent = el.parentElement;
-                if (parent) {
-                  parent.innerHTML = '<span class="flex items-center justify-center w-full h-full text-[#35020D]/20 text-lg font-bold">&#916;</span>';
-                }
+                el.remove();
               }}
             />
           ) : (

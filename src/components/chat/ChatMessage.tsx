@@ -13,51 +13,14 @@ interface ChatMessageProps {
 }
 
 function parseContent(text: string): string {
-  let html = text
-    // Bold: **text** or __text__
+  return text
+    // Bold
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/__(.+?)__/g, "<strong>$1</strong>")
     // Italic
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(/_(.+?)_/g, "<em>$1</em>")
-    // Inline code
-    .replace(/`(.+?)`/g, "<code class='text-xs bg-[#35020D]/10 px-1 rounded'>$1</code>")
-    // Headers
-    .replace(/^### (.+)$/gm, "<h4 class='text-sm font-semibold mt-3 mb-1'>$1</h4>")
-    .replace(/^## (.+)$/gm, "<h3 class='text-base font-semibold mt-3 mb-1'>$1</h3>")
-    .replace(/^# (.+)$/gm, "<h3 class='text-base font-semibold mt-3 mb-1'>$1</h3>")
-    // Horizontal rules
-    .replace(/^---$/gm, "<hr class='border-[#35020D]/10 my-2' />")
-    // Unordered lists
-    .replace(/^[*-] (.+)$/gm, "<li class='ml-4 list-disc'>$1</li>")
-    // Ordered lists
-    .replace(/^\d+\. (.+)$/gm, "<li class='ml-4 list-decimal'>$1</li>")
     // Line breaks
     .replace(/\n\n/g, "<br/><br/>")
-    .replace(/\n/g, "<br/>")
-    // Wrap consecutive <li> in <ul>
-    .replace(/((?:<li[^>]*>.*?<\/li><br\/>)+)/g, (match) => {
-      const items = match.replace(/<br\/>/g, "").replace(/<br>/g, "");
-      return `<ul class='space-y-0.5 my-2'>${items}</ul>`;
-    });
-
-  // Simple table parsing: | col1 | col2 |
-  if (text.includes("|") && text.match(/^\|.+\|$/m)) {
-    html = html
-      .replace(/^\|(.+)\|$/gm, (row) => {
-        const cells = row.split("|").filter(c => c.trim()).map(c => c.trim());
-        const isHeader = cells.some(c => c.includes("**"));
-        const tag = isHeader ? "th" : "td";
-        const cellClass = isHeader ? "font-semibold text-left" : "";
-        return `<tr>${cells.map(c => `<${tag} class='${cellClass} px-2 py-1 border-b border-[#35020D]/10 text-xs'>${c.replace(/\*\*/g, "")}</${tag}>`).join("")}</tr>`;
-      })
-      .replace(/((?:<tr>.*?<\/tr><br\/>)+)/g, (match) => {
-        const rows = match.replace(/<br\/>/g, "").replace(/<br>/g, "");
-        return `<table class='w-full my-2 border-collapse'>${rows}</table>`;
-      });
-  }
-
-  return html;
+    .replace(/\n/g, "<br/>");
 }
 
 const ChatMessage = ({ message, isLast }: ChatMessageProps) => {

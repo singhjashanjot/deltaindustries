@@ -75,6 +75,10 @@ export function getProductImage(product: {
 
 export function getProductImageUrl(imageUrl: string | null | undefined, productSlug?: string, categorySlug?: string, productId?: number): string {
   const raw = imageUrl?.startsWith("/IMAGES/") ? imageUrl : getProductImage({ id: productId, slug: productSlug, categorySlug, imageUrl });
-  // Encode spaces and special chars but preserve already-encoded %20 etc.
-  return raw ? raw.split("/").map((seg, i) => i === 0 ? seg : encodeURIComponent(seg)).join("/") : "";
+  if (!raw) return "";
+  // Only encode if the path has literal spaces (not already %20 encoded)
+  if (raw.includes(" ") && !raw.includes("%20")) {
+    return raw.split("/").map((seg, i) => i === 0 ? seg : encodeURIComponent(seg)).join("/");
+  }
+  return raw;
 }

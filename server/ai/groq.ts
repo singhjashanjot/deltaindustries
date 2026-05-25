@@ -33,7 +33,7 @@ interface ChatResult {
 // ─── Configuration ─────────────────────────────────────────────────────────
 
 const GROQ_BASE_URL = "https://api.groq.com/openai/v1";
-const DEFAULT_MODEL = "openai/gpt-oss-20b";
+const DEFAULT_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
 
 function getApiKey(): string {
   const key = process.env.GROQ_API_KEY;

@@ -29,13 +29,24 @@ export async function searchProducts(
   const offset = options?.offset ?? 0;
   const q = query.trim();
 
+  // Split query into words for broader matching
+  const words = q.split(/\s+/).filter(w => w.length > 1);
+  const wordConditions = words.flatMap(w => [
+    { name: { contains: w, mode: "insensitive" as const } },
+    { material: { contains: w, mode: "insensitive" as const } },
+    { shortDesc: { contains: w, mode: "insensitive" as const } },
+    { description: { contains: w, mode: "insensitive" as const } },
+    { category: { name: { contains: w, mode: "insensitive" as const } } },
+  ]);
+
   const where: any = {
     isActive: true,
-    OR: [
+    OR: wordConditions.length > 0 ? wordConditions : [
       { name: { contains: q, mode: "insensitive" } },
       { material: { contains: q, mode: "insensitive" } },
       { shortDesc: { contains: q, mode: "insensitive" } },
       { description: { contains: q, mode: "insensitive" } },
+      { category: { name: { contains: q, mode: "insensitive" } } },
     ],
   };
 

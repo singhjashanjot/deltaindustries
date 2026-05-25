@@ -50,7 +50,7 @@ export const toolDefinitions: ToolDefinition[] = [
     type: "function",
     function: {
       name: "get_product_details",
-      description: "Get complete details for a specific product by its slug, including sizes, pricing, and images.",
+      description: "Get complete details for a specific product. Pass the product code like WA-06 or PC-20 (not the full name). Accepts codes (WA-06) or slugs (wooden-award-wa-06).",
       parameters: {
         type: "object",
         properties: {
@@ -152,8 +152,11 @@ export async function executeTool(name: string, args: Record<string, unknown>): 
     }
 
     case "get_product_details": {
-      const product = await db.product.findUnique({
-        where: { slug: args.slug as string },
+      let slug = args.slug as string;
+
+      // Try exact slug first
+      let product = await db.product.findUnique({
+        where: { slug },
         include: {
           category: { select: { name: true, slug: true } },
           sizes: { orderBy: { id: "asc" } },
@@ -161,8 +164,54 @@ export async function executeTool(name: string, args: Record<string, unknown>): 
         },
       });
 
+      // If not found, try fuzzy: search by name containing the code or slug text
       if (!product) {
-        return JSON.stringify({ found: false, message: "Product not found." });
+        const searchTerm = slug.replace(/-/g, " ").toLowerCase();
+        const matches = await db.product.findMany({
+          where: {
+            isActive: true,
+            OR: [
+              { name: { contains: searchTerm, mode: "insensitive" } },
+              { slug: { contains: slug.toLowerCase(), mode: "insensitive" } },
+            ],
+          },
+          take: 3,
+          include: {
+            category: { select: { name: true, slug: true } },
+            sizes: { orderBy: { id: "asc" } },
+            images: { orderBy: { sortOrder: "asc" } },
+          },
+        });
+
+        if (matches.length === 1) {
+          product = matches[0];
+        } else if (matches.length > 1) {
+          // Return multiple matches for the AI to pick
+          return JSON.stringify({
+            found: true,
+            multiple: true,
+            products: matches.map((p) => ({
+              id: p.id,
+              name: p.name,
+              slug: p.slug,
+              category: p.category.name,
+              material: p.material,
+              shortDesc: p.shortDesc,
+              imageUrl: p.imageUrl,
+              sizes: p.sizes.map((s) => ({
+                label: s.label,
+                priceMin: s.priceMin ? Number(s.priceMin) : null,
+                priceMax: s.priceMax ? Number(s.priceMax) : null,
+                moq: s.moq,
+                inStock: s.inStock,
+              })),
+            })),
+          });
+        }
+      }
+
+      if (!product) {
+        return JSON.stringify({ found: false, message: `No product matching "${slug}" was found. Try using the product code like WA-06 or PC-20.` });
       }
 
       return JSON.stringify({

@@ -233,7 +233,7 @@ function SimilarProducts({ slug }: { slug: string }) {
           <Link
             key={p.id}
             to={`/product/${p.slug}`}
-            className="group block border border-[#35020D]/10 rounded-sm overflow-hidden hover:border-[#35020D]/30 transition-colors bg-white"
+            className="group block border border-[#35020D]/10 rounded-sm overflow-hidden hover:border-[#35020D]/30 transition-colors bg-[#fffff1]"
           >
             <div className="aspect-[4/3] bg-[#35020D]/5 overflow-hidden">
               {(() => {
