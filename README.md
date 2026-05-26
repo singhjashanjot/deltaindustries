@@ -1,4 +1,4 @@
-# Delta Recognition Hub — Delta Industries Digital Platform
+Delta Industries Digital Platform
 
 > **Full-stack digital brand platform replacing Delta Industries' IndiaMART dependency with an independently owned, AI-ready web presence.**
 
