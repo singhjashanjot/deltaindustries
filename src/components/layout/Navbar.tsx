@@ -13,27 +13,57 @@ const navLinks = [
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const location = useLocation();
-  const isHome = location.pathname === "/";
 
   useEffect(() => {
-    const handleScroll = () => {
-      // Show immediately if not on home, otherwise wait until user scrolls down 250px
-      setScrolled(window.scrollY > 250);
-    };
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    let lastScrollY = window.scrollY;
+    let scrollTimeout: NodeJS.Timeout;
 
-  const isVisible = !isHome || scrolled || isOpen;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Always show if mobile menu is open
+      if (isOpen) {
+        setIsVisible(true);
+        return;
+      }
+
+      // If at the very top, always show
+      if (currentScrollY < 50) {
+        setIsVisible(true);
+      } 
+      // If scrolling down, hide
+      else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      }
+      // If scrolling up, show
+      else if (currentScrollY < lastScrollY) {
+        setIsVisible(true);
+      }
+
+      lastScrollY = currentScrollY;
+
+      clearTimeout(scrollTimeout);
+      
+      // Show navbar when scrolling stops
+      scrollTimeout = setTimeout(() => {
+        setIsVisible(true);
+      }, 400);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, [isOpen]);
 
   return (
     <AnimatePresence>
       {isVisible && (
         <motion.header
-          initial={isHome ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 }}
+          initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}

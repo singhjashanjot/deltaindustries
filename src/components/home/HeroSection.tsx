@@ -1,12 +1,5 @@
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
-
-const stats = [
-  { value: "27+", label: "Years of Craft" },
-  { value: "1.5Cr+", label: "Trophies Delivered" },
-  { value: "5,000", label: "Sq Ft Facility" },
-];
+import { motion } from "framer-motion";
 
 const heroImages = [
   "/IMAGES/herosection/hero1.png",
@@ -15,107 +8,121 @@ const heroImages = [
 ];
 
 const HeroSection = () => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <section className="w-full bg-[#ffffe3] text-[#35020D] min-h-[700px] md:min-h-[800px] 2xl:min-h-[900px] flex flex-col pt-0 pb-8 md:pb-12 selection:bg-[#35020D] selection:text-[#fffff1] overflow-hidden justify-between font-sans relative">
-      {/* Background Trophy 3D Image */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none mt-20 md:mt-12 overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.img
-            key={currentImageIndex}
-            src={heroImages[currentImageIndex]}
-            initial={{ opacity: 0, scale: 0.9, filter: "blur(8px)" }}
-            animate={{ opacity: 0.45, scale: 1, filter: "blur(2px)" }}
-            exit={{ opacity: 0, scale: 1.1, filter: "blur(8px)" }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-            className="absolute h-[60%] md:h-[80%] max-h-[700px] w-auto object-contain mix-blend-multiply"
-            alt="Trophy background"
-          />
-        </AnimatePresence>
-      </div>
-
-      {/* Top massive text */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-screen-2xl mx-auto relative flex flex-col pt-4 md:pt-8 z-10"
-      >
-        <h1
-          className="leading-[0.8] md:leading-[0.85] lg:leading-[0.85] w-full text-left line-clamp-2 text-[#35020D] px-6 md:px-12 font-black"
-          style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: '-0.06em', fontSize: 'clamp(4rem, 13vw, 15rem)' }}
-        >
-          Delta<br />Industries
-        </h1>
-
-        {/* Nav links */}
-        <div className="flex justify-end items-center gap-6 md:gap-8 lg:gap-10 w-full mt-8 md:mt-12 px-6 md:px-12 relative z-10 text-sm md:text-base font-medium tracking-tight flex-wrap">
-          <Link to="/products" className="group flex flex-col items-center">
-            <span className="mb-0.5">Our Range</span>
-            <div className="w-0 h-[1.5px] bg-[#35020D] group-hover:w-full transition-all duration-300 ease-out" />
-          </Link>
-          <Link to="/custom-orders" className="group flex flex-col items-center">
-            <span className="mb-0.5">Manufacturing</span>
-            <div className="w-0 h-[1.5px] bg-[#35020D] group-hover:w-full transition-all duration-300 ease-out" />
-          </Link>
-          <Link to="/about" className="group flex flex-col items-center">
-            <span className="mb-0.5">Who We Are</span>
-            <div className="w-0 h-[1.5px] bg-[#35020D] group-hover:w-full transition-all duration-300 ease-out" />
-          </Link>
-          <Link to="/quality" className="group flex flex-col items-center">
-            <span className="mb-0.5">Quality Focus</span>
-            <div className="w-0 h-[1.5px] bg-[#35020D] group-hover:w-full transition-all duration-300 ease-out" />
-          </Link>
-          <Link to="/testimonials" className="group flex flex-col items-center">
-            <span className="mb-0.5">Reviews</span>
-            <div className="w-0 h-[1.5px] bg-[#35020D] group-hover:w-full transition-all duration-300 ease-out" />
-          </Link>
-          <Link to="/contact" className="ml-2 py-2.5 px-6 bg-[#35020D] text-[#fffff1] rounded-full hover:bg-[rgb(35,2,13)] transition-colors shadow-sm font-semibold">
-            Contact
-          </Link>
-        </div>
-      </motion.div>
-
-      {/* Bottom area — tagline + stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-end px-6 md:px-12 mt-auto w-full max-w-screen-2xl mx-auto pb-2 md:pb-4 relative z-10">
-        {/* Left: Tagline */}
-        <motion.div
+    <section className="w-full bg-[#ffffe3] text-[#1a1c14] flex flex-col justify-center pt-28 pb-8 lg:pt-32 lg:pb-12 selection:bg-[#3c0612] selection:text-white font-sans overflow-hidden">
+      <div className="w-full max-w-[1536px] mx-auto px-6 md:px-12">
+        {/* Hero Section */}
+        <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="lg:col-span-7 space-y-4 md:space-y-6"
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-4xl mx-auto mb-8 lg:mb-12"
         >
-          <h2 className="text-3xl md:text-5xl lg:text-[4rem] font-sans font-normal leading-[1.05] tracking-tight text-[#35020D]">
-            Crafting Recognition.<br /> Personally Guided.
-          </h2>
-          <p className="max-w-md text-[#35020D]/90 text-sm md:text-base font-medium leading-relaxed">
-            A manufacturing firm architecting legacies since 1998 in Jalandhar, Punjab.
+          <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] text-[#3c0612] leading-[1.15] tracking-tight mb-4 lg:mb-6 font-semibold">
+            Premium <span className="text-[#795900]">Recognition Awards</span><br className="hidden md:block" /> for Corporate, Sports & Academic Excellence
+          </h1>
+          <p className="text-base md:text-lg text-[#534344] max-w-2xl mx-auto mb-6 lg:mb-8 font-medium leading-relaxed">
+            Since 1998, Delta Industries has been the trusted manufacturer of bespoke trophies and awards, architecting legacies for prestigious events.
           </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link 
+              to="/products"
+              className="px-8 py-3.5 rounded-full bg-[#3c0612] text-white font-semibold text-xs md:text-sm tracking-widest uppercase hover:scale-105 transition-transform shadow-md hover:shadow-lg w-full sm:w-auto"
+            >
+              Explore Products
+            </Link>
+            <Link 
+              to="/contact"
+              className="px-8 py-3.5 rounded-full border border-[#3c0612]/20 text-[#3c0612] font-semibold text-xs md:text-sm tracking-widest uppercase hover:scale-105 transition-transform hover:bg-[#f4f4e7] w-full sm:w-auto"
+            >
+              Contact Us
+            </Link>
+          </div>
         </motion.div>
 
-        {/* Right: Stats */}
-        <motion.div
+        {/* Asymmetrical Grid Showcase */}
+        <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="lg:col-span-5 flex justify-start lg:justify-end"
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 lg:h-[500px]"
         >
-          <div className="flex gap-8 md:gap-12 border-t border-[#35020D]/20 pt-4 w-full max-w-[420px]">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-left">
-                <div className="text-xl md:text-2xl font-semibold text-[#35020D] tracking-tight">{stat.value}</div>
-                <div className="text-[10px] md:text-xs text-[#35020D]/60 font-medium tracking-wide uppercase mt-0.5">{stat.label}</div>
+          {/* Column 1: Powering Agriculture Showcase */}
+          <div className="lg:col-span-5 flex flex-col h-[350px] lg:h-full">
+            <div className="bg-[#e4e4c9] rounded-2xl p-6 lg:p-10 flex flex-col items-center justify-between relative overflow-hidden h-full shadow-sm group">
+              <div className="z-10 text-center shrink-0">
+                <h3 className="text-xl lg:text-3xl font-medium text-[#1a1c14] mb-2 lg:mb-3">Crafting Excellence</h3>
+                <p className="text-sm text-[#534344] max-w-xs mx-auto font-medium hidden sm:block">
+                  Premium trophies & custom awards designed for corporate events & more.
+                </p>
               </div>
-            ))}
+              <div className="w-full flex-1 relative min-h-0 my-4 z-0 transition-transform duration-700 ease-out group-hover:scale-105">
+                <img 
+                  alt="Premium custom award" 
+                  className="absolute inset-0 object-contain drop-shadow-xl w-full h-full" 
+                  src={heroImages[0]} 
+                />
+              </div>
+              <div className="z-10 shrink-0">
+                <Link 
+                  to="/products"
+                  className="px-6 py-2.5 rounded-full border border-[#3c0612]/20 text-[#3c0612] font-semibold text-xs tracking-widest uppercase hover:bg-white transition-colors bg-white/80 backdrop-blur-sm shadow-sm inline-block"
+                >
+                  View Products
+                </Link>
+              </div>
+            </div>
           </div>
+
+          {/* Column 2: 4 HP Water Cooled Diesel Engine */}
+          <div className="lg:col-span-4 flex flex-col h-[300px] lg:h-full">
+            <div className="bg-[#f4f4e7] rounded-2xl p-6 lg:p-10 flex flex-col items-center justify-between h-full shadow-sm group">
+              <div className="w-full flex-1 relative min-h-0 mb-4 transition-transform duration-700 ease-out group-hover:scale-105">
+                <img 
+                  alt="Premium corporate trophy" 
+                  className="absolute inset-0 object-contain drop-shadow-xl w-full h-full" 
+                  src={heroImages[1]} 
+                />
+              </div>
+              <p className="text-sm lg:text-base font-medium text-[#1a1c14] text-center shrink-0">Premium Corporate Trophy</p>
+            </div>
+          </div>
+
+          {/* Column 3: Stacked Items */}
+          <div className="lg:col-span-3 flex lg:flex-col flex-row gap-4 lg:gap-6 h-[200px] lg:h-full">
+            <div className="bg-[#f4f4e7] rounded-2xl p-4 lg:p-8 flex flex-col items-center justify-between lg:h-1/2 flex-1 shadow-sm group">
+              <div className="w-full flex-1 relative min-h-0 mb-3 transition-transform duration-700 ease-out group-hover:scale-105">
+                <img 
+                  alt="Crystal Award" 
+                  className="absolute inset-0 object-contain drop-shadow-xl w-full h-full" 
+                  src={heroImages[2]} 
+                />
+              </div>
+              <p className="text-xs lg:text-sm font-medium text-[#1a1c14] text-center shrink-0">Crystal Award</p>
+            </div>
+            <div className="bg-[#f4f4e7] rounded-2xl p-4 lg:p-8 flex flex-col items-center justify-between lg:h-1/2 flex-1 shadow-sm group">
+              <div className="w-full flex-1 relative min-h-0 mb-3 transition-transform duration-700 ease-out group-hover:scale-105">
+                <img 
+                  alt="Metal Cup Trophy" 
+                  className="absolute inset-0 object-contain drop-shadow-xl w-full h-full" 
+                  src={heroImages[0]} 
+                />
+              </div>
+              <p className="text-xs lg:text-sm font-medium text-[#1a1c14] text-center shrink-0">Metal Cup Trophy</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Carousel Indicators Mock */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="flex gap-2 justify-center mt-8 shrink-0"
+        >
+          <div className="w-8 h-2 bg-[#534344] rounded-full opacity-80"></div>
+          <div className="w-8 h-2 bg-[#534344] rounded-full opacity-30"></div>
+          <div className="w-8 h-2 bg-[#534344] rounded-full opacity-30"></div>
         </motion.div>
       </div>
     </section>
