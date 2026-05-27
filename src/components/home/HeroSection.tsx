@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 
 const stats = [
   { value: "27+", label: "Years of Craft" },
@@ -7,15 +8,46 @@ const stats = [
   { value: "5,000", label: "Sq Ft Facility" },
 ];
 
+const heroImages = [
+  "/IMAGES/herosection/hero1.png",
+  "/IMAGES/herosection/hero2.png",
+  "/IMAGES/herosection/hero3.png",
+];
+
 const HeroSection = () => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <section className="w-full bg-[#ffffe3] text-[#35020D] min-h-[700px] md:min-h-[800px] 2xl:min-h-[900px] flex flex-col pt-0 pb-8 md:pb-12 selection:bg-[#35020D] selection:text-[#fffff1] overflow-hidden justify-between font-sans">
+    <section className="w-full bg-[#ffffe3] text-[#35020D] min-h-[700px] md:min-h-[800px] 2xl:min-h-[900px] flex flex-col pt-0 pb-8 md:pb-12 selection:bg-[#35020D] selection:text-[#fffff1] overflow-hidden justify-between font-sans relative">
+      {/* Background Trophy 3D Image */}
+      <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none mt-20 md:mt-12 overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={currentImageIndex}
+            src={heroImages[currentImageIndex]}
+            initial={{ opacity: 0, scale: 0.9, filter: "blur(8px)" }}
+            animate={{ opacity: 0.45, scale: 1, filter: "blur(2px)" }}
+            exit={{ opacity: 0, scale: 1.1, filter: "blur(8px)" }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="absolute h-[60%] md:h-[80%] max-h-[700px] w-auto object-contain mix-blend-multiply"
+            alt="Trophy background"
+          />
+        </AnimatePresence>
+      </div>
+
       {/* Top massive text */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-screen-2xl mx-auto relative flex flex-col pt-4 md:pt-8"
+        className="w-full max-w-screen-2xl mx-auto relative flex flex-col pt-4 md:pt-8 z-10"
       >
         <h1
           className="leading-[0.8] md:leading-[0.85] lg:leading-[0.85] w-full text-left line-clamp-2 text-[#35020D] px-6 md:px-12 font-black"
@@ -53,7 +85,7 @@ const HeroSection = () => {
       </motion.div>
 
       {/* Bottom area — tagline + stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-end px-6 md:px-12 mt-auto w-full max-w-screen-2xl mx-auto pb-2 md:pb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-end px-6 md:px-12 mt-auto w-full max-w-screen-2xl mx-auto pb-2 md:pb-4 relative z-10">
         {/* Left: Tagline */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

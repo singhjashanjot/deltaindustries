@@ -80,14 +80,14 @@ const CategoriesSection = () => {
                   <img
                     src={staticImages[cat.slug] ?? catWooden}
                     alt={cat.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-[0.16,1,0.3,1]"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-\[0.16\,1\,0.3\,1\]"
                   />
                 </div>
                 <div>
                   <h3 className="text-lg md:text-xl font-medium tracking-tight">
                     {cat.name}
                   </h3>
-                  <div className="mt-3 w-8 h-[1px] bg-[#35020D] group-hover:w-full transition-all duration-500 ease-[0.16,1,0.3,1]" />
+                  <div className="mt-3 w-8 h-[1px] bg-[#35020D] group-hover:w-full transition-all duration-500 ease-\[0.16\,1\,0.3\,1\]" />
                 </div>
               </Link>
             </motion.div>

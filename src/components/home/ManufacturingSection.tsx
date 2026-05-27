@@ -23,7 +23,7 @@ const ManufacturingSection = () => {
             className="relative"
           >
             <div className="overflow-hidden bg-[#ffffe3]/5 rounded-sm">
-              <img src={manufacturingImg} alt="Delta Industries manufacturing facility" className="w-full h-[600px] object-cover grayscale brightness-75 hover:grayscale-0 hover:brightness-100 transition-all duration-700 ease-[0.16,1,0.3,1]" />
+              <img src={manufacturingImg} alt="Delta Industries manufacturing facility" className="w-full h-[600px] object-cover grayscale brightness-75 hover:grayscale-0 hover:brightness-100 transition-all duration-700 ease-\[0.16\,1\,0.3\,1\]" />
             </div>
             {/* Absolute minimalist data tag */}
             <div className="absolute -bottom-6 -right-6 md:-right-12 bg-[#ffffe3] text-[#35020D] p-6 md:p-8 flex flex-col gap-1 w-48 shadow-2xl">

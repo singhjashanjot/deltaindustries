@@ -49,7 +49,7 @@ const GallerySection = () => {
               <img 
                 src={img.src} 
                 alt={img.alt} 
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-[0.16,1,0.3,1] grayscale hover:grayscale-0" 
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-\[0.16\,1\,0.3\,1\] grayscale hover:grayscale-0" 
               />
             </motion.div>
           ))}
