@@ -53,6 +53,7 @@
     "npm:class-variance-authority@~0.7.1": "0.7.1",
     "npm:clsx@^2.1.1": "2.1.1",
     "npm:cmdk@^1.1.1": "1.1.1_react@18.3.1_react-dom@18.3.1__react@18.3.1_@types+react@18.3.28_@types+react-dom@18.3.7__@types+react@18.3.28",
+    "npm:concurrently@9.2.1": "9.2.1",
     "npm:concurrently@^9.2.1": "9.2.1",
     "npm:cookie-parser@^1.4.7": "1.4.7",
     "npm:cors@^2.8.6": "2.8.6",
@@ -88,6 +89,7 @@
     "npm:typescript-eslint@^8.38.0": "8.59.1_eslint@9.39.4_typescript@5.9.3_@typescript-eslint+parser@8.59.1__eslint@9.39.4__typescript@5.9.3",
     "npm:typescript@^5.8.3": "5.9.3",
     "npm:vaul@~0.9.9": "0.9.9_react@18.3.1_react-dom@18.3.1__react@18.3.1_@types+react@18.3.28_@types+react-dom@18.3.7__@types+react@18.3.28",
+    "npm:vite@5.4.21": "5.4.21_@types+node@22.19.17",
     "npm:vite@^5.4.19": "5.4.21_@types+node@22.19.17",
     "npm:vitest@^3.2.4": "3.2.4_@types+node@22.19.17_jsdom@20.0.3_vite@5.4.21__@types+node@22.19.17",
     "npm:zod@^3.25.76": "3.25.76"
@@ -4346,7 +4348,8 @@
         "recharts-scale",
         "tiny-invariant",
         "victory-vendor"
-      ]
+      ],
+      "deprecated": true
     },
     "redent@3.0.0": {
       "integrity": "sha512-6tDA8g98We0zd0GvVeMT9arEOnTw9qM03L9cJXaCjrip1OO764RDBLBfrB4cwzNGDj5OA5ioymC9GkizgWJDUg==",
