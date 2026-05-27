@@ -11,7 +11,7 @@ const milestones = [
 const TrustSection = () => {
   return (
     <section className="w-full min-h-[800px] md:min-h-[900px] flex items-center bg-[#ffffe3] text-[#35020D] border-t border-b border-[#35020D]/20 selection:bg-[#35020D] selection:text-[#fffff1] font-sans">
-      <div className="max-w-screen-2xl mx-auto px-6 md:px-12 py-40 md:py-64 w-full">
+      <div className="max-w-screen-2xl mx-auto px-6 md:px-12 py-20 md:py-32 w-full">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-start w-full">
           {/* Left Title */}
           <div className="md:col-span-4 lg:col-span-4">
@@ -27,7 +27,7 @@ const TrustSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10%" }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[1.8rem] md:text-5xl lg:text-[4rem] font-sans font-normal leading-[1.05] tracking-tight text-[#35020D]"
+              className="text-[1.8rem] md:text-5xl lg:text-[3rem] font-sans font-normal leading-[1.05] tracking-tight text-[#35020D]"
             >
               For 27 years, we have manufactured trophies, awards, and recognition pieces — every single one made under one roof in Jalandhar, Punjab.
             </motion.h2>

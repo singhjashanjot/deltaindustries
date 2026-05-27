@@ -11,18 +11,33 @@ const heroImages = [
   "/IMAGES/wa/bgless3.png",
 ];
 
+const statsData = [
+  { value: "27+", label: "Years of Craft" },
+  { value: "1.5Cr+", label: "Trophies Delivered" },
+  { value: "1998", label: "Established Year" },
+  { value: "11-25", label: "Skilled Artisans" },
+  { value: "5000+", label: "Sq Ft Facility" }
+];
+
 const HeroSection = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentStatIndex, setCurrentStatIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
     }, 3500);
-    return () => clearInterval(interval);
+    const statInterval = setInterval(() => {
+      setCurrentStatIndex((prev) => (prev + 1) % statsData.length);
+    }, 2500);
+    return () => {
+      clearInterval(interval);
+      clearInterval(statInterval);
+    };
   }, []);
 
   return (
-    <section className="w-full bg-[#ffffe3] text-[#35020D] flex flex-col justify-center pt-28 pb-8 lg:pt-32 lg:pb-12 selection:bg-[#35020D] selection:text-white overflow-hidden">
+    <section className="w-full bg-[#ffffe3] text-[#35020D] flex flex-col justify-center pt-28 pb-8 lg:pt-48 lg:pb-12 selection:bg-[#35020D] selection:text-white overflow-hidden">
       <div className="w-full max-w-[1536px] mx-auto px-6 md:px-12 scale-95 lg:scale-90 transform-gpu origin-top">
         {/* Hero Section */}
         <motion.div 
@@ -37,7 +52,7 @@ const HeroSection = () => {
           <p className="text-base md:text-lg text-[#35020D]/80 max-w-2xl mx-auto mb-6 lg:mb-8 font-medium leading-relaxed">
             Since 1998, Delta Industries has been the trusted manufacturer of bespoke trophies and awards, architecting legacies for prestigious events.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center my-10 lg:my-16 ">
             <Link 
               to="/products"
               className="px-8 py-3.5 rounded-full bg-[#35020D] text-white font-semibold text-xs md:text-sm tracking-widest uppercase hover:scale-105 transition-transform shadow-md hover:shadow-lg w-full sm:w-auto"
@@ -168,17 +183,39 @@ const HeroSection = () => {
               </div>
             </div>
             
-            {/* Classic Award Card */}
-            <div className="bg-[#f4f4e7] rounded-2xl p-4 lg:p-6 flex flex-col items-center justify-between lg:h-1/2 flex-1 shadow-sm group border border-[#35020D]/5 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent z-0"></div>
-              <div className="w-full flex-1 relative min-h-0 mb-3 z-10 transition-transform duration-700 ease-out group-hover:scale-105">
-                <img 
-                  alt="Classic Metal Trophy" 
-                  className="absolute inset-0 object-contain drop-shadow-xl w-full h-full" 
-                  src={heroImages[0]} 
-                />
+            {/* Stats Showcase Card */}
+            <div className="bg-[#e4e4c9] rounded-2xl p-4 lg:p-6 flex flex-col items-center justify-center lg:h-1/2 flex-1 shadow-sm group border border-[#35020D]/5 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-white/60 to-transparent z-0"></div>
+              
+              {/* Subtle background image texture */}
+              <div 
+                className="absolute inset-0 opacity-[0.03] bg-cover bg-center mix-blend-multiply"
+                style={{ backgroundImage: `url('/IMAGES/herosection/hero1.png')` }}
+              ></div>
+
+              <div className="z-10 w-full relative h-full flex flex-col items-center justify-center">
+                 <p className="text-[9px] lg:text-[10px] font-bold text-[#35020D]/40 uppercase tracking-[0.2em] mb-auto mt-2">Delta Legacy</p>
+                 
+                 <div className="flex-1 w-full relative flex items-center justify-center overflow-hidden min-h-[80px]">
+                   <AnimatePresence mode="wait">
+                     <motion.div
+                       key={currentStatIndex}
+                       initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                       animate={{ opacity: 1, y: 0, scale: 1 }}
+                       exit={{ opacity: 0, y: -15, scale: 0.95 }}
+                       transition={{ duration: 0.4, ease: "easeOut" }}
+                       className="absolute inset-0 flex flex-col items-center justify-center w-full h-full"
+                     >
+                       <span className="text-4xl lg:text-5xl font-black text-[#35020D] tracking-tighter mb-1 font-serif drop-shadow-sm">
+                         {statsData[currentStatIndex].value}
+                       </span>
+                       <span className="text-[10px] lg:text-xs font-bold text-[#35020D]/80 uppercase tracking-widest text-center px-4">
+                         {statsData[currentStatIndex].label}
+                       </span>
+                     </motion.div>
+                   </AnimatePresence>
+                 </div>
               </div>
-              <p className="text-sm lg:text-base font-semibold text-[#35020D] text-center shrink-0 z-10">Classic Cup</p>
             </div>
           </div>
         </motion.div>

@@ -13,7 +13,7 @@ const reasons = [
 
 const WhyDeltaSection = () => {
   return (
-    <section className="w-full min-h-[800px] md:min-h-[900px] flex items-center py-40 md:py-64 bg-[#ffffe3] text-[#35020D] selection:bg-[#35020D] selection:text-[#ffffe3]">
+    <section className="w-full min-h-[800px] md:min-h-[900px] flex items-center py-20 md:py-32 bg-[#ffffe3] text-[#35020D] selection:bg-[#35020D] selection:text-[#ffffe3]">
       <div className="max-w-screen-2xl mx-auto w-full px-6 md:px-12">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
           <motion.div

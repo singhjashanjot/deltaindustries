@@ -19,7 +19,7 @@ const images = [
 
 const GallerySection = () => {
   return (
-    <section className="w-full min-h-[800px] md:min-h-[900px] flex items-center py-40 md:py-64 bg-[#35020D] text-[#ffffe3] selection:bg-[#ffffe3] selection:text-[#35020D]">
+    <section className="w-full min-h-[800px] md:min-h-[900px] flex items-center py-20 md:py-32 bg-[#35020D] text-[#ffffe3] selection:bg-[#ffffe3] selection:text-[#35020D]">
       <div className="max-w-screen-2xl mx-auto w-full px-6 md:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
