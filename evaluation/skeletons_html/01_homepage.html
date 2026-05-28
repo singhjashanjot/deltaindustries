@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skeleton Wireframe — 01 Homepage</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Courier New', monospace; background: #f0f0f0; color: #444; }
+.skeleton-page { max-width:1280px; margin:0 auto; background:#fff; min-height:100vh; position:relative; }
+.skeleton-page::before { content:'SKELETON WIREFRAME — PLANNING STAGE'; display:block; background:#333; color:#fff; text-align:center; padding:4px 0; font-size:10px; letter-spacing:3px; position:sticky; top:0; z-index:9999; }
+.block { border:2px dashed #bbb; background:#fafafa; position:relative; }
+.block-label { position:absolute; top:2px; left:4px; font-size:9px; color:#999; background:rgba(255,255,255,0.9); padding:1px 4px; border:1px solid #ddd; }
+.block-text { color:#ccc; font-size:13px; text-align:center; padding:20px; }
+.block-dark { background:#e0e0e0; border-color:#999; }
+.block-dark .block-label { color:#666; }
+.note { background:#fffde7; border:1px dashed #f9a825; padding:8px 12px; margin:8px; font-size:10px; color:#666; border-radius:2px; }
+.note::before { content:'📝 NOTE: '; font-weight:bold; color:#f9a825; }
+.arrow-annotate { position:absolute; font-size:9px; color:#e91e63; font-weight:bold; }
+.arrow-annotate::before { content:'← '; }
+img-placeholder { display:flex; align-items:center; justify-content:center; background:#eee; border:1px dashed #ccc; color:#ccc; font-size:11px; }
+img-placeholder::before { content:'[ IMG ]'; }
+.btn-placeholder { display:inline-flex; align-items:center; justify-content:center; background:#ddd; border:2px dashed #aaa; padding:8px 20px; color:#999; font-size:12px; font-weight:bold; }
+.input-placeholder { display:block; background:#f5f5f5; border:2px dashed #ccc; padding:10px 12px; width:100%; color:#ccc; font-size:12px; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
+.flex-row { display:flex; gap:12px; align-items:center; }
+.flex-col { display:flex; flex-direction:column; gap:8px; }
+.chip { display:inline-block; padding:6px 16px; border:2px dashed #bbb; border-radius:20px; font-size:11px; color:#aaa; background:#fafafa; }
+.chip.active { background:#ddd; border-color:#999; color:#666; font-weight:bold; }
+.card { border:2px dashed #ccc; background:#fafafa; overflow:hidden; }
+.card .img-area { height:120px; background:#eee; border-bottom:1px dashed #ddd; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:11px; }
+.card .info { padding:10px; }
+.card .tag { font-size:9px; color:#bbb; text-transform:uppercase; }
+.card .name { font-size:13px; color:#ccc; margin:4px 0; }
+.card .price { font-size:11px; color:#ddd; }
+</style>
+</head>
+<body>
+<div class="skeleton-page">
+
+<!-- NAVBAR — fixed, 64px, cream bg -->
+<div class="block" style="height:64px; display:flex; align-items:center; padding:0 48px; gap:40px;">
+  <span class="block-label">Navbar (fixed, scroll-aware)</span>
+  <div style="width:60px; height:48px; border:2px dashed #bbb; display:flex; align-items:center; justify-content:center; color:#ccc; font-weight:bold; font-size:20px;">&Delta;</div>
+  <div style="flex:1;"></div>
+  <div class="chip">Our Range</div>
+  <div class="chip">Manufacturing</div>
+  <div class="chip">Who We Are</div>
+  <div class="chip">Quality Focus</div>
+  <div class="chip">Reviews</div>
+  <div style="width:36px; height:36px; border:2px dashed #bbb; border-radius:4px;"></div>
+  <div class="btn-placeholder">Contact</div>
+</div>
+
+<!-- HERO SECTION — cream bg, 1166px tall -->
+<div class="block" style="padding:80px 48px; min-height:600px;">
+  <span class="block-label">Section 1 — HeroSection.tsx (cream #ffffe3)</span>
+
+  <div style="text-align:center; margin-bottom:40px;">
+    <h1 style="color:#ccc; font-size:42px; max-width:806px; margin:0 auto 20px; line-height:1.2;">
+      Premium Recognition Awards for Corporate, Sports & Academic Excellence
+    </h1>
+    <div style="color:#ddd; font-size:14px; margin-bottom:24px;">
+      <span style="color:#daa520;">← gold accent on "Recognition Awards"</span>
+    </div>
+    <div class="flex-row" style="justify-content:center; gap:16px;">
+      <div class="btn-placeholder">Explore Products</div>
+      <div style="border:2px dashed #ccc; padding:8px 20px; color:#ccc; font-size:12px;">Contact Us</div>
+    </div>
+  </div>
+
+  <!-- Hero Grid — 12 columns -->
+  <div style="display:grid; grid-template-columns:5fr 4fr 3fr; gap:16px; height:500px;">
+    <!-- Col 1 — Crafting Excellence -->
+    <div class="card" style="position:relative;">
+      <span style="position:absolute; top:10px; right:10px; font-size:80px; color:#eee; font-weight:bold;">&Delta;</span>
+      <div style="padding:24px; position:relative; z-index:1;">
+        <div style="font-size:11px; color:#ccc; margin-bottom:4px;">✦ ✦ ✦</div>
+        <div style="border:1px dashed #ddd; display:inline-block; padding:2px 8px; font-size:9px; color:#bbb; margin-bottom:8px;">TRENDING</div>
+        <div style="height:200px; background:#eee; border:1px dashed #ddd; margin-bottom:8px; display:flex; align-items:center; justify-content:center; color:#ccc;">[Image Carousel — 6 photos, 3.5s crossfade]</div>
+        <div class="btn-placeholder" style="width:fit-content;">View Products</div>
+      </div>
+      <span class="arrow-annotate" style="bottom:8px; left:50%;">col-span-5</span>
+    </div>
+    <!-- Col 2 — Manufacturing -->
+    <div class="card block-dark">
+      <div style="height:250px; background:#ddd; display:flex; align-items:center; justify-content:center; color:#bbb;">[Factory Photo + Gradient Overlay]</div>
+      <div style="padding:16px;">
+        <div style="font-size:14px; color:#aaa;">In-House Manufacturing</div>
+      </div>
+      <span class="arrow-annotate" style="bottom:8px; left:50%;">col-span-4</span>
+    </div>
+    <!-- Col 3 — Stacked -->
+    <div class="flex-col" style="gap:16px;">
+      <div class="card" style="flex:1; display:flex; align-items:center; justify-content:center; color:#ccc;">Flexible Sizes</div>
+      <div class="card block-dark" style="flex:1; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+        <div style="color:#ccc; font-size:24px; font-weight:bold;">27+</div>
+        <div style="color:#ddd; font-size:9px;">Years of Craft</div>
+        <span class="arrow-annotate" style="bottom:2px; right:8px;">Rotating Stats</span>
+      </div>
+      <span class="arrow-annotate" style="bottom:8px; left:50%;">col-span-3</span>
+    </div>
+  </div>
+</div>
+
+<!-- TRUST SECTION — cream bg -->
+<div class="block" style="padding:80px 48px;">
+  <span class="block-label">Section 2 — TrustSection.tsx</span>
+  <h2 style="color:#ccc; font-size:28px; max-width:779px; margin-bottom:24px;">Who We Are</h2>
+  <p style="color:#ddd; max-width:600px; line-height:1.6;">For 27 years, we have manufactured trophies, awards, and recognition pieces — every single one made in-house at our Jalandhar facility.</p>
+  <div class="flex-row" style="margin-top:40px; justify-content:space-between; max-width:800px;">
+    <div style="text-align:center;"><div style="width:12px;height:12px;border-radius:50%;background:#ddd;margin:0 auto 8px;"></div><span style="color:#ccc;font-size:10px;">1998 Founded</span></div>
+    <div style="color:#ddd;flex:1;margin:0 8px;border-top:2px dashed #ddd;margin-top:5px;"></div>
+    <div style="text-align:center;"><div style="width:12px;height:12px;border-radius:50%;background:#ddd;margin:0 auto 8px;"></div><span style="color:#ccc;font-size:10px;">2005 Expanded</span></div>
+    <div style="color:#ddd;flex:1;margin:0 8px;border-top:2px dashed #ddd;margin-top:5px;"></div>
+    <div style="text-align:center;"><div style="width:12px;height:12px;border-radius:50%;background:#ddd;margin:0 auto 8px;"></div><span style="color:#ccc;font-size:10px;">2015 CNC</span></div>
+    <div style="color:#ddd;flex:1;margin:0 8px;border-top:2px dashed #ddd;margin-top:5px;"></div>
+    <div style="text-align:center;"><div style="width:12px;height:12px;border-radius:50%;background:#ddd;margin:0 auto 8px;"></div><span style="color:#ccc;font-size:10px;">2025 Pan-India</span></div>
+  </div>
+</div>
+
+<!-- CATEGORIES SECTION — cream bg -->
+<div class="block" style="padding:80px 48px;">
+  <span class="block-label">Section 3 — CategoriesSection.tsx</span>
+  <h2 style="color:#ccc; font-size:28px; margin-bottom:24px;">Materials & Categories</h2>
+  <div class="grid-3" style="gap:16px;">
+    <div class="card"><div class="img-area">[Photo]</div><div class="info"><div class="tag">Wooden Trophies</div></div></div>
+    <div class="card"><div class="img-area">[Photo]</div><div class="info"><div class="tag">Acrylic Awards</div></div></div>
+    <div class="card"><div class="img-area">[Photo]</div><div class="info"><div class="tag">Metal Cups</div></div></div>
+    <div class="card"><div class="img-area">[Photo]</div><div class="info"><div class="tag">Crystal Trophies</div></div></div>
+    <div class="card"><div class="img-area">[Photo]</div><div class="info"><div class="tag">Plastic Series</div></div></div>
+    <div class="card"><div class="img-area">[Photo]</div><div class="info"><div class="tag">Custom Medals</div></div></div>
+    <div class="card"><div class="img-area">[Photo]</div><div class="info"><div class="tag">Trophy Bases</div></div></div>
+    <div class="card"><div class="img-area">[Photo]</div><div class="info"><div class="tag">Corporate Gifts</div></div></div>
+    <div class="card"><div class="img-area">[Photo]</div><div class="info"><div class="tag">Shields & Plaques</div></div></div>
+  </div>
+  <div class="note">9 categories fetched via trpc.category.getAll + static fallback array</div>
+</div>
+
+<!-- MANUFACTURING SECTION — dark maroon bg -->
+<div class="block block-dark" style="padding:80px 48px;">
+  <span class="block-label" style="color:#666;">Section 4 — ManufacturingSection.tsx (dark maroon #35020D)</span>
+  <h2 style="color:#aaa; font-size:28px; margin-bottom:24px;">In-House Manufacturing & Customization</h2>
+  <div class="grid-4" style="gap:16px;">
+    <div class="card block-dark" style="text-align:center; padding:24px;"><div style="font-size:28px; margin-bottom:8px;color:#bbb;">&#9881;</div><div style="color:#aaa;">CNC Tooling</div></div>
+    <div class="card block-dark" style="text-align:center; padding:24px;"><div style="font-size:28px; margin-bottom:8px;color:#bbb;">&#9678;</div><div style="color:#aaa;">Laser Engraving</div></div>
+    <div class="card block-dark" style="text-align:center; padding:24px;"><div style="font-size:28px; margin-bottom:8px;color:#bbb;">&#9998;</div><div style="color:#aaa;">Hand Finishing</div></div>
+    <div class="card block-dark" style="text-align:center; padding:24px;"><div style="font-size:28px; margin-bottom:8px;color:#bbb;">&#9675;</div><div style="color:#aaa;">Plating</div></div>
+  </div>
+</div>
+
+<!-- WHY DELTA SECTION — cream bg, split layout -->
+<div class="block" style="padding:80px 48px; display:flex; gap:40px;">
+  <span class="block-label">Section 5 — WhyDeltaSection.tsx</span>
+  <div style="flex:0 0 300px; position:sticky; top:80px; align-self:flex-start;">
+    <h2 style="color:#ccc; font-size:32px;">The Delta Advantage</h2>
+  </div>
+  <div class="flex-col" style="gap:16px; flex:1;">
+    <div class="card" style="padding:16px;"><span style="color:#ccc;font-weight:bold;">01.</span> <span style="color:#ddd;">27+ Years Experience — continuous manufacturing since 1998</span></div>
+    <div class="card" style="padding:16px;"><span style="color:#ccc;font-weight:bold;">02.</span> <span style="color:#ddd;">In-House Manufacturing — complete control, no outsourcing</span></div>
+    <div class="card" style="padding:16px;"><span style="color:#ccc;font-weight:bold;">03.</span> <span style="color:#ddd;">Pan-India Delivery — serving clients across India</span></div>
+    <div class="card" style="padding:16px;"><span style="color:#ccc;font-weight:bold;">04.</span> <span style="color:#ddd;">Custom Design & Engraving — logo, text, full customization</span></div>
+    <div class="card" style="padding:16px;"><span style="color:#ccc;font-weight:bold;">05.</span> <span style="color:#ddd;">Factory Direct — no middlemen, competitive pricing</span></div>
+    <div class="card" style="padding:16px;"><span style="color:#ccc;font-weight:bold;">06.</span> <span style="color:#ddd;">GST-Registered — ISO standards compliance</span></div>
+    <div class="card" style="padding:16px;"><span style="color:#ccc;font-weight:bold;">07.</span> <span style="color:#ddd;">5,000+ Sq Ft Facility — dedicated production space</span></div>
+    <div class="card" style="padding:16px;"><span style="color:#ccc;font-weight:bold;">08.</span> <span style="color:#ddd;">11-25 Skilled Artisans — experienced craftsmen</span></div>
+  </div>
+</div>
+
+<!-- GALLERY SECTION — dark bg -->
+<div class="block block-dark" style="padding:80px 48px;">
+  <span class="block-label" style="color:#666;">Section 6 — GallerySection.tsx (dark maroon)</span>
+  <h2 style="color:#aaa; font-size:28px; margin-bottom:24px;">Our Craftsmanship</h2>
+  <div style="display:grid; grid-template-columns:2fr 1fr 1fr; grid-template-rows:200px 200px; gap:12px;">
+    <div style="background:#ddd; border:1px dashed #bbb; display:flex; align-items:center; justify-content:center; color:#bbb; grid-row:span 2;">[Photo 1 — Large]</div>
+    <div style="background:#ddd; border:1px dashed #bbb; display:flex; align-items:center; justify-content:center; color:#bbb;">[Photo 2]</div>
+    <div style="background:#ddd; border:1px dashed #bbb; display:flex; align-items:center; justify-content:center; color:#bbb;">[Photo 3]</div>
+    <div style="background:#ddd; border:1px dashed #bbb; display:flex; align-items:center; justify-content:center; color:#bbb;">[Photo 4]</div>
+    <div style="background:#ddd; border:1px dashed #bbb; display:flex; align-items:center; justify-content:center; color:#bbb; grid-column:span 2;">[Photo 5]</div>
+  </div>
+  <div class="note">7-image masonry grid. Grayscale &rarr; color on hover. framer-motion stagger.</div>
+</div>
+
+<!-- CTA BAND — cream bg -->
+<div class="block" style="padding:80px 48px; text-align:center;">
+  <span class="block-label">Section 7 — CTABand.tsx</span>
+  <h2 style="color:#ccc; font-size:36px; margin-bottom:16px;">Architecting Legacies, One Award at a Time</h2>
+  <div class="btn-placeholder" style="font-size:16px; padding:14px 40px; margin:0 auto;">Get in Touch</div>
+</div>
+
+<!-- FOOTER — dark bg -->
+<div class="block block-dark" style="padding:40px 48px;">
+  <span class="block-label" style="color:#666;">Footer.tsx</span>
+  <div class="grid-4" style="gap:24px;">
+    <div class="flex-col"><div style="color:#aaa;font-weight:bold;margin-bottom:8px;">&Delta; Delta</div><div style="color:#ccc;font-size:10px;">Jalandhar, Punjab<br>Since 1998</div></div>
+    <div class="flex-col"><div style="color:#aaa;font-weight:bold;margin-bottom:8px;">Quick Links</div><div style="color:#ccc;font-size:10px;">Home / Products / About / Quality / Contact</div></div>
+    <div class="flex-col"><div style="color:#aaa;font-weight:bold;margin-bottom:8px;">Categories</div><div style="color:#ccc;font-size:10px;">Wooden / Acrylic / Metal / Crystal / Plastic / Medals</div></div>
+    <div class="flex-col"><div style="color:#aaa;font-weight:bold;margin-bottom:8px;">Contact Us</div><div style="color:#ccc;font-size:10px;">No. 111, Janta Colony, G.T. Road<br>Jalandhar, Punjab — 144008<br>+91 8048954176</div></div>
+  </div>
+</div>
+
+<!-- FLOATING CHAT FAB -->
+<div style="position:fixed; bottom:24px; right:24px; width:56px; height:56px; border-radius:50%; background:#ddd; border:3px dashed #aaa; display:flex; align-items:center; justify-content:center; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+  <span style="color:#aaa; font-weight:bold;">&Delta;</span>
+</div>
+<div class="arrow-annotate" style="position:fixed; bottom:90px; right:30px; z-index:100;">ChatWidget FAB</div>
+
+</div>
+</body>
+</html>

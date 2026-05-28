@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skeleton Wireframe — 05 Search</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Courier New', monospace; background: #f0f0f0; color: #444; }
+.skeleton-page { max-width:1280px; margin:0 auto; background:#fff; min-height:100vh; position:relative; }
+.skeleton-page::before { content:'SKELETON WIREFRAME — PLANNING STAGE'; display:block; background:#333; color:#fff; text-align:center; padding:4px 0; font-size:10px; letter-spacing:3px; position:sticky; top:0; z-index:9999; }
+.block { border:2px dashed #bbb; background:#fafafa; position:relative; }
+.block-label { position:absolute; top:2px; left:4px; font-size:9px; color:#999; background:rgba(255,255,255,0.9); padding:1px 4px; border:1px solid #ddd; }
+.block-text { color:#ccc; font-size:13px; text-align:center; padding:20px; }
+.block-dark { background:#e0e0e0; border-color:#999; }
+.block-dark .block-label { color:#666; }
+.note { background:#fffde7; border:1px dashed #f9a825; padding:8px 12px; margin:8px; font-size:10px; color:#666; border-radius:2px; }
+.note::before { content:'📝 NOTE: '; font-weight:bold; color:#f9a825; }
+.arrow-annotate { position:absolute; font-size:9px; color:#e91e63; font-weight:bold; }
+.arrow-annotate::before { content:'← '; }
+img-placeholder { display:flex; align-items:center; justify-content:center; background:#eee; border:1px dashed #ccc; color:#ccc; font-size:11px; }
+img-placeholder::before { content:'[ IMG ]'; }
+.btn-placeholder { display:inline-flex; align-items:center; justify-content:center; background:#ddd; border:2px dashed #aaa; padding:8px 20px; color:#999; font-size:12px; font-weight:bold; }
+.input-placeholder { display:block; background:#f5f5f5; border:2px dashed #ccc; padding:10px 12px; width:100%; color:#ccc; font-size:12px; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
+.flex-row { display:flex; gap:12px; align-items:center; }
+.flex-col { display:flex; flex-direction:column; gap:8px; }
+.chip { display:inline-block; padding:6px 16px; border:2px dashed #bbb; border-radius:20px; font-size:11px; color:#aaa; background:#fafafa; }
+.chip.active { background:#ddd; border-color:#999; color:#666; font-weight:bold; }
+.card { border:2px dashed #ccc; background:#fafafa; overflow:hidden; }
+.card .img-area { height:120px; background:#eee; border-bottom:1px dashed #ddd; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:11px; }
+.card .info { padding:10px; }
+.card .tag { font-size:9px; color:#bbb; text-transform:uppercase; }
+.card .name { font-size:13px; color:#ccc; margin:4px 0; }
+.card .price { font-size:11px; color:#ddd; }
+</style>
+</head>
+<body>
+<div class="skeleton-page">
+
+<div class="block" style="height:64px; display:flex; align-items:center; padding:0 48px;"><span class="block-label">Navbar</span><div style="width:60px;height:48px;border:2px dashed #bbb;"></div><div style="flex:1;"></div><div class="chip">Our Range</div><div class="btn-placeholder">Contact</div></div>
+
+<div class="block" style="padding:60px 48px;">
+  <span class="block-label">Search Page — Search.tsx</span>
+  <h1 style="color:#ccc;font-size:36px;margin-bottom:24px;text-align:center;">Search Products</h1>
+
+  <!-- Search Input -->
+  <div style="max-width:672px;margin:0 auto 40px;">
+    <div style="display:flex; border:2px dashed #bbb; border-radius:4px; overflow:hidden;">
+      <div class="input-placeholder" style="border:none; flex:1; padding:16px;">Try: golden trophy for cricket tournament under 500 rupees...</div>
+      <div class="btn-placeholder" style="border-radius:0; padding:16px 24px;">Search</div>
+    </div>
+  </div>
+
+  <!-- INITIAL STATE -->
+  <div style="text-align:center; padding:60px; color:#ddd;">
+    <div style="font-size:48px; margin-bottom:16px; color:#eee;">&#8981;</div>
+    <div style="color:#ccc;font-size:14px;">Enter keywords and press Enter to search</div>
+    <div style="color:#ddd;font-size:11px;margin-top:8px;">Try natural language or product codes: "WA-06", "PC-20"</div>
+  </div>
+
+  <!-- AI INTERPRETATION PANEL (appears after search) -->
+  <div class="card" style="padding:16px; margin-bottom:24px; background:#fffef5;">
+    <span class="block-label">AI Interpretation Panel (3+ word queries)</span>
+    <div style="color:#ccc;font-size:13px;margin-bottom:12px;"><span style="color:#daa520;">&#10022;</span> Search understood as: "Cricket tournament trophies under budget of 500 rupees, golden colored"</div>
+    <div class="flex-row" style="gap:8px;">
+      <div class="chip" style="background:#ddd;font-weight:bold;">Cricket</div>
+      <div class="chip">Golden</div>
+      <div class="chip">Budget</div>
+      <div class="chip">Sports</div>
+      <div style="color:#e91e63;font-size:10px;cursor:pointer;margin-left:auto;">Clear AI filters</div>
+    </div>
+  </div>
+  <div class="note">AI powered by Groq Llama 4 Scout. Extracts: category, material, budget, useCase, keywords. Fallback: AI failure -> raw query text.</div>
+
+  <!-- RESULTS GRID -->
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px;">
+    <div class="card"><div class="img-area" style="aspect-ratio:1;">[Photo]</div><div class="info"><div class="tag">Wooden Trophies</div><div class="name">Wooden Award WA-06</div><div class="price">From Rs 350</div></div></div>
+    <div class="card"><div class="img-area" style="aspect-ratio:1;">[Photo]</div><div class="info"><div class="tag">Plastic Trophy</div><div class="name">Plastic Cup PC-20</div><div class="price">From Rs 80</div></div></div>
+    <div class="card"><div class="img-area" style="aspect-ratio:1;">[Photo]</div><div class="info"><div class="tag">Metal Cups</div><div class="name">Metal Cup MC-15</div><div class="price">From Rs 200</div></div></div>
+    <div class="card"><div class="img-area" style="aspect-ratio:1;">[Photo]</div><div class="info"><div class="tag">Custom Medals</div><div class="name">Gold Medal GM-01</div><div class="price">From Rs 150</div></div></div>
+  </div>
+
+  <!-- EMPTY STATE (hidden by default) -->
+  <div style="text-align:center; padding:60px; display:none;">
+    <div style="font-size:48px; color:#eee;">&#8981;</div>
+    <div style="color:#ccc;margin-top:12px;">No products found for "xyz"</div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

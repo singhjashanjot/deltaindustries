@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skeleton Wireframe — 02 Products</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Courier New', monospace; background: #f0f0f0; color: #444; }
+.skeleton-page { max-width:1280px; margin:0 auto; background:#fff; min-height:100vh; position:relative; }
+.skeleton-page::before { content:'SKELETON WIREFRAME — PLANNING STAGE'; display:block; background:#333; color:#fff; text-align:center; padding:4px 0; font-size:10px; letter-spacing:3px; position:sticky; top:0; z-index:9999; }
+.block { border:2px dashed #bbb; background:#fafafa; position:relative; }
+.block-label { position:absolute; top:2px; left:4px; font-size:9px; color:#999; background:rgba(255,255,255,0.9); padding:1px 4px; border:1px solid #ddd; }
+.block-text { color:#ccc; font-size:13px; text-align:center; padding:20px; }
+.block-dark { background:#e0e0e0; border-color:#999; }
+.block-dark .block-label { color:#666; }
+.note { background:#fffde7; border:1px dashed #f9a825; padding:8px 12px; margin:8px; font-size:10px; color:#666; border-radius:2px; }
+.note::before { content:'📝 NOTE: '; font-weight:bold; color:#f9a825; }
+.arrow-annotate { position:absolute; font-size:9px; color:#e91e63; font-weight:bold; }
+.arrow-annotate::before { content:'← '; }
+img-placeholder { display:flex; align-items:center; justify-content:center; background:#eee; border:1px dashed #ccc; color:#ccc; font-size:11px; }
+img-placeholder::before { content:'[ IMG ]'; }
+.btn-placeholder { display:inline-flex; align-items:center; justify-content:center; background:#ddd; border:2px dashed #aaa; padding:8px 20px; color:#999; font-size:12px; font-weight:bold; }
+.input-placeholder { display:block; background:#f5f5f5; border:2px dashed #ccc; padding:10px 12px; width:100%; color:#ccc; font-size:12px; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
+.flex-row { display:flex; gap:12px; align-items:center; }
+.flex-col { display:flex; flex-direction:column; gap:8px; }
+.chip { display:inline-block; padding:6px 16px; border:2px dashed #bbb; border-radius:20px; font-size:11px; color:#aaa; background:#fafafa; }
+.chip.active { background:#ddd; border-color:#999; color:#666; font-weight:bold; }
+.card { border:2px dashed #ccc; background:#fafafa; overflow:hidden; }
+.card .img-area { height:120px; background:#eee; border-bottom:1px dashed #ddd; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:11px; }
+.card .info { padding:10px; }
+.card .tag { font-size:9px; color:#bbb; text-transform:uppercase; }
+.card .name { font-size:13px; color:#ccc; margin:4px 0; }
+.card .price { font-size:11px; color:#ddd; }
+</style>
+</head>
+<body>
+<div class="skeleton-page">
+
+<div class="block" style="height:64px; display:flex; align-items:center; padding:0 48px; gap:40px;">
+  <span class="block-label">Navbar</span>
+  <div style="width:60px; height:48px; border:2px dashed #bbb;"></div>
+  <div style="flex:1;"></div>
+  <div class="chip">Our Range</div><div class="chip">Manufacturing</div><div class="chip">Who We Are</div>
+  <div class="chip">Quality Focus</div><div class="chip">Reviews</div>
+  <div class="btn-placeholder">Contact</div>
+</div>
+
+<div class="block" style="padding:60px 48px;">
+  <span class="block-label">Products Page — Products.tsx</span>
+  <h1 style="color:#ccc; font-size:36px; margin-bottom:8px;">Our Products</h1>
+  <p style="color:#ddd; margin-bottom:32px;">Browse our range of trophies, awards, and recognition products</p>
+
+  <!-- Category Filter Bar -->
+  <div class="flex-row" style="margin-bottom:32px; overflow-x:auto; padding-bottom:8px;">
+    <div class="chip active">All</div>
+    <div class="chip">Wooden Trophies</div>
+    <div class="chip">Acrylic Awards</div>
+    <div class="chip">Metal Cups</div>
+    <div class="chip">Crystal Trophies</div>
+    <div class="chip">Plastic Series</div>
+    <div class="chip">Custom Medals</div>
+    <div class="chip">Trophy Bases</div>
+    <div class="chip">Corporate Gifts</div>
+    <div class="chip">Shields</div>
+  </div>
+  <div class="note">Horizontal scrollable. Active pill = filled maroon. URL state via useSearchParams()</div>
+
+  <!-- Product Grid — 4 columns -->
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px;">
+    <div class="card"><div class="img-area">[Product Photo]</div><div class="info"><div class="tag">Plastic Trophy Series</div><div class="name">Plastic Cup PC-346</div><div class="price">From Rs 40-120</div></div></div>
+    <div class="card"><div class="img-area">[Product Photo]</div><div class="info"><div class="tag">Plastic Trophy Series</div><div class="name">Plastic Cup PC-345</div><div class="price">From Rs 45-130</div></div></div>
+    <div class="card"><div class="img-area">[Product Photo]</div><div class="info"><div class="tag">Plastic Trophy Series</div><div class="name">Plastic Cup PC-344</div><div class="price">From Rs 40-120</div></div></div>
+    <div class="card"><div class="img-area">[Product Photo]</div><div class="info"><div class="tag">Plastic Trophy Series</div><div class="name">Plastic Cup PC-343</div><div class="price">From Rs 45-130</div></div></div>
+    <div class="card"><div class="img-area">[Product Photo]</div><div class="info"><div class="tag">Plastic Trophy Series</div><div class="name">Plastic Cup PC-342</div><div class="price">From Rs 40-120</div></div></div>
+    <div class="card"><div class="img-area">[Product Photo]</div><div class="info"><div class="tag">Plastic Trophy Series</div><div class="name">Plastic Cup PC-341</div><div class="price">From Rs 45-130</div></div></div>
+    <div class="card"><div class="img-area">[Product Photo]</div><div class="info"><div class="tag">Plastic Trophy Series</div><div class="name">Plastic Cup PC-340</div><div class="price">From Rs 40-120</div></div></div>
+    <div class="card"><div class="img-area">[Product Photo]</div><div class="info"><div class="tag">Plastic Trophy Series</div><div class="name">Plastic Cup PC-339</div><div class="price">From Rs 45-130</div></div></div>
+  </div>
+  <div class="note" style="margin-top:16px;">109 images. 46 products across 9 categories. Staggered entrance: framer-motion delay i*0.04s. Loading: 8 skeleton cards with pulse animation. Images: mix-blend-multiply opacity-90, fallback Delta symbol. Each card is a full Link to /product/{slug}.</div>
+</div>
+
+<div class="block block-dark" style="padding:40px 48px; margin-top:40px;">
+  <span class="block-label" style="color:#666;">Footer (shared)</span>
+  <div class="grid-4" style="gap:24px;"><div style="color:#aaa;">Delta Brand</div><div style="color:#aaa;">Quick Links</div><div style="color:#aaa;">Categories</div><div style="color:#aaa;">Contact</div></div>
+</div>
+
+</div>
+</body>
+</html>

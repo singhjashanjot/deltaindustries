@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skeleton Wireframe — 03 Contact</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Courier New', monospace; background: #f0f0f0; color: #444; }
+.skeleton-page { max-width:1280px; margin:0 auto; background:#fff; min-height:100vh; position:relative; }
+.skeleton-page::before { content:'SKELETON WIREFRAME — PLANNING STAGE'; display:block; background:#333; color:#fff; text-align:center; padding:4px 0; font-size:10px; letter-spacing:3px; position:sticky; top:0; z-index:9999; }
+.block { border:2px dashed #bbb; background:#fafafa; position:relative; }
+.block-label { position:absolute; top:2px; left:4px; font-size:9px; color:#999; background:rgba(255,255,255,0.9); padding:1px 4px; border:1px solid #ddd; }
+.block-text { color:#ccc; font-size:13px; text-align:center; padding:20px; }
+.block-dark { background:#e0e0e0; border-color:#999; }
+.block-dark .block-label { color:#666; }
+.note { background:#fffde7; border:1px dashed #f9a825; padding:8px 12px; margin:8px; font-size:10px; color:#666; border-radius:2px; }
+.note::before { content:'📝 NOTE: '; font-weight:bold; color:#f9a825; }
+.arrow-annotate { position:absolute; font-size:9px; color:#e91e63; font-weight:bold; }
+.arrow-annotate::before { content:'← '; }
+img-placeholder { display:flex; align-items:center; justify-content:center; background:#eee; border:1px dashed #ccc; color:#ccc; font-size:11px; }
+img-placeholder::before { content:'[ IMG ]'; }
+.btn-placeholder { display:inline-flex; align-items:center; justify-content:center; background:#ddd; border:2px dashed #aaa; padding:8px 20px; color:#999; font-size:12px; font-weight:bold; }
+.input-placeholder { display:block; background:#f5f5f5; border:2px dashed #ccc; padding:10px 12px; width:100%; color:#ccc; font-size:12px; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
+.flex-row { display:flex; gap:12px; align-items:center; }
+.flex-col { display:flex; flex-direction:column; gap:8px; }
+.chip { display:inline-block; padding:6px 16px; border:2px dashed #bbb; border-radius:20px; font-size:11px; color:#aaa; background:#fafafa; }
+.chip.active { background:#ddd; border-color:#999; color:#666; font-weight:bold; }
+.card { border:2px dashed #ccc; background:#fafafa; overflow:hidden; }
+.card .img-area { height:120px; background:#eee; border-bottom:1px dashed #ddd; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:11px; }
+.card .info { padding:10px; }
+.card .tag { font-size:9px; color:#bbb; text-transform:uppercase; }
+.card .name { font-size:13px; color:#ccc; margin:4px 0; }
+.card .price { font-size:11px; color:#ddd; }
+</style>
+</head>
+<body>
+<div class="skeleton-page">
+
+<div class="block" style="height:64px; display:flex; align-items:center; padding:0 48px; gap:40px;">
+  <span class="block-label">Navbar</span>
+  <div style="width:60px;height:48px;border:2px dashed #bbb;"></div><div style="flex:1;"></div>
+  <div class="chip">Our Range</div><div class="chip">Manufacturing</div><div class="chip">Who We Are</div>
+  <div class="chip">Quality Focus</div><div class="chip">Reviews</div><div class="btn-placeholder">Contact</div>
+</div>
+
+<div class="block" style="padding:60px 48px;">
+  <span class="block-label">Contact Page — Contact.tsx</span>
+  <h1 style="color:#ccc; font-size:36px; margin-bottom:4px;">Contact & Enquiry</h1>
+  <p style="color:#ddd; margin-bottom:32px;">Ready to place a bulk order or have a custom requirement in mind?</p>
+
+  <div style="display:grid; grid-template-columns:1fr 380px; gap:40px;">
+    <!-- Form -->
+    <div>
+      <div class="card" style="padding:32px;">
+        <span class="block-label">Enquiry Form (7 fields)</span>
+        <div class="grid-2" style="gap:16px; margin-bottom:16px;">
+          <div><div style="color:#ccc;font-size:10px;margin-bottom:4px;">Full Name *</div><div class="input-placeholder">Your name</div></div>
+          <div><div style="color:#ccc;font-size:10px;margin-bottom:4px;">Organization</div><div class="input-placeholder">Company / School</div></div>
+        </div>
+        <div class="grid-2" style="gap:16px; margin-bottom:16px;">
+          <div><div style="color:#ccc;font-size:10px;margin-bottom:4px;">Email *</div><div class="input-placeholder">email@example.com</div></div>
+          <div><div style="color:#ccc;font-size:10px;margin-bottom:4px;">Phone *</div><div class="input-placeholder">10-digit mobile number</div></div>
+        </div>
+        <div class="grid-2" style="gap:16px; margin-bottom:16px;">
+          <div><div style="color:#ccc;font-size:10px;margin-bottom:4px;">Product Interest</div><div class="input-placeholder">e.g., Wooden Trophies</div></div>
+          <div><div style="color:#ccc;font-size:10px;margin-bottom:4px;">Estimated Qty</div><div class="input-placeholder">e.g., 100 pieces</div></div>
+        </div>
+        <div style="margin-bottom:20px;"><div style="color:#ccc;font-size:10px;margin-bottom:4px;">Message</div><div class="input-placeholder" style="height:100px;">Tell us about your requirements...</div></div>
+        <div class="btn-placeholder" style="width:100%; text-align:center; padding:16px;">Submit Enquiry</div>
+      </div>
+      <div class="note">Form uses react-hook-form. Submit via trpc.enquiry.submit. Toast on success/error. Disabled during submission. Pre-fills product from /product/:id URL param.</div>
+    </div>
+    <!-- Contact Info -->
+    <div class="flex-col" style="gap:16px;">
+      <div class="card" style="padding:20px;"><div style="color:#ccc;font-weight:bold;margin-bottom:4px;">Visit Us</div><div style="color:#ddd;font-size:11px;">No. 111, Janta Colony<br>G.T. Road, Jalandhar<br>Punjab 144008, India</div></div>
+      <div class="card" style="padding:20px;"><div style="color:#ccc;font-weight:bold;margin-bottom:4px;">Call Us</div><div style="color:#ddd;font-size:11px;">+91 8048954176</div></div>
+      <div class="card" style="padding:20px;"><div style="color:#ccc;font-weight:bold;margin-bottom:4px;">Working Hours</div><div style="color:#ddd;font-size:11px;">Mon-Sat: 9AM to 6PM<br>Sunday: Closed</div></div>
+      <div class="card" style="padding:20px; background:#f0faf0; border-color:#a0d0a0;">
+        <div style="color:#aaa;font-weight:bold;margin-bottom:4px;">WhatsApp Quick Connect</div><div style="color:#ccc;font-size:10px;">wa.me/918048954176 (pre-filled msg)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

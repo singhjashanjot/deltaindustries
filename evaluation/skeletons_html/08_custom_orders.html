@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skeleton Wireframe — 08 Custom Orders</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Courier New', monospace; background: #f0f0f0; color: #444; }
+.skeleton-page { max-width:1280px; margin:0 auto; background:#fff; min-height:100vh; position:relative; }
+.skeleton-page::before { content:'SKELETON WIREFRAME — PLANNING STAGE'; display:block; background:#333; color:#fff; text-align:center; padding:4px 0; font-size:10px; letter-spacing:3px; position:sticky; top:0; z-index:9999; }
+.block { border:2px dashed #bbb; background:#fafafa; position:relative; }
+.block-label { position:absolute; top:2px; left:4px; font-size:9px; color:#999; background:rgba(255,255,255,0.9); padding:1px 4px; border:1px solid #ddd; }
+.block-text { color:#ccc; font-size:13px; text-align:center; padding:20px; }
+.block-dark { background:#e0e0e0; border-color:#999; }
+.block-dark .block-label { color:#666; }
+.note { background:#fffde7; border:1px dashed #f9a825; padding:8px 12px; margin:8px; font-size:10px; color:#666; border-radius:2px; }
+.note::before { content:'📝 NOTE: '; font-weight:bold; color:#f9a825; }
+.arrow-annotate { position:absolute; font-size:9px; color:#e91e63; font-weight:bold; }
+.arrow-annotate::before { content:'← '; }
+img-placeholder { display:flex; align-items:center; justify-content:center; background:#eee; border:1px dashed #ccc; color:#ccc; font-size:11px; }
+img-placeholder::before { content:'[ IMG ]'; }
+.btn-placeholder { display:inline-flex; align-items:center; justify-content:center; background:#ddd; border:2px dashed #aaa; padding:8px 20px; color:#999; font-size:12px; font-weight:bold; }
+.input-placeholder { display:block; background:#f5f5f5; border:2px dashed #ccc; padding:10px 12px; width:100%; color:#ccc; font-size:12px; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
+.flex-row { display:flex; gap:12px; align-items:center; }
+.flex-col { display:flex; flex-direction:column; gap:8px; }
+.chip { display:inline-block; padding:6px 16px; border:2px dashed #bbb; border-radius:20px; font-size:11px; color:#aaa; background:#fafafa; }
+.chip.active { background:#ddd; border-color:#999; color:#666; font-weight:bold; }
+.card { border:2px dashed #ccc; background:#fafafa; overflow:hidden; }
+.card .img-area { height:120px; background:#eee; border-bottom:1px dashed #ddd; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:11px; }
+.card .info { padding:10px; }
+.card .tag { font-size:9px; color:#bbb; text-transform:uppercase; }
+.card .name { font-size:13px; color:#ccc; margin:4px 0; }
+.card .price { font-size:11px; color:#ddd; }
+</style>
+</head>
+<body>
+<div class="skeleton-page">
+
+<div class="block" style="height:64px; display:flex; align-items:center; padding:0 48px;"><span class="block-label">Navbar</span><div style="border:2px dashed #bbb; width:60px; height:48px;"></div><div style="flex:1;"></div><div class="btn-placeholder">Contact</div></div>
+
+<div class="block" style="padding:60px 48px;">
+  <span class="block-label">Custom Orders — CustomOrders.tsx</span>
+  <h1 style="color:#ccc;font-size:36px;text-align:center;margin-bottom:8px;">Bulk & Personalized Orders</h1>
+  <p style="color:#ddd;text-align:center;max-width:600px;margin:0 auto 48px;">From 10 pieces to 10,000 — we handle orders of any scale with custom engraving, logo printing, and personalized packaging.</p>
+
+  <!-- 4-Step Process Grid -->
+  <div class="note" style="margin-bottom:24px;">4-step process. Grid layout: 1 col mobile -> 2 cols desktop. Numbered steps with icons.</div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; max-width:896px; margin:0 auto;">
+    <div class="card" style="padding:32px;">
+      <div style="font-size:48px;color:#eee;font-weight:bold;">1</div>
+      <div style="color:#ccc;font-weight:bold;font-size:16px;margin-bottom:8px;">Share Requirements</div>
+      <div style="color:#ddd;font-size:11px;line-height:1.6;">Tell us your event type, quantity, budget, and any specific requirements. Send reference images or sketches if available. We will review and get back within 24 hours.</div>
+    </div>
+    <div class="card" style="padding:32px;">
+      <div style="font-size:48px;color:#eee;font-weight:bold;">2</div>
+      <div style="color:#ccc;font-weight:bold;font-size:16px;margin-bottom:8px;">Design & Approval</div>
+      <div style="color:#ddd;font-size:11px;line-height:1.6;">Our design team creates a digital mockup for your review. We iterate until you are 100% satisfied. Includes logo placement, engraving preview, and color options.</div>
+    </div>
+    <div class="card" style="padding:32px;">
+      <div style="font-size:48px;color:#eee;font-weight:bold;">3</div>
+      <div style="color:#ccc;font-weight:bold;font-size:16px;margin-bottom:8px;">Production</div>
+      <div style="color:#ddd;font-size:11px;line-height:1.6;">Once approved, manufacturing begins at our Jalandhar facility. Regular progress updates. Typical production time: 7-21 days depending on order size and complexity.</div>
+    </div>
+    <div class="card" style="padding:32px;">
+      <div style="font-size:48px;color:#eee;font-weight:bold;">4</div>
+      <div style="color:#ccc;font-weight:bold;font-size:16px;margin-bottom:8px;">Delivery</div>
+      <div style="color:#ddd;font-size:11px;line-height:1.6;">Final quality inspection, secure packaging, and pan-India shipping with tracking. We ensure safe delivery of your custom trophies and awards.</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:48px;">
+    <h3 style="color:#ccc;font-size:22px;margin-bottom:16px;">Ready to Place a Custom Order?</h3>
+    <div class="btn-placeholder" style="font-size:16px;padding:14px 48px;margin:0 auto;">Contact Us</div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
