@@ -71,10 +71,7 @@ const Navbar = () => {
         >
           <div className="max-w-screen-2xl mx-auto px-6 md:px-12 flex items-center justify-between w-full"> 
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 flex items-center justify-center border border-[#35020D]/30 rounded-sm group-hover:border-[#35020D] transition-colors">
-                <span className="text-[#35020D] font-bold text-lg leading-none m-0 p-0">Δ</span>
-              </div>
-              <span className="font-semibold text-sm md:text-base text-[#35020D] tracking-wide uppercase">Delta</span>
+              <img src="/IMAGES/factory/logo.png" alt="Delta Industries Logo" className="h-16 w-auto object-contain mix-blend-multiply rounded-sm" />
             </Link>
 
             {/* Desktop Nav */}
