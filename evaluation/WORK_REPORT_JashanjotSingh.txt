@@ -1,0 +1,779 @@
+================================================================================
+  INDIVIDUAL WORK REPORT — JASHANJOT SINGH
+  Role: Frontend + Backend Developer
+  Project: Delta Recognition Hub
+  Period: 2026-05-26 to 2026-05-28
+================================================================================
+
+ROLE OVERVIEW
+────────────────────────────────────────────────────────────────────────────────
+Jashanjot Singh works as a Frontend + Backend Developer on the Delta
+Recognition Hub project. His responsibilities span both client-side and
+server-side development — building frontend pages, integrating backend APIs
+with the frontend, assisting with AI integration across the application,
+and handling database-related work where it touches the frontend. He
+bridges the gap between the core backend services and the user-facing
+application, ensuring API data flows correctly into the UI components.
+
+================================================================================
+SECTION A: BACKEND & INTEGRATION WORK
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+A.1  AI-tRPC ROUTER — FRONTEND-FACING AI ENDPOINTS
+     File: server/routers/ai.ts
+────────────────────────────────────────────────────────────────────────────────
+
+Worked on the tRPC router that exposes AI functionality to the frontend.
+Contributed to the implementation of AI endpoints that are consumed by
+frontend pages, ensuring they receive properly structured data for UI
+rendering:
+
+- smartSearch Endpoint: Integrated the AI-powered natural language search
+  query parsing. This endpoint analyzes user search queries (like "golden
+  trophy for cricket tournament under 500 rupees") and returns structured
+  JSON with interpreted intent, detected category, material, budget tier,
+  use case, size, and extracted keywords. The frontend Search page consumes
+  this to display AI-understood search chips and augment search results.
+
+- similarProducts Endpoint: Built the product recommendation logic that
+  queries the database for products in the same category as the current
+  product, ordered by popularity (viewCount). Returns structured data
+  (name, slug, category, material, shortDesc, imageUrl, priceHint) for
+  rendering recommendation cards on the Product Detail page. Implemented
+  the Prisma database query with category-matching and the current-product
+  exclusion filter.
+
+- generateDescription Endpoint: Set up the AI product description
+  generation endpoint that constructs a detailed prompt requesting a
+  2-3 paragraph SEO-optimized product description. Integrated this with
+  the admin products management page where admins can click "Generate
+  with AI" to auto-fill product descriptions.
+
+- dashboardInsights Endpoint: Implemented the analytics insights endpoint
+  that sends enquiry statistics to the AI and receives actionable business
+  insights for display on the admin dashboard. Handles the JSON-structured
+  response parsing with a fallback for when the AI is unavailable.
+
+- Input Validation: Set up all Zod input schemas for the AI router
+  endpoints with proper constraints — chatInput (1-30 messages),
+  generateDescriptionInput (name 1-200 chars, optional material/category),
+  smartSearchInput (query 1-200 chars), similarProductsInput,
+  dashboardInsightsInput (with nested object arrays).
+
+────────────────────────────────────────────────────────────────────────────────
+A.2  MEILISEARCH / DATABASE SEARCH ENGINE
+     File: server/meilisearch.ts
+────────────────────────────────────────────────────────────────────────────────
+
+Migrated the product search system from Meilisearch (external search
+service) to PostgreSQL-based text search using Prisma ORM:
+
+- Implemented word-based matching: Split search queries into individual
+  words (minimum 2 characters) and constructed OR conditions across 5
+  text fields (product name, material, short description, full
+  description, category name) for broader, more accurate matching.
+
+- Added category filtering support with categorySlug parameter.
+
+- Implemented multi-field sorting: isFeatured descending (featured
+  products first), viewCount descending (popular products first),
+  name ascending (alphabetical tiebreaker).
+
+- Added pagination with limit/offset parameters and estimatedTotalHits
+  count for paginated product listings.
+
+- Made the search performance-measurable by tracking and returning
+  processingTimeMs.
+
+- Maintained backward compatibility with no-op stubs for
+  configureProductIndex() and indexProducts() that log informational
+  messages instead of making external API calls.
+
+- This change eliminated the need for a separate Meilisearch service,
+  reducing infrastructure complexity and operational costs.
+
+────────────────────────────────────────────────────────────────────────────────
+A.3  VITE CONFIGURATION — DEVELOPMENT SERVER SETUP
+     File: vite.config.ts
+────────────────────────────────────────────────────────────────────────────────
+
+Configured the Vite development server to bridge the frontend and backend:
+
+- Port Configuration: Set the dev server to port 8080.
+
+- tRPC Proxy Setup: Configured proxy forwarding for /trpc requests to
+  the Deno backend at http://localhost:3001. This allows the frontend
+  to call tRPC endpoints without CORS issues during development.
+
+- Cookie Forwarding: Implemented proxyReq handler that copies browser
+  cookies to backend requests — critical for session-based admin
+  authentication to work through the proxy.
+
+- Cookie Rewriting: Implemented proxyRes handler that strips "Secure"
+  and "SameSite=None" flags from set-cookie headers since the dev
+  server runs on HTTP (localhost), preventing browsers from rejecting
+  authentication cookies.
+
+- HMR Overlay: Disabled the error overlay (overlay: false) to prevent
+  development error popups from blocking the UI.
+
+- Resolve Alias: Set up "@" → "./src" path alias for clean imports
+  across the entire frontend codebase.
+
+- Dependency Deduplication: Added deduplication for react and
+  react-dom to prevent multiple React instances in the bundle.
+
+- Dependency Optimization: Pre-bundled react, react-dom,
+  @tanstack/react-query, and @trpc/react-query for faster cold
+  starts with Vite's esbuild pre-bundling.
+
+- Plugin Configuration: Set up @vitejs/plugin-react-swc (React with
+  SWC compiler for faster builds) and lovable-tagger (development
+  mode only).
+
+────────────────────────────────────────────────────────────────────────────────
+A.4  DEVELOPMENT SCRIPTS
+     Files: scripts/dev-all.mjs, scripts/dev-frontend.mjs
+────────────────────────────────────────────────────────────────────────────────
+
+Streamlined the development workflow:
+
+- dev-all.mjs: Rewrote the script to use concurrently for running both
+  the frontend (Vite dev server) and backend (Deno server) in a single
+  terminal with unified log output. This simplified the previous
+  multi-terminal approach.
+
+- dev-frontend.mjs: Created a new specialized frontend dev launcher
+  that:
+  * Computes the project root directory automatically.
+  * Unsets DENO_DIR environment variable to prevent Deno from
+    interfering with Node.js module resolution — a critical fix for
+    mixed Deno+Node projects.
+  * Implements a 3-second delayed startup to wait for the Deno
+    backend to be ready, preventing ECONNREFUSED proxy errors.
+  * Propagates Vite's exit code to the parent process for proper
+    error handling.
+
+────────────────────────────────────────────────────────────────────────────────
+A.5  GITHUB CI/CD CLEANUP
+     File: .github/workflows/deploy-backend.yml (DELETED)
+────────────────────────────────────────────────────────────────────────────────
+
+Removed the automated Deno Deploy CI/CD workflow that was previously
+configured to deploy on every push to main. This cleanup was part of
+streamlining the deployment pipeline.
+
+────────────────────────────────────────────────────────────────────────────────
+A.6  PACKAGE & DEPENDENCY MANAGEMENT
+     File: deno.lock, package.json
+────────────────────────────────────────────────────────────────────────────────
+
+- Pruned redundant entries and deprecated package metadata from deno.lock,
+  keeping the lockfile lean and removing warnings about deprecated packages.
+
+- Managed dependency updates including concurrently, vite, and recharts.
+
+- Updated project dependencies to ensure compatibility across the full
+  Deno + Node.js hybrid stack.
+
+────────────────────────────────────────────────────────────────────────────────
+A.7  README & PROJECT METADATA
+     File: README.md
+────────────────────────────────────────────────────────────────────────────────
+
+Updated the project title from "delta-recognition-hub" to "Delta
+Recognition Hub" with proper formatting. Updated the project description
+to reflect the current scope — a full-stack trophy manufacturing company
+website with AI-powered features.
+
+================================================================================
+SECTION B: FRONTEND WORK
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+B.1  HERO SECTION — HOME PAGE (MULTIPLE MAJOR ITERATIONS)
+     File: src/components/home/HeroSection.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Led the development and continuous refinement of the Hero Section — the
+first and most impactful component visitors see on the home page. This
+component went through multiple iterations to reach its polished final
+form:
+
+Final Design Features:
+  - Full-width section with cream background (#ffffe3) and maroon text
+    (#35020D), with custom selection colors.
+  - Content wrapper with subtle scale effect (scale-95 lg:scale-90
+    transform-gpu origin-top) for refined visual presentation.
+  - Animated hero text block with framer-motion fade-in (duration 0.8s,
+    custom cubic-bezier easing).
+  - Headline: "Premium Recognition Awards for Corporate, Sports &
+    Academic Excellence" with gold accent (#795900) on "Recognition
+    Awards" for visual emphasis.
+  - CTA buttons: "Explore Products" (filled maroon) and "Contact Us"
+    (outlined), both with hover scale effects and shadow elevation.
+
+  Asymmetrical 12-Column Grid Showcase:
+    - Column 1 (col-span-5): "Crafting Excellence" card featuring:
+      * Gradient overlay from white to transparent
+      * Large "DELTA" watermark at 15% opacity (font-serif, 140-180px)
+      * 3 decorative twinkling star icons with staggered pulse animations
+      * "Trending" badge with green pulsing dot
+      * Animated image crossfade carousel cycling through 6 product
+        images every 3.5 seconds using AnimatePresence
+      * Group hover scale effects on the image container
+
+    - Column 2 (col-span-4): "In-House Manufacturing" card featuring:
+      * Background image with hover scale effect
+      * Gradient overlay blending image into card background
+      * Decorative border frame that slightly contracts on hover
+      * Text content with "Learn More" CTA link
+
+    - Column 3 (col-span-3): Two stacked cards
+      * "Flexible Sizes" card with custom image scaling (2x horizontal,
+        1.65x vertical), radial glow background, and pill badge labels
+      * "Stats Showcase" card with animated stat cycling through 5
+        company metrics (27+ Years, 1.5Cr+ Trophies, 1998 Established,
+        11-25 Artisans, 5000+ Sq Ft) using AnimatePresence mode="wait"
+        with smooth vertical transitions
+
+Refinements Across Iterations:
+  - Iteration 1: Changed from fixed height to min-height for better
+    content flow. Added 3 hardcoded company stats.
+  - Iteration 2: Introduced background image carousel with AnimatePresence
+    crossfade and blur effects.
+  - Iteration 3: Complete redesign — switched to centered headline +
+    asymmetrical 12-column grid with product cards. Introduced gold
+    accent color.
+  - Iteration 4: Expanded hero images to 6, added decorative elements
+    (watermark, stars, trending badge), redesigned column 2 and 3.
+  - Iteration 5: Replaced static card with animated Stats Showcase
+    carousel. Refined padding (lg:pt-48) and overall visual polish.
+
+────────────────────────────────────────────────────────────────────────────────
+B.2  NAVIGATION BAR — SCROLL-AWARE BEHAVIOR
+     File: src/components/layout/Navbar.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Rebuilt the navigation bar with intelligent scroll-aware show/hide
+behavior:
+
+- Scroll Direction Detection: Implemented logic that tracks scroll
+  position and direction:
+  * Always visible when at the top of the page (scrollY < 50)
+  * Always visible when mobile menu is open
+  * Hides when scrolling down past 100px
+  * Shows when scrolling up
+  * Auto-shows after scrolling stops (400ms debounce via setTimeout)
+
+- Performance: Uses passive scroll event listener for optimal scroll
+  performance. Proper cleanup of event listeners and timeouts in
+  useEffect return function.
+
+- Animations: Wrapped the entire header in framer-motion AnimatePresence
+  with smooth slide-down/fade-in (initial: y:-100 opacity:0) and
+  slide-up/fade-out (exit: y:-100 opacity:0) animations. Custom cubic-
+  bezier easing for polished motion.
+
+- Desktop Navigation: Hidden on mobile (hidden lg:flex), each nav link
+  has a group class with underline animation (1.5px line expanding from
+  w-0 to w-full on hover). Search icon and "Contact" CTA button included.
+
+- Mobile Navigation: Full-screen overlay (height: 100vh) with animated
+  slide-down. Text-2xl links, search with icon, full-width contact
+  button separated by border divider.
+
+- Brand Mark: Delta symbol ("Δ") in bordered square box with "Delta"
+  text — group hover darkens the border.
+
+────────────────────────────────────────────────────────────────────────────────
+B.3  HOME PAGE — PAGE LAYOUT & SECTION ORCHESTRATION
+     File: src/pages/Index.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Built the home page layout that orchestrates all 7 sections in sequence:
+  HeroSection → TrustSection → CategoriesSection →
+  ManufacturingSection → WhyDeltaSection → GallerySection → CTABand
+
+- Wraps everything in a flex-col min-h-screen overflow-clip container
+  with consistent cream background and maroon text.
+- Properly imports and composes all section components with Footer.
+- Maintains clean separation — Navbar rendered by PublicLayout wrapper
+  in App.tsx, Index manages only main content + Footer.
+
+────────────────────────────────────────────────────────────────────────────────
+B.4  TRUST SECTION — WHO WE ARE TIMELINE
+     File: src/components/home/TrustSection.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Added the company history timeline to the Trust section:
+
+- 4 milestone entries with years and descriptions:
+  * 1998: Founded in Jalandhar, Punjab as a small trophy workshop
+  * 2010: Expanded to 5,000 sq ft in-house manufacturing facility
+  * 2018: Introduced CNC machining and laser engraving capabilities
+  * 2025: Launched Delta Recognition Hub — replacing IndiaMART with
+    own digital platform
+
+- Visual timeline design: Left border line with circular dot indicators
+  positioned at the left edge, each entry with relative positioning
+  and left padding.
+
+- Tagline: "For 27 years, we have manufactured trophies, awards, and
+  recognition pieces — every single one made under one roof in
+  Jalandhar, Punjab."
+
+- Description paragraph explaining in-house capabilities (woodworking,
+  metal casting, acrylic fabrication, laser engraving, CNC machining,
+  finishing) with the "No outsourcing. No middlemen." message.
+
+- CTA Link: "More about Who We Are" → /about with circular bullet
+  indicator. All elements feature scroll-triggered framer-motion
+  animations with staggered delays.
+
+────────────────────────────────────────────────────────────────────────────────
+B.5  CATEGORIES SECTION — PRODUCT CATEGORIES GRID
+     File: src/components/home/CategoriesSection.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Built the product categories display grid:
+
+- Fetches categories from the backend API (trpc.category.getAll) with
+  hardcoded fallback array for resilience when the API hasn't loaded.
+
+- 9 categories displayed in a responsive grid (1 col mobile, 2 tablet,
+  3 desktop).
+
+- Each category card: Full-card Link to /products?category={slug},
+  square image container with hover scale effect, category name below
+  image, underline animation (small line expanding to full width on
+  hover).
+
+- Header with "Materials & Categories" heading, description text, and
+  "View Catalog" CTA link.
+
+- Fixed Tailwind CSS arbitrary value escaping for compatibility
+  (ease-[0.16,1,0.3,1] → ease-\[0.16\,1\,0.3\,1\]).
+
+────────────────────────────────────────────────────────────────────────────────
+B.6  MANUFACTURING SECTION — IN-HOUSE CAPABILITIES
+     File: src/components/home/ManufacturingSection.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Created the manufacturing showcase section:
+
+- Split layout (lg:grid-cols-2) with large facility image on the left
+  and content on the right.
+
+- Image: grayscale filter with reduced brightness, hover restores color
+  and brightness. Overlaid data tag with "27+ Years" stat.
+
+- 4 feature cards in 2x2 grid: Advanced Machinery, Custom Designs,
+  Material Expertise, Bulk Production — each with lucide-react icon,
+  title, and description.
+
+- "Learn About Manufacturing" CTA → /custom-orders.
+
+────────────────────────────────────────────────────────────────────────────────
+B.7  WHY DELTA SECTION — THE DELTA ADVANTAGE
+     File: src/components/home/WhyDeltaSection.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Built the advantages listing section:
+
+- Sticky sidebar heading: "The Delta Advantage" remains visible while
+  scrolling through 8 reasons.
+
+- 8 numbered reasons (01-08) with zero-padded labels, hover translate
+  effect, and separator borders:
+  1. 27+ years of continuous manufacturing operations
+  2. Direct manufacturer, no middlemen, best pricing
+  3. Consistent quality across every batch and order
+  4. 200+ products across wood, metal, acrylic, crystal & more
+  5. Full customization: engraving, logos, sizes, materials
+  6. Trusted by schools, colleges, corporates, and associations
+  7. Pan-India delivery with reliable logistics
+  8. GST registered, fully compliant business operations
+
+────────────────────────────────────────────────────────────────────────────────
+B.8  GALLERY SECTION — CRAFTSMANSHIP SHOWCASE
+     File: src/components/home/GallerySection.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Created the dark-themed gallery section:
+
+- Dark maroon background (#35020D) with cream text and inverted
+  selection colors.
+
+- 7 images in a responsive grid (2 cols mobile, 4 cols desktop) with
+  the first image double-sized (md:col-span-2 md:row-span-2).
+
+- All images: grayscale by default, hover removes grayscale and
+  applies scale effect with eased 700ms transitions.
+
+- Fixed Tailwind arbitrary value escaping for compatibility.
+
+────────────────────────────────────────────────────────────────────────────────
+B.9  CTA BAND — CALL TO ACTION
+     File: src/components/home/CTABand.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Built the home page CTA section:
+
+- Centered layout with large heading: "Architecting Legacies, One Award
+  at a Time" (text-4xl md:text-6xl lg:text-[5rem]).
+
+- Description about custom trophies for sports days, corporate awards,
+  and academic programs.
+
+- Two CTA buttons: "Request Custom Quote" → /contact (filled maroon)
+  and "Learn Construction" → /custom-orders (outlined).
+
+- Standardized section padding (py-20 md:py-32) consistent with all
+  other home page sections.
+
+────────────────────────────────────────────────────────────────────────────────
+B.10  SEARCH PAGE — AI-POWERED NATURAL LANGUAGE SEARCH
+      File: src/pages/Search.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Built the search page that integrates AI-powered query understanding:
+
+- AI Smart Search Integration: When users enter natural language
+  queries (3+ words), the search calls trpc.ai.smartSearch to analyze
+  the query and extract structured dimensions.
+
+- AI Interpretation Panel: Displays a card showing:
+  * "Search understood as" header with Sparkles icon
+  * Human-readable interpretation of the query
+  * Filter chips for detected Category, Material, Budget, and Event
+    type
+  * "Clear" button to dismiss AI filters and search with raw text
+
+- Loading State: "Understanding your request..." spinner with animated
+  Loader2 icon while AI processes.
+
+- Search Results Grid: Responsive grid (sm:2, lg:3, xl:4 columns) with
+  product cards showing real images via getProductImageUrl(),
+  mix-blend-multiply image effect, category labels, product names
+  (2-line clamp), and "From Rs {price}" pricing.
+
+- Fallback handling: When AI fails, search falls back to the raw query
+  text. Combined keyword search uses [original query + extracted
+  keywords] for broader matching.
+
+- Empty States: "No products found for {query}" and initial prompt
+  with natural language search hint.
+
+- Placeholder: "Try: golden trophy for cricket tournament under 500
+  rupees..." — encouraging natural language usage.
+
+────────────────────────────────────────────────────────────────────────────────
+B.11  PRODUCTS PAGE — LISTING & CATEGORY FILTERS
+      File: src/pages/Products.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Built the products listing page:
+
+- Header: "Catalog" label + "Our Products" headline + description.
+
+- Category Filter Bar: Horizontal scrollable row of rounded pill
+  buttons. Active filter gets filled maroon background. Uses URL
+  search params (useSearchParams) for shareable/bookmarkable filter
+  state. Fetches categories from trpc.category.getAll.
+
+- Product Grid: Responsive layout (1→2→3→4 columns) with staggered
+  framer-motion animations (delay: i * 0.04).
+
+- Each Product Card: Full-card Link wrapping image + text content.
+  Images use getProductImageUrl() for real product photos with hover
+  scale effect. Shows category label, product name (with hover opacity
+  transition), short description, and size labels joined by " · ".
+
+- Skeleton Loading: 8 animated placeholder cards during data fetch,
+  matching the grid layout exactly.
+
+- Integrated with backend: trpc.product.getByCategory for filtered
+  listings, trpc.category.getAll for filter options.
+
+────────────────────────────────────────────────────────────────────────────────
+B.12  PRODUCT DETAIL PAGE — WITH AI SIMILAR PRODUCTS
+      File: src/pages/ProductDetail.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Built the product detail page:
+
+- Skeleton Loader: Full-page skeleton during loading with animated
+  placeholder images and text blocks matching the actual layout.
+
+- Breadcrumb: "Back to Products" link with circular bullet indicator.
+
+- Image Gallery: Large main image with fallback Delta symbol when no
+  image available. Uses getProductImageUrl() for real photos.
+
+- Product Info: Category + Price label, large product name
+  (text-7xl), description in prose style.
+
+- Key Features: Dynamic feature list based on material type (wood,
+  acrylic, metal, crystal, plastic, marble) with hardcoded features
+  per material. Shows "Fully Customizable (Logo / Text)" when
+  applicable.
+
+- Specifications Table: 6-row table (Material, Category, Sizes,
+  Min Order Qty, HSN Code "83062120", Country of Origin "Made in
+  India") with alternating background colors.
+
+- AI Similar Products: Integrated trpc.ai.similarProducts to fetch
+  and display up to 4 recommendations in a responsive grid below
+  the main product details. Each recommendation card links to its
+  product page with real images and pricing.
+
+- CTA: "Request Custom Quote" button → /contact?product={id} with
+  outlined hover-fill effect.
+
+────────────────────────────────────────────────────────────────────────────────
+B.13  ABOUT PAGE — COMPLETE REDESIGN
+      File: src/pages/About.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Redesigned the entire About page:
+
+- Hero Section: Centered "Who We Are" heading. Full-width animated
+  image card with 3 factory photos crossfading every 3.5 seconds
+  behind a dark overlay. Overlaid text about Delta's 27-year
+  reputation, plus credit to Mr. J. S. Bedi & Mr. Gurdeep Singh.
+
+- Stats Bento Grid: "Delta by the numbers" section with 5 cards in
+  a responsive 12-column grid:
+  * "27+" Years of Craft (col-span-7, large Award icon watermark)
+  * "1.5Cr+" Trophies Delivered (col-span-5, dark maroon, Trophy
+    icon watermark)
+  * "1998" Established Year (col-span-4, Calendar icon)
+  * "11-25" Skilled Artisans (col-span-4, Users icon)
+  * "5000+" Sq Ft Facility (col-span-4, Maximize icon)
+  All cards with rounded corners, scroll-triggered staggered
+  animations.
+
+- Philosophy Section: "Precision in every detail. Pride in every
+  piece." headline with descriptive paragraph.
+
+- Team Section: Image carousel with 2 team photos crossfading every
+  3.8 seconds. Dot navigation indicators (active dot wider, white
+  with 90% opacity; inactive dots smaller, 40% opacity).
+
+- CTA Section: "Work With Us" + "Ready to create something
+  exceptional?" heading with animated "Get in Touch" button
+  (sliding white overlay hover effect, arrow shifts right).
+
+────────────────────────────────────────────────────────────────────────────────
+B.14  QUALITY PAGE — QUALITY ASSURANCE
+      File: src/pages/Quality.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Built the Quality page:
+
+- Two-column layout with quality philosophy text and manufacturing
+  inspection image.
+
+- 2x2 Stats Grid: "100%" Quality Checks, "ISO" Industry Standards,
+  "CNC" Precision Tooling, "0" Compromises — each in bordered cards.
+
+- 4-Step Quality Assurance Process: "The Delta Standard" section with
+  4 process cards (Material Selection, Precision Crafting, Hand
+  Finishing, Final Inspection). Each card features a large background
+  number (01-04), circular icon container with hover color inversion,
+  title, and description.
+
+- CTA Section matching the About page design for consistency.
+
+────────────────────────────────────────────────────────────────────────────────
+B.15  CONTACT PAGE — ENQUIRY FORM & WHATSAPP INTEGRATION
+      File: src/pages/Contact.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Built the Contact page:
+
+- Enquiry Form: 7 fields (Name*, Organization, Email*, Phone*,
+  Product Interest, Estimated Qty, Message) with responsive 2-column
+  grid layout. Pre-fills Product Interest when navigated from a
+  product detail page via URL search param (?product={id}).
+
+- Form Submission: Uses trpc.enquiry.submit with Sonner toast
+  notifications — success shows "Thank you! We'll get back to you
+  within 24 hours", error shows the error message. Form resets on
+  successful submission. Submit button disabled during submission.
+
+- Contact Info Cards: "Visit Us" (full address), "Call Us" (phone
+  number), "Working Hours" (Mon-Sat 9AM-6PM, Sun Closed).
+
+- WhatsApp Quick Connect: Direct link to wa.me/918048954176 with
+  pre-filled inquiry message. WhatsApp SVG icon, styled as a border
+  button, opens in new tab with security attributes.
+
+────────────────────────────────────────────────────────────────────────────────
+B.16  ADMIN DASHBOARD — CHARTS, STATS & AI INSIGHTS
+      File: src/pages/admin/AdminDashboard.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Built the admin dashboard:
+
+- 4 Stat Cards: Total Enquiries (amber), New Enquiries (blue),
+  Products (emerald), Categories (purple) — each with lucide-react
+  icon, large value text, and link to the relevant admin section.
+
+- Charts Section: Recharts BarChart (enquiry status breakdown with
+  colored bars per status) and PieChart (status distribution with
+  inner radius donut style and color legend).
+
+- AI Insights Card: Integrated trpc.ai.dashboardInsights to
+  generate 3-4 actionable business insights from enquiry data.
+  Displays Sparkles icon header, summary text, and bulleted
+  insights list. Auto-triggers when enquiry stats change.
+
+- Recent Enquiries List: Table with customer name, formatted date
+  (Indian locale), and color-coded status badges (amber=new,
+  blue=in-progress, emerald=resolved, red=spam). "View all" link.
+
+────────────────────────────────────────────────────────────────────────────────
+B.17  ADMIN PRODUCTS MANAGEMENT — CRUD WITH AI DESCRIPTION GENERATION
+      File: src/pages/admin/AdminProducts.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Built the admin products management interface:
+
+- Product List: Search input with clear button, paginated table with
+  columns (Name with monospace slug, Category, Sizes, Active toggle
+  with Eye/EyeOff icons, Edit + Delete actions).
+
+- Active Toggle: Uses trpc.product.toggleActive with instant UI
+  feedback via cache invalidation.
+
+- Delete: Confirmation dialog before deletion with cache invalidation
+  on success.
+
+- Product Edit Drawer: Slide-in form with fields (Name, Slug, Category
+  dropdown from API, Material, Available Sizes as comma input parsed
+  into size objects, Min Order Qty, Short Description, Description
+  with AI Generation button, Image upload with FileReader base64
+  conversion and preview with remove capability).
+
+- AI Description Generator Button: Integrated trpc.ai.generateDescription
+  to auto-generate SEO-optimized product descriptions with a Wand2
+  icon button. Shows spinner during generation, fills the description
+  textarea on success.
+
+- Create/Update Mutations: Both invalidate product list cache on
+  completion for instant UI refresh.
+
+────────────────────────────────────────────────────────────────────────────────
+B.18  ADMIN LOGIN — AUTHENTICATION FLOW
+      File: src/pages/admin/AdminLogin.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Built the admin login page:
+
+- Full-screen dark maroon background with cream text, centered card
+  (max-w-md).
+
+- Shield icon branding, "Admin Portal" title, "Delta Industries
+  Management Dashboard" subtitle.
+
+- Form: Email input, Password input with show/hide toggle (Eye/EyeOff
+  icons). Error display with red-tinted alert box and AlertCircle icon.
+
+- Submit: "Sign In" button with cream background (inverted from dark
+  background). Shows "Signing in..." during submission.
+
+- Auto-Redirect: On mount, checks trpc.admin.me to see if already
+  authenticated. If logged in, immediately redirects to dashboard
+  with replace: true, showing nothing to prevent login page flash.
+
+- Footer: "Delta Industries — Authorized Personnel Only".
+
+────────────────────────────────────────────────────────────────────────────────
+B.19  ADMIN LAYOUT — SIDEBAR NAVIGATION
+      File: src/pages/admin/AdminLayout.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Built the admin layout with authentication guard:
+
+- Auth Guard: Checks session via trpc.admin.me on mount. Shows loading
+  state on dark background. Redirects to /admin/login if not
+  authenticated. Returns null during auth check.
+
+- Fixed Sidebar (w-64, h-screen): Dark maroon background with cream
+  text. Header with Shield icon + "Delta Admin" + admin name.
+
+- Navigation: 4 links (Dashboard, Enquiries, Products, Categories)
+  with lucide-react icons. Active link highlighted with cream
+  background (#ffffe3/10) and ChevronRight arrow. Inactive links
+  muted with hover lightening.
+
+- Sign Out: Bottom of sidebar, LogOut icon, uses trpc.admin.logout
+  mutation, navigates to /admin/login on success.
+
+- Main Content: flex-1 ml-64 (offset for sidebar), renders child
+  routes via <Outlet />.
+
+────────────────────────────────────────────────────────────────────────────────
+B.20  APP ROUTER & LAYOUT ARCHITECTURE
+      File: src/App.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+Configured the application's routing and provider architecture:
+
+- QueryClient: Configured with retry: 1 and staleTime: 5 minutes.
+
+- Provider Hierarchy: trpc.Provider → QueryClientProvider →
+  TooltipProvider → BrowserRouter.
+
+- Public Layout: Renders Navbar + page content (Outlet) + ChatWidget
+  (floating FAB on all public pages).
+
+- Routes: 10 public routes (Index, Products, ProductDetail, About,
+  Quality, Testimonials, Contact, CustomOrders, Search, NotFound)
+  and 5 admin routes under AdminLayout with custom AdminNotFound
+  catch-all.
+
+- ScrollToTop: Component that resets scroll position to top on every
+  route change.
+
+- AdminNotFound: Custom 404 for admin area with brand colors and
+  "Back to Dashboard" link.
+
+================================================================================
+SUMMARY OF WORK
+================================================================================
+
+Jashanjot Singh contributed across both frontend and backend:
+
+BACKEND/INTEGRATION:
+  - AI-tRPC Router (5 endpoints with Zod validation)
+  - Database search engine (Meilisearch → PostgreSQL migration)
+  - Vite dev server configuration (tRPC proxy, cookies, dependencies)
+  - Development scripts (concurrently-based workflow, DENO_DIR fix)
+  - CI/CD cleanup
+  - Package management (deno.lock, dependencies)
+  - README updates
+
+FRONTEND:
+  - Home page hero section (5 iterations to final design)
+  - Navigation bar (scroll-aware show/hide with animations)
+  - Home page layout + 6 content sections
+  - Search page with AI-powered query understanding
+  - Products page with category filters and real images
+  - Product detail page with AI similar products
+  - About page (complete redesign with bento grid, carousels)
+  - Quality page (4-step QA process)
+  - Contact page (form + WhatsApp integration)
+  - Admin dashboard (charts, stats, AI insights)
+  - Admin products management (CRUD + AI description generator)
+  - Admin login (authentication flow)
+  - Admin layout (sidebar navigation + auth guard)
+  - App routing and provider architecture
+  - Integration of all AI features into frontend pages
+
+================================================================================
+  END OF REPORT — JASHANJOT SINGH
+================================================================================

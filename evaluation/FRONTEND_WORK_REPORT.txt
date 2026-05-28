@@ -1,0 +1,1722 @@
+================================================================================
+  FRONTEND WORK REPORT — DELTA RECOGNITION HUB
+  Period: 2026-05-26 to 2026-05-28
+  Based on 12 commits after base commit 8fdccf8
+================================================================================
+
+TABLE OF CONTENTS
+────────────────────────────────────────────────────────────────────────────────
+  1.  AI Chatbot Widget System (6 NEW Components)
+  2.  Hero Section — Home Page (5 Major Rewrites)
+  3.  Navigation Bar — Scroll-Aware Animations
+  4.  Home Page Sections (7 Components)
+  5.  Search Page — AI-Powered Natural Language Search
+  6.  Products Page — Listing & Category Filters
+  7.  Product Detail Page — with AI Similar Products
+  8.  About Page — Complete Redesign
+  9.  Quality Page — Quality Assurance & CTA
+  10. Contact Page — Enquiry Form & WhatsApp Integration
+  11. Admin Dashboard — Charts, Stats & AI Insights
+  12. Admin Products Management — CRUD with AI Description Generation
+  13. Admin Login — Authentication Flow
+  14. Admin Layout — Sidebar Navigation
+  15. App Router & Layout Architecture
+  16. Global CSS — Custom Fonts, Scrollbars, Design Tokens
+  17. Product Image Mapping Utility
+  18. Vite Configuration
+  19. Aggregate Summary & Statistics
+================================================================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+1.  AI CHATBOT WIDGET SYSTEM (6 NEW COMPONENTS)
+    Files: src/components/chat/ChatWidget.tsx, ChatFAB.tsx, ChatPanel.tsx,
+           ChatMessage.tsx, ProductCard.tsx, QuickReplies.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+1.1  ChatWidget.tsx — Root Orchestrator
+──────────────────────────────────────────
+The entry point component that manages the open/closed state of the
+chatbot. Uses a simple `useState(false)` for the `isOpen` toggle.
+
+- Renders two child components: ChatFAB (the floating action button) and
+  ChatPanel (the slide-up chat panel).
+- Passes `isOpen` state down to both children and an `onClose` callback
+  to ChatPanel so it can dismiss itself.
+- Acts as a clean separation layer — all the complexity lives in ChatPanel.
+- Exported as default and mounted in App.tsx's PublicLayout after the
+  `<Outlet />`, making the chatbot available on every public-facing
+  page of the website.
+
+1.2  ChatFAB.tsx — Floating Action Button
+───────────────────────────────────────────
+A circular floating button fixed at the bottom-right corner of the
+viewport that opens/closes the chat panel.
+
+Props:
+  - onClick: () => void — toggles the chat panel visibility.
+  - isOpen: boolean — determines which icon to show.
+
+Styling:
+  - fixed bottom-6 right-6 z-50
+  - 56x56 pixels (w-14 h-14)
+  - rounded-full shape
+  - Background: #35020D (the brand's deep maroon)
+  - Text color: #ffffe3 (cream/ivory)
+  - shadow-lg for depth elevation
+
+Animations (framer-motion):
+  - whileHover: { scale: 1.05 } — grows slightly on hover for feedback.
+  - whileTap: { scale: 0.95 } — presses down on click/tap.
+
+Icon Toggle:
+  - When isOpen is true: Shows an X (close) icon — two SVG lines
+    forming a cross.
+  - When isOpen is false: Shows a chat bubble icon — SVG path drawing
+    a speech bubble shape (the standard chat icon).
+
+Accessibility:
+  - aria-label dynamically changes: "Close chat" when open, "Open chat"
+    when closed — this provides context for screen reader users.
+
+1.3  ChatPanel.tsx — Main Chat Interface (269 lines)
+───────────────────────────────────────────────────────
+THE core chat component — a slide-up panel with full conversation
+capability, auto-generated smart chips, and product card rendering.
+
+State Management:
+  - messages: Message[] — array of chat messages, initialized with a
+    single WELCOME_MESSAGE from the assistant.
+  - input: string — current textarea input value.
+  - isLoading: boolean — tracks whether an AI response is being awaited.
+
+Refs:
+  - messagesEndRef: HTMLDivElement — for auto-scrolling to the latest
+    message.
+  - inputRef: HTMLTextAreaElement — for auto-focusing after send.
+
+Message Interface:
+  interface Message {
+    id: string;
+    role: "user" | "assistant";
+    content: string;
+    products?: ProductData[];    // product cards to render
+    isStreaming?: boolean;       // for typewriter animation
+  }
+
+Welcome Message:
+  A hardcoded initial assistant message: "Good day. I am Delta
+  Assistant, representing Delta Industries — trophy and awards
+  manufacturers since 1998 in Jalandhar. How may I assist you with
+  your recognition needs?"
+  - Uses a fixed id "welcome" so it can be filtered out when sending
+    conversation history to the AI (the system prompt already contains
+    this context).
+
+Panel Appearance & Animation:
+  - Fixed positioning: bottom-24 right-6
+  - Width: calc(100vw - 3rem) capped at max-w-[440px]
+  - Height: calc(100vh - 7rem) capped at max-h-[750px]
+  - Background: #ffffe3 (cream)
+  - Border: 1px solid #35020D at 15% opacity
+  - Shape: rounded-sm (subtle square corners)
+  - Shadow: shadow-2xl for prominent depth
+  - Font: font-sans
+  - Enter animation: slides up from opacity: 0, y: 20, scale: 0.95 to
+    full opacity and natural position in 0.25s with a custom cubic
+    bezier ease [0.16, 1, 0.3, 1].
+  - Exit animation: reverses the enter animation.
+
+Panel Header:
+  - Left side: The Delta brand mark (Greek capital letter Delta "Δ"
+    inside a bordered square box), "Delta Assistant" title (14px,
+    semibold, tracking-wide), "Online" status indicator (10px,
+    uppercase, muted).
+  - Right side: Close button with an X SVG icon (16x16 viewBox with
+    two diagonal lines).
+
+Messages Area:
+  - Flex-1 scrollable container (overflow-y-auto) with padding.
+  - Each message rendered as a <ChatMessage> component.
+  - Product cards attached to messages render below the text in a
+    vertical list with spacing.
+  - Loading indicator: Three small pulsing dots (w-1.5 h-1.5
+    rounded-full bg-[#35020D]/30 animate-pulse) with staggered
+    animation delays (0ms, 150ms, 300ms) — creates a ripple loading
+    effect.
+
+Smart Chips (Contextual Quick Replies):
+  A sophisticated `generateChips()` function analyzes the last
+  assistant message to generate up to 3 contextual suggestion buttons.
+
+  Detection Logic (3 checks before generating chips):
+    1. asksQuestion: Regex `/[?]/` — checks if the message ends with
+       a question mark.
+    2. offersOptions: Regex matching phrases like "would you like",
+       "let me know", "shall i", "may i", "can i help", "how may i",
+       "what would you", "which one", "interested in".
+    3. isFinalAnswer: Regex matching definite closing phrases like
+       "hope this helps", "that covers", "those are", "this is the",
+       "thank you for", "feel free to reach", "contact us directly",
+       "submitted successfully".
+
+  Chip Suppression Rules:
+    - If the AI gave a definitive answer AND didn't ask a question —
+      NO chips shown (the conversation is considered complete).
+    - If the AI didn't ask a question AND didn't offer options —
+      NO chips shown (no follow-up needed).
+
+  Keyword-to-Chip Mappings (13 categories):
+    If the AI's message contains certain keywords, relevant chips are
+    auto-generated:
+    - "wood" or "wooden" → "Show me more wooden trophies"
+    - "acrylic" → "What acrylic awards do you have"
+    - "metal", "gold", "silver" → "Show metal cup options"
+    - "crystal" → "Tell me about crystal trophies"
+    - "plastic", "economy", "budget", "cheap", "affordable" →
+      "Browse budget-friendly options"
+    - "medal" → "What medals are available"
+    - "shield", "plaque" → "Shields and plaques details"
+    - "corporate", "gift", "executive" → "Corporate gift options"
+    - "price", "pricing", "quote", "cost", "rupees", "rs" →
+      "Get a price estimate"
+    - "order", "ordering", "enquiry", "enquire", "buy", "purchase" →
+      "Submit an enquiry"
+    - "custom", "personalize", "engrav", "logo" →
+      "How does customization work"
+    - "manufacturing", "process", "facility", "made" →
+      "Tell me about your facility"
+    - "delivery", "shipping", "timeline" →
+      "What is the delivery timeline"
+
+  Fallback Chips:
+    - If no keyword-matched chips generated but the AI asked a question:
+      Adds "Tell me more".
+    - If the AI offered options:
+      Adds "Show me the options".
+    - Maximum 3 chips returned (via `.slice(0, 3)`).
+
+  Chip Rendering:
+    - Displays in a horizontal scrollable row with thin scrollbar
+      (`.chips-scroll` CSS class).
+    - Each chip is a pill button: rounded-full, border, text-xs
+      font-medium, whitespace-nowrap.
+    - Hover effect: background fills to 5% opacity, border darkens to
+      40% opacity, text color deepens.
+    - Clicking a chip calls handleSend() with the chip text as the
+      message — same as typing and pressing Enter.
+    - Chips row only renders when NOT loading and chips array is
+      non-empty (condition: !isLoading && chips.length > 0).
+
+Input Area:
+  - Textarea (rows=1) that auto-grows through browser default behavior.
+  - Enter key sends (without Shift); Shift+Enter adds newline.
+  - Disabled state during loading (greyed out, cursor-not-allowed).
+  - Placeholder: "Type your message..."
+  - Styling: bg-[#35020D]/5 (5% maroon background), rounded-sm,
+    focus state changes background to 8% opacity.
+
+Send Button:
+  - 36x36px square, rounded-sm.
+  - Background: #35020D, text: #ffffe3.
+  - Disabled when input is empty or loading (opacity drops to 30%).
+  - Icon: An arrow/Send SVG (line + polygon creating a paper plane
+    shape), 14x14 viewBox, strokeWidth 2.5.
+
+Send Handler (handleSend):
+  Flow:
+  1. Validates input is non-empty and not already loading.
+  2. Creates a user message with id = Date.now().toString().
+  3. Appends the user message to the messages array.
+  4. Clears the input field.
+  5. Sets isLoading = true.
+  6. Creates a placeholder assistant message (id = Date.now()+1)
+     with empty content and isStreaming = true — triggers the
+     typewriter animation in ChatMessage.
+  7. Filters conversation history — excludes the welcome message
+     (id "welcome") and any streaming messages to avoid sending
+     incomplete data to the API.
+  8. Calls chatMutation.mutateAsync() with the filtered conversation.
+  9. On success: Updates the placeholder assistant message with the
+     AI's response content and any product cards, sets isStreaming
+     to false.
+  10. On error: Checks if the error message contains "Rate limit" or
+      "429" — if so, shows a rate-limit warning message asking to
+      wait a few seconds. Otherwise shows a generic error message
+      with contact info.
+  11. Finally: Sets isLoading to false and auto-focuses the input
+      after 100ms.
+
+Keyboard Handler (handleKeyDown):
+  - On Enter without Shift: Prevents default (newline insertion),
+    calls handleSend().
+
+Auto-Scroll:
+  - useEffect scrolls to messagesEndRef whenever messages change,
+    using behavior: "smooth" for a pleasant scrolling experience.
+
+Auto-Focus:
+  - When the panel opens (isOpen transitions to true), the input
+    field is focused after 300ms (timeout allows the open animation
+    to start before focus shifts).
+
+1.4  ChatMessage.tsx — Message Rendering with Markdown & Typewriter (78 lines)
+─────────────────────────────────────────────────────────────────────────────────
+Renders individual chat messages with markdown parsing and a typewriter
+effect for streaming responses.
+
+Props:
+  - message: { id, role, content, isStreaming? }
+  - isLast: boolean (used for loading indicator logic)
+
+Markdown Parser (parseContent function):
+  Converts AI response text to HTML with 4 transformations:
+  1. **bold** → <strong>bold</strong>
+  2. *italic* → <em>italic</em>
+  3. Double newlines → <br/><br/> (paragraph breaks)
+  4. Single newlines → <br/> (line breaks)
+
+  Earlier versions (from commit 2) had a much more complex parser
+  supporting inline code, headers, horizontal rules, lists, and
+  tables. This was simplified in commit 6 to the 4 core
+  transformations above because the AI's system prompt explicitly
+  forbids markdown tables and headers, making those parsing rules
+  unnecessary.
+
+Typewriter Effect:
+  - When message.isStreaming is true, the component uses a
+    `displayedContent` state to gradually reveal text.
+  - Mechanism: A useEffect with a setTimeout(10ms) timer that
+    increments the displayed length by 3 characters at a time until
+    the full content is reached.
+  - The content prop gets updated when the AI response arrives,
+    and the effect catches up to the new length.
+  - A blinking cursor element (w-1.5 h-4 bg-[#35020D]/40 animate-pulse)
+    appears at the end of the text during streaming.
+
+Rendering:
+  - User messages: Right-aligned (justify-end), dark maroon background
+    (#35020D), cream text (#ffffe3) — creates a chat bubble effect.
+  - Assistant messages: Left-aligned (justify-start), light background
+    (#35020D/5), left border accent (border-l-2 border-[#35020D]/20).
+  - User content is plain text with whitespace pre-wrap.
+  - Assistant content uses dangerouslySetInnerHTML to render parsed
+    markdown HTML.
+  - Max width: 85% of the panel (max-w-[85%]).
+
+1.5  ProductCard.tsx — Chat Product Display (65 lines)
+─────────────────────────────────────────────────────────
+Renders product recommendations inside the chat panel with real images
+and details.
+
+Props:
+  - product: { id, name, slug, category, material, shortDesc,
+    imageUrl, priceHint }
+
+Category Slug Mapping:
+  - "Wooden Trophies" → "wooden-trophies"
+  - "Plastic Trophy Series" → "plastic-trophy-series"
+  Used for image resolution in getProductImageUrl().
+
+Layout: Horizontal card (flex row) wrapped in a <Link> to the
+product detail page (/product/:slug).
+
+Image Thumbnail:
+  - 64x64px (w-16 h-16) shrink-0
+  - Light maroon background (#35020D/5)
+  - Uses getProductImageUrl() to resolve the real product image.
+  - Fallback: If image fails to load (onError), removes the img
+    element from DOM. Shows a Delta symbol ("Δ") as placeholder
+    when no image URL exists.
+
+Text Content (flex-1, min-w-0 for truncation):
+  - Product name: text-xs font-semibold, truncate.
+  - Category & Material: text-[10px] text-[#35020D]/50 uppercase
+    tracking-wide.
+  - Short Description: text-xs text-[#35020D]/70, truncate
+    (conditional on existence).
+  - Price Hint: text-xs font-medium (conditional on existence).
+
+1.6  QuickReplies.tsx — Alternative Chip Display (24 lines)
+───────────────────────────────────────────────────────────────
+A standalone component for displaying quick reply chips (used as an
+alternative to the inline chips in ChatPanel).
+
+Props:
+  - replies: string[] — array of chip labels.
+  - onSelect: (reply: string) => void — callback when a chip is
+    clicked.
+
+Rendering:
+  - Returns null if replies array is empty.
+  - Flex-wrap row of pill buttons with the same styling as the
+    chat panel's smart chips.
+  - Each chip click calls onSelect() with the chip's text.
+
+────────────────────────────────────────────────────────────────────────────────
+2.  HERO SECTION — HOME PAGE (5 MAJOR REWRITES)
+    File: src/components/home/HeroSection.tsx (280 lines, final)
+────────────────────────────────────────────────────────────────────────────────
+
+The HeroSection is the most heavily iterated component in the codebase.
+It underwent 5 distinct major rewrites across commits 3, 8, 9, 10, and 12
+before reaching its final form.
+
+2.1  Final Design (Commit 12)
+───────────────────────────────
+This is the current production version.
+
+Section Structure:
+  - Full-width section with cream background (#ffffe3) and maroon text
+    (#35020D).
+  - Padding: pt-28 pb-8 on mobile, lg:pt-48 lg:pb-12 on desktop.
+  - Content wrapper: max-w-[1536px] with scale-95 lg:scale-90
+    transform-gpu origin-top (creates a subtle zoom-out effect for
+    refined visual scaling).
+  - Text selection colors: maroon background (#35020D) with white
+    text — custom ::selection styling.
+  - overflow-hidden to contain animations.
+
+Hero Text Block (centered, max-w-4xl):
+  Animated with framer-motion:
+  - initial: opacity: 0, y: 20
+  - animate: opacity: 1, y: 0
+  - transition: duration 0.8s, custom cubic bezier [0.16, 1, 0.3, 1]
+
+  Headline:
+    - "Premium Recognition Awards for Corporate, Sports & Academic
+      Excellence"
+    - Font: text-4xl md:text-5xl lg:text-[3.5rem]
+    - Leading: [1.15] (very tight line height for impact)
+    - Tracking: tight
+    - "Recognition Awards" in gold (#795900) — the only gold accent
+      on the page, drawing attention to the key phrase.
+
+  Subtitle:
+    - "Since 1998, Delta Industries has been the trusted manufacturer
+      of bespoke trophies and awards, architecting legacies for
+      prestigious events."
+    - Font: text-base md:text-lg, font-medium, leading-relaxed.
+    - Color: #35020D/80 (slightly muted maroon).
+
+  CTA Buttons (flex-col sm:flex-row):
+    - "Explore Products" → /products: filled rounded-full button,
+      bg-[#35020D], white text, hover:scale-105, shadow-md
+      hover:shadow-lg.
+    - "Contact Us" → /contact: outlined rounded-full button,
+      border border-[#35020D]/20, maroon text, hover:scale-105,
+      hover:bg-[#35020D]/5.
+    - Both: px-8 py-3.5, text-xs md:text-sm, font-semibold,
+      tracking-widest, uppercase.
+
+Asymmetrical Grid Showcase (12-column grid, lg:h-[500px]):
+  Animated with framer-motion (same animation as text block but
+  with 0.2s delay).
+
+  Column 1 (lg:col-span-5) — "Crafting Excellence" Card:
+    - Height: h-[350px] lg:h-full.
+    - Background: #e4e4c9 (warm muted green-grey), rounded-2xl,
+      shadow-sm, border border-[#35020D]/5.
+    - Gradient Overlay: bg-gradient-to-b from-white/60 to-transparent
+      (creates a light wash at the top).
+    - Decorative Elements:
+      · Large "DELTA" watermark: absolute, centered, font-serif,
+        text-[140px] lg:text-[180px], #35020D/15 opacity, tracking-
+        tighter, pointer-events-none.
+      · 3 star icons (✦): positioned at different locations with
+        animate-pulse and staggered animation delays (0ms, 0.5s, 1s)
+        for a subtle twinkling effect.
+    - "Trending" Badge:
+      · Positioned top-left (absolute top-6 left-6).
+      · Rounded-full pill with green pulsing dot (w-1.5 h-1.5
+        bg-green-600 animate-pulse).
+      · Background: bg-white/50 backdrop-filter blur-md.
+      · Text: text-[10px] font-bold uppercase tracking-widest.
+    - Title Area (z-10, shrink-0):
+      · "Crafting Excellence" heading: text-2xl lg:text-4xl
+        font-medium, tracking-tight.
+      · Description: text-base lg:text-lg, #35020D/80, max-w-sm,
+        hidden on small screens (hidden sm:block).
+    - Image Area (flex-1, relative):
+      · Animated crossfade carousel using AnimatePresence.
+      · Each image: motion.img with key={currentImageIndex},
+        initial: { opacity: 0 }, animate: { opacity: 1 },
+        exit: { opacity: 0 }, transition: duration 0.3s.
+      · Images positioned absolute inset-0 with object-contain,
+        drop-shadow-2xl, scale-[1.15] origin-center.
+      · Sources: 6 images cycling every 3.5 seconds — hero1.png,
+        hero2.png, hero3.png, bgless1.png, bgless2.png, bgless3.png.
+      · Container gets group-hover:scale-105 transition on hover.
+    - "View Products" Button:
+      · Rounded-full, border, semi-transparent white background,
+        backdrop-blur-md, hover:-translate-y-0.5 lift effect.
+      · Shadow effect underneath from a blurred maroon circle.
+
+  Column 2 (lg:col-span-4) — "In-House Manufacturing" Card:
+    - Height: h-[300px] lg:h-full.
+    - Background image (cream_trophy_bg.png) via inline style:
+      backgroundImage, bg-cover, bg-center.
+    - hover:scale-105 on the background image container.
+    - Gradient overlay: from-[#e4e4c9] via-[#e4e4c9]/60 to-transparent
+      — fades the image into the card's background color.
+    - Decorative border frame: absolute inset-4 border border-
+      [#35020D]/10 rounded-xl, group-hover:scale-[0.98] (slight
+      contraction on hover).
+    - Content (relative z-20, positioned at bottom):
+      · "In-House Manufacturing" heading (2 lines with <br/>).
+      · "Precision crafting in our advanced facilities." description.
+      · "Learn More" link → /custom-orders, semi-transparent white
+        button with backdrop-blur-md.
+
+  Column 3 (lg:col-span-3) — Two Stacked Cards:
+    - Responsive: lg:flex-col (vertical stack) on desktop, flex-row
+      (horizontal) on mobile.
+    - Each card is lg:h-1/2, flex-1.
+
+    Top Card — "Flexible Sizes":
+      - White gradient overlay from top.
+      - Radial glow behind image: bg-white/50 rounded-full blur-2xl.
+      - Image: /IMAGES/herosection/image.png, scaled 2x horizontally
+        and 1.65x vertically (scale-x-[2.00] scale-y-[1.65]) for
+        the desired visual proportion.
+      - Container: group-hover:scale-[1.15].
+      - Labels: "Flexible Sizes" in a pill badge, "Custom Dimensions"
+        subtitle.
+
+    Bottom Card — "Stats Showcase" (Legacy Stats Carousel):
+      - Gradient overlay on the card.
+      - Subtle background texture: hero1.png at 3% opacity with
+        mix-blend-multiply — creates a faint watermark effect.
+      - "Delta Legacy" label (text-[9px] lg:text-[10px], font-bold,
+        uppercase, 40% opacity, tracking-[0.2em]).
+      - Animated Stat Display using AnimatePresence mode="wait":
+        · 5 stats cycling every 2.5 seconds:
+          "27+" / "Years of Craft"
+          "1.5Cr+" / "Trophies Delivered"
+          "1998" / "Established Year"
+          "11-25" / "Skilled Artisans"
+          "5000+" / "Sq Ft Facility"
+        · Transition: enters from opacity:0, y:15, scale:0.95 →
+          settles at natural position → exits to opacity:0,
+          y:-15, scale:0.95.
+        · Duration: 0.4s, ease "easeOut".
+        · Value text: text-4xl lg:text-5xl font-black font-serif
+          (uses the serif font for a premium feel).
+        · Label text: text-[10px] lg:text-xs font-bold uppercase
+          tracking-widest.
+
+2.2  Evolution History (Commits 3, 8, 9, 10, 12)
+────────────────────────────────────────────────────
+  Commit 3: Changed from fixed height to min-height. Added 3 hardcoded
+            stats (27+, 1.5Cr+, 5000). Bottom area changed from
+            tagline-only to tagline + 3 stat cards.
+  Commit 8: Major rewrite — introduced background image carousel with
+            AnimatePresence crossfade and blur effects. Dark overlay
+            for text readability.
+  Commit 9: Complete redesign — switched to centered headline +
+            asymmetrical 12-column grid with 3 columns of product
+            cards. Introduced gold (#795900) accent on "Recognition
+            Awards". CTA buttons styled with rounded-full shapes.
+  Commit 10: Expanded hero images to 6 (added bgless variants).
+             Added decorative elements (watermark, stars, trending
+             badge). Column 2 changed to "In-House Manufacturing".
+             Column 3 changed to "Flexible Sizes" + "Classic Cup".
+  Commit 12: Replaced "Classic Cup" with animated "Stats Showcase"
+             carousel cycling through 5 company metrics. Refined
+             padding and spacing (lg:pt-48). Enhanced visual polish
+             with drop shadows and backdrop blur effects.
+
+────────────────────────────────────────────────────────────────────────────────
+3.  NAVIGATION BAR — SCROLL-AWARE ANIMATIONS
+    File: src/components/layout/Navbar.tsx (50 lines changed)
+────────────────────────────────────────────────────────────────────────────────
+
+3.1  Core Changes (Commit 9)
+──────────────────────────────
+The Navbar evolved from a simple visibility toggle (visible only when
+scrolled past 250px on the home page) to a sophisticated direction-
+aware show/hide system.
+
+Navigation Links Array:
+  const navLinks = [
+    { label: "Our Range", path: "/products" },
+    { label: "Manufacturing", path: "/custom-orders" },
+    { label: "Who We Are", path: "/about" },
+    { label: "Quality Focus", path: "/quality" },
+    { label: "Reviews", path: "/testimonials" },
+  ];
+
+New Scroll Behavior Logic:
+  State: isVisible (boolean) replaces the old scrolled (boolean).
+
+  The scroll handler (handleScroll) implements three behaviors:
+  1. Always show if the mobile menu is open (isOpen === true).
+  2. Always show if scrollY < 50 (at the very top of the page).
+  3. When scrolling down AND past 100px: HIDE the navbar.
+  4. When scrolling up: SHOW the navbar.
+  5. After scrolling stops (400ms debounce via setTimeout): SHOW
+     the navbar — ensures nav is accessible when the user pauses.
+
+  Performance:
+  - Uses { passive: true } on the scroll event listener for better
+    scroll performance (no preventDefault needed).
+  - Proper cleanup: removes event listener and clears timeout in
+    the useEffect return function.
+  - Dependency array includes isOpen so the handler re-binds when
+    the mobile menu toggles.
+
+Navbar Animation (framer-motion AnimatePresence):
+  - The entire <header> is wrapped in AnimatePresence.
+  - When isVisible is false, the header slides up and fades out:
+    exit: { y: -100, opacity: 0 }.
+  - When isVisible is true, the header slides down and fades in:
+    initial: { y: -100, opacity: 0 } → animate: { y: 0, opacity: 1 }.
+  - Transition: duration 0.4s, ease [0.16, 1, 0.3, 1].
+
+Desktop Navigation:
+  - Hidden on mobile (hidden lg:flex).
+  - Each nav link has a group class and an underline animation:
+    a 1.5px line that expands from w-0 to w-full on hover with
+    transition-all duration-300 ease-out.
+  - Search icon link (Search from lucide-react) with hover background.
+  - "Contact" CTA button: filled maroon rounded-full button with
+    shadow-sm, ml-4 for spacing from nav links.
+
+Mobile Navigation (AnimatePresence):
+  - Full-screen overlay (height: "100vh") that slides down from
+    the header.
+  - Each nav link at text-2xl font-normal tracking-tight.
+  - Search link with icon.
+  - "Contact" button: full-width, maroon background, rounded-full,
+    separated by a border-t divider.
+
+Brand Mark:
+  - Greek letter Delta "Δ" in a bordered square box (w-8 h-8).
+  - "Delta" text next to it: font-semibold, tracking-wide, uppercase.
+  - Both elements in a group: border darkens on hover.
+
+3.2  SmartNavbar.tsx (Reference)
+──────────────────────────────────
+A separate SmartNavbar.tsx file exists in the layout directory but is
+currently not imported or used in the app — it appears to be a previous
+or alternative implementation. It is a minimal file (1 line effective).
+
+────────────────────────────────────────────────────────────────────────────────
+4.  HOME PAGE SECTIONS (7 COMPONENTS)
+    Files: src/components/home/HeroSection.tsx, TrustSection.tsx,
+           CategoriesSection.tsx, ManufacturingSection.tsx,
+           WhyDeltaSection.tsx, GallerySection.tsx, CTABand.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+The home page (Index.tsx) assembles 7 components in sequence:
+  HeroSection → TrustSection → CategoriesSection →
+  ManufacturingSection → WhyDeltaSection → GallerySection → CTABand
+
+4.1  Index.tsx — Home Page Layout
+───────────────────────────────────
+  - Minimal orchestration component.
+  - Imports all 7 section components plus Footer.
+  - Wraps everything in a flex-col min-h-screen overflow-clip
+    container with cream background and maroon text.
+  - Navbar is rendered by the PublicLayout wrapper in App.tsx,
+    so Index only manages main content + Footer.
+
+4.2  TrustSection.tsx — "Who We Are" Timeline (44 lines changed)
+───────────────────────────────────────────────────────────────────
+  Added a company history timeline with milestones:
+
+  Section Layout:
+    - Full-height section with top and bottom borders
+      (border-t border-b border-[#35020D]/20).
+    - 12-column grid: left column (4 cols) for label, right column
+      (8 cols) for content.
+
+  Milestone Timeline (4 entries):
+    1998: "Founded in Jalandhar, Punjab as a small trophy workshop"
+    2010: "Expanded to 5,000 sq ft in-house manufacturing facility"
+    2018: "Introduced CNC machining and laser engraving capabilities"
+    2025: "Launched Delta Recognition Hub — replacing IndiaMART with
+           our own digital platform"
+
+  Timeline Visual Design:
+    - Left border line (border-l-2 border-[#35020D]/15).
+    - Each entry: relative positioning, left padding (pl-8),
+      circular dot indicator (w-3 h-3 rounded-full border-2
+      border-[#35020D]/30 bg-[#ffffe3]) positioned at the left edge.
+    - Year: text-sm font-semibold tracking-wide.
+    - Description: text-sm text-[#35020D]/60 font-normal next to
+      the year.
+
+  Tagline: "For 27 years, we have manufactured trophies, awards,
+    and recognition pieces — every single one made under one roof
+    in Jalandhar, Punjab."
+
+  Description paragraph: Explains in-house capabilities (woodworking,
+    metal casting, acrylic fabrication, laser engraving, CNC machining,
+    finishing) with 11-25 artisans. "No outsourcing. No middlemen."
+
+  CTA link: "More about Who We Are" → /about with a small circle
+    bullet indicator.
+
+4.3  CategoriesSection.tsx — Product Categories Grid
+───────────────────────────────────────────────────────
+  Displays the 9 product categories as a clickable grid.
+
+  Data Sources:
+    - Primary: API categories from trpc.category.getAll.useQuery().
+    - Fallback: Hardcoded fallbackCategories array (9 categories)
+      used when the API hasn't loaded yet or fails.
+
+  Category Images:
+    - Uses static imported JPG assets mapped by slug:
+      wooden-trophies → catWooden
+      acrylic-awards → catAcrylic
+      metal-cups-trophies → catMetal
+      crystal-trophies → catCrystal
+      plastic-trophy-series → catPlastic
+      custom-medals → catMedals
+      trophy-bases-accessories → catBases
+      corporate-gift-mementos → catCorporate
+      shields-plaques → catShields
+
+  Grid: 1 column mobile, 2 tablet, 3 desktop (grid-cols-1
+    sm:grid-cols-2 lg:grid-cols-3).
+
+  Each Category Card:
+    - Full-card <Link> to /products?category={slug}.
+    - Square image container (aspect-square) with overflow-hidden
+      and light maroon background (#35020D/5).
+    - Image: group-hover:scale-105 transition-transform duration-700
+      with custom eased timing.
+    - Category name below image (text-lg md:text-xl font-medium
+      tracking-tight).
+    - Underline animation: a small line (w-8 h-[1px]) that expands
+      to full width on hover (group-hover:w-full), duration-500.
+
+  Header:
+    - Left: "Materials & Categories" heading + description.
+    - Right: "View Catalog" link → /products with arrow indicator.
+
+4.4  ManufacturingSection.tsx — In-House Capabilities
+────────────────────────────────────────────────────────
+  Split layout (lg:grid-cols-2) showcasing manufacturing expertise.
+
+  Left Column — Image:
+    - Large facility image (manufacturing.jpg) with grayscale filter,
+      reduced brightness (brightness-75).
+    - On hover: grayscale removed (grayscale-0), brightness restored
+      (brightness-100), transition 700ms eased.
+    - Container: h-[600px], object-cover.
+    - Datatag overlay: absolutely positioned (-bottom-6 -right-6),
+      cream background with "27+ Years" stat, shadow-2xl.
+
+  Right Column — Content:
+    - "In-House Manufacturing & Customization" heading.
+    - Description paragraph about Jalandhar facility.
+    - 4 feature cards in a 2x2 grid (grid-cols-2):
+      1. Advanced Machinery (Cog icon) — CNC, laser engraving.
+      2. Custom Designs (Paintbrush icon) — personalized engravings.
+      3. Material Expertise (Layers icon) — wood, metal, acrylic,
+         crystal, marble.
+      4. Bulk Production (Zap icon) — scalable manufacturing.
+    - Each feature: icon (changes opacity on group-hover), title
+      (uppercase tracking-wide), description.
+    - "Learn About Manufacturing" CTA link → /custom-orders.
+
+4.5  WhyDeltaSection.tsx — The Delta Advantage
+────────────────────────────────────────────────
+  Numbered list of 8 reasons to choose Delta:
+
+  Layout:
+    - Sidebar (lg:col-span-5): "The Delta Advantage" heading,
+      sticky positioning (sticky top-32 lg:top-48) so it remains
+      visible while scrolling through the reasons.
+    - Content (lg:col-span-7): 8 reason items with numbered labels.
+
+  The 8 Reasons:
+    01. 27+ years of continuous manufacturing operations.
+    02. Direct manufacturer, no middlemen, best pricing.
+    03. Consistent quality across every batch and order.
+    04. 200+ products across wood, metal, acrylic, crystal & more.
+    05. Full customization: engraving, logos, sizes, materials.
+    06. Trusted by schools, colleges, corporates, and associations.
+    07. Pan-India delivery with reliable logistics.
+    08. GST registered, fully compliant business operations.
+
+  Each Row:
+    - Number label: text-xs font-semibold tracking-widest, 40%
+      opacity, w-8, zero-padded (01, 02, ...).
+    - Text: text-base md:text-lg font-medium, 90% opacity.
+    - Hover effect: translates right 2px (group-hover:translate-x-2)
+      with transition-transform duration-500 ease-out.
+    - Separator: border-b border-[#1b1610]/10 between items;
+      first item also has border-t.
+
+4.6  GallerySection.tsx — Craftsmanship Showcase
+──────────────────────────────────────────────────
+  A dark-themed gallery section with 7 images.
+
+  Section:
+    - Dark maroon background (#35020D) with cream text (#ffffe3).
+    - Inverted selection colors (cream background, maroon text).
+
+  Image Grid: 2 columns mobile, 4 columns desktop (grid-cols-2
+    md:grid-cols-4).
+
+  7 Images:
+    - First image: md:col-span-2 md:row-span-2 (double-sized hero).
+    - Remaining 6: single cells.
+    - All images: grayscale with hover:grayscale-0, hover:scale-105
+      transition, duration-700.
+
+4.7  CTABand.tsx — Call to Action
+───────────────────────────────────
+  A centered CTA section at the bottom of the home page.
+
+  Heading: "Architecting Legacies, One Award at a Time"
+    text-4xl md:text-6xl lg:text-[5rem] font-normal tracking-tight.
+
+  Description: "Whether it's an annual sports day, corporate awards
+    ceremony, or academic excellence program — we manufacture custom
+    trophies tailored to your event."
+
+  Buttons (flex-wrap):
+    - "Request Custom Quote" → /contact: filled maroon.
+    - "Learn Construction" → /custom-orders: outlined.
+
+  All sections share consistent padding (py-20 md:py-32 after
+    commit 12's standardization) and animation patterns using
+    framer-motion whileInView with viewport margin -10%.
+
+────────────────────────────────────────────────────────────────────────────────
+5.  SEARCH PAGE — AI-POWERED NATURAL LANGUAGE SEARCH
+    File: src/pages/Search.tsx (141 lines with changes)
+────────────────────────────────────────────────────────────────────────────────
+
+5.1  UI Structure
+──────────────────
+  - Full-page search with a centered layout (max-w-2xl for the
+    search bar area).
+  - Heading: "Search Products" (text-4xl md:text-5xl, centered).
+  - Search input: Large text input with placeholder: "Try: golden
+    trophy for cricket tournament under 500 rupees...".
+
+5.2  AI Smart Search Integration
+───────────────────────────────────
+  State:
+    - query: raw input text.
+    - debouncedQuery: the query sent to the search API.
+    - aiResult: AISearchResult | null — AI-parsed search dimensions.
+    - isAiProcessing: boolean — loading state for AI analysis.
+
+  AISearchResult Interface:
+    {
+      interpretedAs?: string;    // Human-readable interpretation
+      category?: string | null;  // Matching category slug
+      material?: string | null;  // Detected material
+      budget?: string | null;    // budget/mid-range/premium
+      useCase?: string | null;   // sports/academic/corporate/etc.
+      size?: string | null;      // small/medium/large
+      keywords?: string[];       // Extracted search terms
+    }
+
+  handleSearch Flow:
+    1. If query has 3+ words (natural language detection), sends
+       the query to trpc.ai.smartSearch.useMutation().
+    2. While processing, shows "Understanding your request..." with
+       a spinning Loader2 icon.
+    3. On success: Sets aiResult, combines original query + extracted
+       keywords for broader search: [query, keywords.join(" ")]
+       .filter(Boolean).join(" ").
+    4. On failure: Falls back to the original query without AI
+       enhancement.
+    5. Short queries (< 3 words): Bypass AI, search directly.
+
+  removeAiFilter:
+    - Clears aiResult and searches with the raw query text.
+
+5.3  AI Interpretation Panel
+──────────────────────────────
+  When aiResult exists (and not processing):
+
+  Header:
+    - "Search understood as" label with Sparkles icon
+      (from lucide-react).
+    - "Clear" button to dismiss AI filters.
+
+  Interpretation: The interpretedAs text displayed prominently.
+
+  Filter Chips (conditional):
+    - Category: "Category: wooden trophies" pill.
+    - Material: "Material: metal" pill.
+    - Budget: "Budget: mid-range" pill.
+    - Event: "Event: sports" pill.
+    Each chip: text-xs, px-2.5 py-1, rounded-full, bg-[#35020D]/5,
+    border border-[#35020D]/10.
+
+  - All contained in a bordered card with cream background.
+  - Transitions: AnimatePresence with fade/slide animations.
+
+5.4  Search Results Grid
+───────────────────────────
+  Grid: sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4, gap-6.
+
+  Each Product Card:
+    - Full-card <Link> to /product/{slug}.
+    - Square image container (aspect-square) with light maroon
+      background.
+    - Image: Uses getProductImageUrl() for real product photos,
+      mix-blend-multiply opacity-90, group-hover:scale-105
+      transition-transform duration-500.
+    - Category name: text-xs font-semibold tracking-widest uppercase
+      opacity-60.
+    - Product name: font-medium, line-clamp-2.
+    - Price: "From Rs {priceMin}" (conditional).
+
+  Empty States:
+    - No results: Search icon + "No products found for {query}"
+      message.
+    - No query yet: Search icon + "Type a keyword..." + a hint
+      about natural language search.
+
+  Loading State: Centered Loader2 spinner with animate-spin.
+
+────────────────────────────────────────────────────────────────────────────────
+6.  PRODUCTS PAGE — LISTING & CATEGORY FILTERS
+    File: src/pages/Products.tsx (110 lines with changes)
+────────────────────────────────────────────────────────────────────────────────
+
+6.1  Layout
+─────────────
+  - Full-width section with cream background, min-h-screen.
+  - Header: "Catalog" label, "Our Products" headline (text-4xl
+    md:text-5xl lg:text-7xl font-normal), description paragraph.
+  - All animated with framer-motion fade-in.
+
+6.2  Category Filter Bar
+───────────────────────────
+  - Horizontal scrollable row of filter pills.
+  - Filter icon (lucide-react) on the left.
+  - Categories fetched from trpc.category.getAll.useQuery().
+  - "All" option always present.
+  - Active filter: filled maroon (#35020D) with cream text.
+  - Inactive filters: transparent with maroon border and text,
+    hover:border-[#35020D].
+  - Each pill: shrink-0 px-5 py-2.5 rounded-[2rem] text-sm
+    font-semibold transition-all duration-200.
+  - Uses URL search params (useSearchParams) for filter state,
+    making filters shareable/bookmarkable.
+  - Only renders when filterCategories.length > 1.
+
+6.3  Product Grid
+───────────────────
+  Loading State:
+    - 8 skeleton cards in the grid layout.
+    - Each skeleton: square div (aspect-square) with bg-[#35020D]/10
+      animate-pulse, plus 3 text skeleton lines below.
+
+  Product Cards:
+    - Grid: grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4.
+    - Each card: <motion.div> with stagger animation (delay: i * 0.04).
+    - Full-card <Link> wrapping image + text.
+    - Image: aspect-square, overflow-hidden, rounded-sm, border,
+      using getProductImageUrl().
+    - Hover: group-hover:scale-105 transition-transform duration-700.
+    - Category label: text-[10px] font-bold tracking-widest uppercase
+      #35020D/60.
+    - Product name: text-xl font-medium tracking-tight, group-hover:
+      opacity-70 transition-opacity.
+    - Short description: text-sm #35020D/70.
+    - Size labels: text-xs #35020D/50, joined with " · " separator.
+
+6.4  Data Flow
+────────────────
+  - Route: /products or /products?category={slug}
+  - Queries: trpc.product.getByCategory.useQuery() when a category
+    is selected, or all products when "all" is active.
+
+────────────────────────────────────────────────────────────────────────────────
+7.  PRODUCT DETAIL PAGE — WITH AI SIMILAR PRODUCTS
+    File: src/pages/ProductDetail.tsx (108 lines with changes)
+────────────────────────────────────────────────────────────────────────────────
+
+7.1  Skeleton Loader
+──────────────────────
+  A full DetailSkeleton component renders while loading:
+    - Centered breadcrumb skeleton (w-32 h-4).
+    - 12-column grid: left column (5 cols) with 3 image skeletons
+      (1 main + 3 thumbnail squares). Right column (7 cols) with
+      category label skeleton, title skeleton (w-3/4 h-16),
+      description skeleton, 3 bullet point skeletons.
+
+7.2  Main Product Display
+────────────────────────────
+  Breadcrumb: "Back to Products" link with a small circular bullet
+  indicator.
+
+  Image Gallery (lg:col-span-5):
+    - Single main image (was previously 1 main + 3 thumbnails).
+    - Square aspect ratio container (aspect-square) with light
+      maroon background.
+    - Image: object-cover mix-blend-multiply opacity-90.
+    - Fallback: Delta symbol ("Δ") at text-8xl when no image.
+
+  Product Details (lg:col-span-7):
+    - Category + Price label: text-sm font-semibold tracking-widest
+      uppercase.
+    - Product name: text-4xl md:text-5xl lg:text-7xl font-normal
+      leading-[1.05] tracking-tight.
+    - Description: prose-styled text from shortDesc or description.
+
+    Key Features (from material type):
+      - Hardcoded featuresByMaterial map:
+        wood: ["Handcrafted Hardwood", "Brass Engraving Plate",
+               "Hand-polished Finish"]
+        acrylic: ["Shatter-resistant", "Custom Color Inlays",
+                  "Laser Engravable"]
+        metal: ["Premium Metal Alloy", "Weighted Base",
+                "Gold / Silver Finish"]
+        crystal: ["Optical-grade Crystal", "Laser Engraving",
+                  "Presentation Box Included"]
+        plastic: ["Durable ABS Material", "Custom Full-color Print",
+                  "Bulk Order Pricing"]
+        marble: ["Solid Marble", "Felt-padded Base",
+                 "Engraved Nameplate"]
+        default: ["Customizable Design", "Premium Finish",
+                  "Bulk Order Available"]
+      - getFeaturesForMaterial() matches by the first word of the
+        material string.
+      - If product.isCustomizable, appends "Fully Customizable
+        (Logo / Text)" feature.
+      - Each feature: bullet point with small circular dot indicator.
+
+    Specifications Table:
+      - A grid-based table (border styling) with 6 rows:
+        Material, Category, Available Sizes, Min. Order Qty,
+        HSN Code (hardcoded "83062120"), Country of Origin
+        ("Made in India").
+      - Alternating backgrounds: label column (w-2/5) with
+        bg-[#35020D]/5, value column (w-3/5) with plain background.
+
+    About the Product (conditional):
+      - Full description text if available.
+
+    CTA: "Request Custom Quote" button → /contact?product={id},
+      outlined rounded-[2rem] with hover fill effect.
+
+7.3  AI Similar Products Section
+───────────────────────────────────
+  SimilarProducts Component:
+    - Uses trpc.ai.similarProducts.useMutation().
+    - Triggered on mount via useEffect with the current product slug.
+    - Returns null if no recommendations or empty array.
+
+    Grid: sm:grid-cols-2 lg:grid-cols-4, gap-6.
+
+    Each Recommendation Card:
+      - Full-card <Link> to /product/{slug}.
+      - aspect-[4/3] image container.
+      - Image via getProductImageUrl() with hover scale effect.
+      - Fallback: Delta symbol when no image.
+      - Category label (text-[10px] uppercase).
+      - Product name (text-sm font-semibold, line-clamp-2).
+      - Price hint (text-xs).
+
+────────────────────────────────────────────────────────────────────────────────
+8.  ABOUT PAGE — COMPLETE REDESIGN
+    File: src/pages/About.tsx (303 lines, nearly complete rewrite)
+────────────────────────────────────────────────────────────────────────────────
+
+8.1  Hero Section — Animated Image Card
+──────────────────────────────────────────
+  - Centered heading: "Who We Are" label + "About Delta Industries"
+    headline.
+  - Full-width image card (aspect-[4/5] md:aspect-[21/9]
+    lg:aspect-[2.5/1], rounded-2xl md:rounded-[2rem], shadow-2xl).
+  - 3 factory images (factory1.JPG, factory2.JPG, factory3.JPG)
+    crossfading in the background every 3.5 seconds via
+    AnimatePresence (duration 1.8s, easeInOut).
+  - Dark overlay: bg-[#35020D]/50 with backdrop-blur-[1px].
+  - Overlaid text content:
+    · Left side (md:w-3/5): Large description about Delta Industries
+      being a renowned manufacturer for 27 years.
+    · Right side (md:w-2/5): Supporting text about expert
+      professionals, with a note: "Guided by Mr. J. S. Bedi &
+      Mr. Gurdeep Singh".
+
+8.2  Stats Visuals Section — Bento Grid
+──────────────────────────────────────────
+  "Delta by the numbers" heading with 5 stat cards in a 12-column
+  responsive bento grid:
+
+  Card 1 (md:col-span-7): "27+" Years of Craft
+    - Light background (#35020D/5), rounded-2xl md:rounded-[2rem].
+    - Large Award icon watermark at -right-8 -top-8, 180px, 5%
+      opacity, hovering to 10%.
+    - "Legacy" label, then "27+" in text-6xl md:text-8xl, then
+      "Years of Craft" in text-xl md:text-2xl.
+
+  Card 2 (md:col-span-5): "1.5Cr+" Trophies Delivered
+    - Dark maroon background (#35020D) with cream text (#ffffe3).
+    - Trophy icon watermark at -right-6 -bottom-6, 160px.
+    - "Production" label, "1.5Cr+" in text-6xl md:text-7xl,
+      "Trophies Delivered" in text-xl md:text-2xl.
+
+  Card 3 (md:col-span-4): "1998" Established Year
+    - Calendar icon (32px), "1998" in text-4xl md:text-5xl.
+
+  Card 4 (md:col-span-4): "11-25" Skilled Artisans
+    - Users icon (32px), "11-25" in text-4xl md:text-5xl.
+
+  Card 5 (md:col-span-4): "5000+" Sq Ft Facility
+    - Maximize icon (32px), "5000+" in text-4xl md:text-5xl.
+
+  All cards: rounded-2xl, p-8 md:p-12, scroll-triggered animations
+  with staggered delays (0.1s to 0.5s).
+
+8.3  Philosophy Section
+──────────────────────────
+  - "Our Philosophy" label.
+  - "Precision in every detail. Pride in every piece." headline
+    (text-3xl md:text-4xl lg:text-5xl).
+  - Paragraph about trophies being symbols of hard work and
+    excellence — hand-finished craftsmanship.
+
+8.4  Team Section — Image Carousel
+─────────────────────────────────────
+  - "The People Behind Delta" heading with description.
+  - Image container: 21:9 aspect ratio, rounded-sm, with
+    crossfading between 2 team images (factory4.JPG, factory5.png)
+    every 3.8 seconds.
+  - Dot Navigation: 2 clickable indicator dots below the image.
+    · Active: w-8 bg-white opacity-90 (wider pill).
+    · Inactive: w-2 bg-white opacity-40 hover:opacity-70.
+    · Transition: transition-all duration-500.
+
+8.5  CTA Section
+──────────────────
+  - "Work With Us" label + "Ready to create something exceptional?"
+    headline (text-4xl md:text-5xl lg:text-6xl).
+  - "Get in Touch" button → /contact with:
+    · Hover: sliding white overlay from bottom (translate-y-full →
+      translate-y-0), shadow-xl, -translate-y-1 lift.
+    · Arrow icon that shifts right on hover (group-hover:translate-x-1).
+
+────────────────────────────────────────────────────────────────────────────────
+9.  QUALITY PAGE — QUALITY ASSURANCE & CTA
+    File: src/pages/Quality.tsx (78 lines added)
+────────────────────────────────────────────────────────────────────────────────
+
+9.1  Main Content
+───────────────────
+  - Two-column layout (lg:grid-cols-2, gap-12 lg:gap-20).
+  - Left column: Text about quality being their topmost priority,
+    inspection parameters (design accuracy, surface finish, polish,
+    material robustness), and customer satisfaction philosophy.
+  - Right column: Image (gallery-collection.jpg) in 4:5 aspect ratio,
+    mix-blend-multiply opacity-90, rounded-sm.
+
+  Stats Grid (2x2):
+    - "100%" / Quality Checks
+    - "ISO" / Industry Standards
+    - "CNC" / Precision Tooling
+    - "0" / Compromises
+    Each in a bordered card with centered layout.
+
+9.2  4-Step Quality Assurance Process
+────────────────────────────────────────
+  "The Delta Standard" label + "Our 4-Step Assurance Process" heading.
+
+  Four process cards in responsive grid (1→2→4 columns):
+
+  Step 01: Material Selection (Focus icon)
+    "Rigorous sourcing of premium metals, woods, and acrylics to
+     ensure durability and a flawless finish from the very beginning."
+
+  Step 02: Precision Crafting (Ruler icon)
+    "Utilizing advanced CNC and laser technology to achieve exact
+     specifications, perfect symmetry, and intricate detailing."
+
+  Step 03: Hand Finishing (CheckCircle2 icon)
+    "Expert artisans meticulously polish, assemble, and refine every
+     piece by hand to give it a premium, luxurious feel."
+
+  Step 04: Final Inspection (ShieldCheck icon)
+    "A comprehensive multi-point quality check by our dedicated
+     inspectors before any product is carefully packaged."
+
+  Each Card Design:
+    - Large background step number (01-04) at text-9xl, 5% opacity
+      (group-hover: 10%) — creates a beautiful ambient design element.
+    - Circular icon container: 56x56px rounded-full, light maroon
+      background. On card hover: fills to solid maroon, icon turns
+      cream (group-hover:bg-[#35020D] group-hover:text-[#ffffe3]).
+    - Title: text-xl md:text-2xl font-medium.
+    - Description: text-sm md:text-base leading-relaxed, light weight.
+    - Hover: shadow-xl border darkens, transition-all duration-500.
+
+9.3  CTA Section
+──────────────────
+  Same CTA component as the About page:
+  - "Work With Us" label.
+  - "Ready to create something exceptional?" heading.
+  - "Get in Touch" button with hover effects.
+
+────────────────────────────────────────────────────────────────────────────────
+10. CONTACT PAGE — ENQUIRY FORM & WHATSAPP INTEGRATION
+    File: src/pages/Contact.tsx (15 lines added/modified)
+────────────────────────────────────────────────────────────────────────────────
+
+10.1  Form (lg:col-span-3)
+────────────────────────────
+  - Receives optional product via URL search param
+    (?product={id} from ProductDetail CTA).
+  - Pre-fills the "Product Interest" field with the product name
+    when a product ID is provided.
+
+  Form Fields (grid sm:grid-cols-2):
+    - Full Name * (required)
+    - Organization (optional)
+    - Email * (required)
+    - Phone * (required, placeholder: "10-digit mobile number")
+    - Product Interest (optional, auto-filled if coming from product)
+    - Estimated Qty (optional, placeholder: "e.g., 100 pieces")
+    - Message (optional, textarea with 4 rows)
+
+  Submit Button:
+    - "Submit Enquiry" (or "Submitting…" when pending).
+    - Full-width, filled maroon, rounded-[2rem].
+    - Circular bullet indicator after text (for visual style).
+    - Disabled during submission with opacity reduction.
+
+  Submission: Uses trpc.enquiry.submit.useMutation().
+    - On success: Shows a Sonner toast "Thank you! We'll get back
+      to you within 24 hours." and resets the form.
+    - On error: Shows toast with the error message.
+
+10.2  Contact Info (lg:col-span-2)
+─────────────────────────────────────
+  Three info cards:
+    - "Visit Us": Full address (No. 111, Janta Colony, G. T. Road,
+      Jalandhar - 144008, Punjab, India).
+    - "Call Us": Phone number (08048954176).
+    - "Working Hours": Mon-Sat 9AM-6PM, Sunday Closed.
+
+  Each card: bordered, with uppercase label and larger text content.
+
+10.3  WhatsApp Quick Connect
+───────────────────────────────
+  - Link to wa.me/918048954176 with a pre-filled message:
+    "Hello Delta Industries, I am interested in your trophy and
+    awards products. Could you please share more details?"
+  - WhatsApp SVG icon (chat bubble with phone receiver).
+  - Text: "Quick Connect on WhatsApp".
+  - Border, rounded-sm, hover background effect.
+  - Opens in new tab (target="_blank", rel="noopener noreferrer").
+
+────────────────────────────────────────────────────────────────────────────────
+11. ADMIN DASHBOARD — CHARTS, STATS & AI INSIGHTS
+    File: src/pages/admin/AdminDashboard.tsx (65 lines added/modified)
+────────────────────────────────────────────────────────────────────────────────
+
+11.1  Page Structure
+──────────────────────
+  - Full page with max-w-7xl, animated with framer-motion fade-in.
+  - Heading: "Dashboard" (text-3xl font-normal tracking-tight).
+
+11.2  Stat Cards (4 Cards)
+─────────────────────────────
+  StatCard Component:
+    - Icon (lucide-react), label (uppercase tracking-widest),
+      value (text-3xl), and a link arrow.
+    - Each card links to the relevant admin section.
+    - Accent colors per card:
+      · Total Enquiries (Inbox icon): amber
+      · New Enquiries (AlertCircle icon): blue
+      · Products (Package icon): emerald
+      · Categories (Grid3X3 icon): purple
+
+  Data Sources:
+    - enquiryStats: trpc.enquiry.stats.useQuery()
+    - categories: trpc.category.listAll.useQuery()
+    - products: trpc.product.listAll.useQuery({ limit: 1 })
+
+11.3  Charts Section
+───────────────────────
+  Left (lg:col-span-2) — Bar Chart:
+    - "Enquiry Status Breakdown" heading.
+    - Recharts BarChart with CartesianGrid, XAxis (status names),
+      YAxis (counts), Tooltip.
+    - Bars colored by status (amber=new, blue=in_progress,
+      emerald=resolved, red=spam).
+    - Empty state: "No enquiry data yet".
+    - ResponsiveContainer with 240px height.
+
+  Right (lg:col-span-1) — Pie Chart:
+    - "Distribution" heading.
+    - Recharts PieChart with innerRadius={50}, outerRadius={80},
+      paddingAngle={4}.
+    - Same status colors as bar chart.
+    - Legend below: colored dot + status name + count for each
+      status.
+    - Empty state: "No data".
+
+11.4  AI Insights Card
+─────────────────────────
+  AIInsightsCard Component:
+    - Uses trpc.ai.dashboardInsights.useMutation().
+    - Triggered in useEffect when totalEnquiries changes.
+    - Sends: totalEnquiries, newEnquiries, recentProducts (currently
+      empty array), recentEnquiryMessages (first 5 customer names).
+    - Returns: insights (string array) + summary (string).
+
+    Card Display:
+      - Sparkles icon + "AI Insights" heading (uppercase tracking-widest).
+      - Summary text below heading (text-sm font-medium).
+      - Bulleted list of insights (each with small circular dot).
+      - Only renders when insights.length > 0.
+
+11.5  Recent Enquiries List
+──────────────────────────────
+  - Table-like list with customer name, date (formatted with
+    toLocaleDateString in Indian locale), and status badge.
+  - StatusBadge component: color-coded pills (amber=new, blue=
+    in_progress, emerald=resolved, red=spam) with text labels.
+  - "View all" link → /admin/enquiries with ArrowRight icon.
+  - Empty state: "No enquiries received yet".
+
+────────────────────────────────────────────────────────────────────────────────
+12. ADMIN PRODUCTS MANAGEMENT — CRUD WITH AI DESCRIPTION GENERATION
+    File: src/pages/admin/AdminProducts.tsx (58 lines added/modified)
+────────────────────────────────────────────────────────────────────────────────
+
+12.1  Product List
+────────────────────
+  - Search input with clear button.
+  - Products table with columns: Name (with slug in monospace),
+    Category, Sizes, Active toggle, Actions (edit + delete).
+  - Pagination controls: Previous/Next buttons with showing info
+    "Showing X-Y of Z".
+  - Active toggle: Button with Eye/EyeOff icons, toggles product
+    visibility via trpc.product.toggleActive.useMutation().
+  - Delete: Confirm dialog before deletion via
+    trpc.product.delete.useMutation().
+
+12.2  Product Edit Drawer
+────────────────────────────
+  ProductEditDrawer Component:
+    - Slides in from top when a product is selected for editing.
+    - Form fields (grid sm:grid-cols-2):
+      · Name * (required)
+      · Slug * (required)
+      · Category * (required, dropdown from trpc.category.listAll)
+      · Material
+      · Available Sizes (comma-separated input, parsed into size
+        objects with label, moq, inStock: true)
+      · Min. Order Qty (number input, min 1)
+      · Short Description
+      · Description (with AI Generate button below)
+      · Image (file upload with preview, remove button)
+
+    Image Upload:
+      - Uses FileReader API to convert to base64 for local storage.
+      - Shows preview thumbnail (w-32 h-32) with remove X button.
+      - Loading spinner during upload.
+
+    Create/Update Mutations:
+      - trpc.product.create.useMutation() for new products.
+      - trpc.product.update.useMutation() for existing products.
+      - Both invalidate trpc.product.listAll on success.
+
+12.3  AI Generate Description Button
+───────────────────────────────────────
+  AIGenerateButton Component:
+    - Uses trpc.ai.generateDescription.useMutation().
+    - Sends product name, material (optional), and category name
+      (optional) to the AI.
+    - On generation success, calls onGenerated(text) to fill the
+      description textarea.
+    - Wand2 icon (lucide-react) + "Generate with AI" text.
+    - During generation: Loader2 spinner + "Generating...".
+    - Disabled when name is empty.
+
+────────────────────────────────────────────────────────────────────────────────
+13. ADMIN LOGIN — AUTHENTICATION FLOW
+    File: src/pages/admin/AdminLogin.tsx (11 lines added)
+────────────────────────────────────────────────────────────────────────────────
+
+13.1  Login Page
+─────────────────
+  - Full-screen dark maroon background (#35020D) with cream text.
+  - Centered card (max-w-md) with:
+    · Shield icon (w-12 h-12, opacity-80).
+    · "Admin Portal" title (text-3xl font-normal).
+    · "Delta Industries Management Dashboard" subtitle.
+
+  Form Fields:
+    - Email (with validation).
+    - Password (with show/hide toggle — Eye/EyeOff icons).
+    - Error display: Red-tinted alert box with AlertCircle icon.
+
+  Submit: "Sign In" button (or "Signing in..." when pending).
+    Cream background (#ffffe3) with maroon text — inverted colors
+    from the dark background for contrast.
+
+  Footer: "Delta Industries — Authorized Personnel Only" (text-xs,
+    opacity-40, centered).
+
+13.2  Auto-Redirect for Authenticated Users
+─────────────────────────────────────────────
+  - On mount, calls trpc.admin.me.useQuery() to check session.
+  - If the response is truthy (user is already logged in):
+    · Navigates to /admin/dashboard with replace: true.
+    · Returns null (nothing rendered — prevents login page flash).
+
+────────────────────────────────────────────────────────────────────────────────
+14. ADMIN LAYOUT — SIDEBAR NAVIGATION
+    File: src/pages/admin/AdminLayout.tsx
+────────────────────────────────────────────────────────────────────────────────
+
+14.1  Authentication Guard
+────────────────────────────
+  - Calls trpc.admin.me.useQuery() to verify admin session.
+  - While loading: Full-screen dark background with "Loading..." text.
+  - If not authenticated: Redirects to /admin/login.
+  - If not loaded: Returns null.
+
+14.2  Sidebar
+───────────────
+  - Fixed left sidebar (w-64, h-screen) on dark maroon background
+    (#35020D) with cream text.
+  - Header: Shield icon + "Delta Admin" title + admin name.
+
+  Navigation Links (4 items):
+    - Dashboard (LayoutDashboard icon)
+    - Enquiries (Inbox icon)
+    - Products (Package icon)
+    - Categories (Grid3X3 icon)
+
+  Active Indicator:
+    - Active link: bg-[#ffffe3]/10 background, font-medium,
+      ChevronRight arrow at right.
+    - Inactive: muted text (#ffffe3]/60), hover lightens and
+      gets subtle background.
+
+  Sign Out Button:
+    - At bottom, separated by border-t.
+    - LogOut icon + "Sign Out" text.
+    - Uses trpc.admin.logout.useMutation().
+    - On success: Invalidate admin.me query, navigate to /admin/login.
+
+14.3  Main Content Area
+─────────────────────────
+  - flex-1 ml-64 (offset for sidebar width).
+  - Renders child routes via <Outlet />.
+
+────────────────────────────────────────────────────────────────────────────────
+15. APP ROUTER & LAYOUT ARCHITECTURE
+    File: src/App.tsx (20 lines changed)
+────────────────────────────────────────────────────────────────────────────────
+
+15.1  Query Client Configuration
+───────────────────────────────────
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: 1,              // Only retry failed queries once
+        staleTime: 1000 * 60 * 5,  // 5 minutes before refetch
+      },
+    },
+  });
+
+15.2  Provider Hierarchy
+──────────────────────────
+  <trpc.Provider> (tRPC client for type-safe API calls)
+    └── <QueryClientProvider> (React Query for caching/state)
+         └── <TooltipProvider> (shadcn/ui tooltip context)
+              └── <BrowserRouter> (React Router v6)
+                   ├── <ScrollToTop /> (scroll reset on navigation)
+                   └── <Routes>...</Routes>
+
+15.3  Public Layout (PublicLayout)
+─────────────────────────────────────
+  Renders: <Navbar /> + <Outlet /> + <ChatWidget />
+  - Navbar at the top with scroll-aware behavior.
+  - Page content via <Outlet />.
+  - ChatWidget floating FAB and panel on all public pages.
+
+15.4  Routes
+──────────────
+  Public Routes (under PublicLayout):
+    / → Index (home page with 7 sections)
+    /products → Products (listing with filters)
+    /product/:slug → ProductDetail (with AI similar products)
+    /about → About (company story with stats)
+    /quality → Quality (quality assurance process)
+    /testimonials → Testimonial (reviews)
+    /contact → Contact (enquiry form)
+    /custom-orders → CustomOrders
+    /manufacturing → CustomOrders (alias)
+    /search → SearchPage (AI-powered search)
+    * → NotFound (404)
+
+  Admin Routes (separate layout):
+    /admin/login → AdminLogin
+    /admin → AdminLayout
+      ├── index → AdminDashboard (AI insights)
+      ├── dashboard → AdminDashboard
+      ├── enquiries → AdminEnquiries
+      ├── products → AdminProducts (CRUD + AI generation)
+      ├── categories → AdminCategories
+      └── * → AdminNotFound (custom 404 for admin)
+
+  AdminNotFound Component:
+    - Centered "Page not found" message with "Back to Dashboard" link.
+    - Uses brand colors (#35020D).
+
+15.5  ScrollToTop Component
+─────────────────────────────
+  - Watches pathname via useLocation().
+  - On every route change, scrolls window to (0, 0).
+  - Renders null (no UI).
+
+────────────────────────────────────────────────────────────────────────────────
+16. GLOBAL CSS — CUSTOM FONTS, SCROLLBARS, DESIGN TOKENS
+    File: src/index.css (11 lines added/modified)
+────────────────────────────────────────────────────────────────────────────────
+
+16.1  Custom Fonts
+────────────────────
+  GT Standard (5 weights/faces via @font-face):
+    - Light (300): gt-standard-light.woff2
+    - Regular (400): gt-standard-regular.woff2
+    - Regular Italic (400): gt-standard-regular-oblique.woff2
+    - Medium (500): gt-standard-medium.woff2
+    - Semibold (600): gt-standard-semibold.woff2
+
+  Google Fonts (via @import):
+    - DM Sans: variable weight (100-1000), normal and italic.
+    - Playfair Display: variable weight (400-900), normal and italic.
+
+16.2  Design Tokens (CSS Custom Properties)
+─────────────────────────────────────────────
+  Color System (HSL values):
+    --background: 60 100% 95%  (#ffffe3 cream)
+    --foreground: 20 10% 15%   (warm dark)
+    --primary: 4 68% 33%       (maroon/red — originally #8C241B)
+    --primary-foreground: 60 100% 97%
+
+    --gold: 43 72% 52%         (gold accent)
+    --gold-light: 43 60% 70%
+    --gold-muted: 43 30% 85%
+
+    --dark: 20 10% 12%
+    --dark-muted: 20 8% 25%
+
+  Radius: 0.625rem
+
+16.3  Utility Classes
+───────────────────────
+  .glass:
+    - Translucent cream background with backdrop blur (16px).
+    - Glass border and shadow for frosted glass effect.
+
+  .glass-subtle:
+    - Lighter glass variant with blur (8px).
+
+  .text-gradient-gold:
+    - Gold gradient text fill (background-clip: text).
+
+  .shadow-premium:
+    - Subtle shadow for cards and elevated surfaces.
+
+  .shadow-elevated:
+    - Stronger shadow for modals and popups.
+
+  .skeu-card:
+    - Skeuomorphic card with light gradient background,
+      subtle top highlight, and inner shadow.
+
+  .skeu-inset:
+    - Inset variant with recessed appearance.
+
+16.4  Global Body Styling
+───────────────────────────
+  body { @apply bg-[#ffffe3]; }
+  Sets the global background to cream.
+
+16.5  Custom Scrollbar Styling
+────────────────────────────────
+  Global:
+    - Width: 5px, height: 5px.
+    - Track: transparent.
+    - Thumb: hsl(20 8% 78%), rounded (10px border-radius).
+    - Thumb hover: hsl(20 8% 60%).
+    - Firefox: scrollbar-width: thin, matching colors.
+
+  Chat Chips Scrollbar (.chips-scroll):
+    - Height: 3px (even thinner).
+    - Thumb: hsl(20 8% 85%), lighter than main scrollbar.
+
+16.6  Typography
+─────────────────
+  h1-h6: font-family 'GT Standard', sans-serif.
+  This gives all headings the custom premium sans-serif font,
+  while body text uses the default sans-serif (DM Sans via
+  Tailwind's font-sans configuration).
+
+────────────────────────────────────────────────────────────────────────────────
+17. PRODUCT IMAGE MAPPING UTILITY
+    File: src/lib/product-images.ts (84 lines, NEW FILE)
+────────────────────────────────────────────────────────────────────────────────
+
+17.1  Purpose
+───────────────
+  Maps product database records to actual product photo files stored
+  in public/IMAGES/. Without this utility, products would show
+  placeholder icons instead of real photographs.
+
+17.2  Image Catalogs
+──────────────────────
+  PC_IMAGES: 59 filenames for Plastic Cup products.
+    ["PC-20.jpg", "PC-21.jpg", "PC-22.jpg", ... "PC-346.jpg"]
+
+  WA_IMAGES: 48 filenames for Wooden Award products.
+    ["WA-01 25MM.jpg", "WA-02 18MM.jpg", ... "WA-48 18MM.jpg"]
+
+  Note: Filenames contain literal spaces (e.g., "WA-01 25MM.jpg"),
+  which requires URL encoding in the browser.
+
+17.3  getProductImage() Function
+───────────────────────────────────
+  Resolution Priority:
+  1. If product.imageUrl already starts with "/IMAGES/" → use it
+     directly (real image already stored in the database).
+  2. Category-based matching:
+     - "wooden-trophies" slug or slug containing "wooden" →
+       WA_IMAGES[product.id % WA_IMAGES.length]
+     - "plastic-trophy-series" slug or slug containing "plastic" →
+       PC_IMAGES[product.id % PC_IMAGES.length]
+     - "metal-cups-trophies" or "metal"/"cup" in slug →
+       PC_IMAGES[(product.id + 10) % PC_IMAGES.length] (offset by 10
+       to avoid same images as plastic category).
+     - "custom-medals" or "medal" in slug →
+       PC_IMAGES[(product.id + 20) % PC_IMAGES.length] (offset by 20).
+  3. Returns product.imageUrl or empty string for unmatched categories
+     (acrylic, crystal, shields, corporate, trophy bases).
+
+17.4  getProductImageUrl() Function
+──────────────────────────────────────
+  Public-facing wrapper that handles URL encoding:
+  - If the raw imageUrl already starts with "/IMAGES/", uses it.
+  - Otherwise delegates to getProductImage().
+  - URL encoding logic (critical fix in commit 6):
+    · Only encodes if the path has literal spaces AND doesn't already
+      have percent-encoded spaces (%20).
+    · Encodes each path segment individually with encodeURIComponent.
+    · This prevents double-encoding (e.g., turning "%20" into "%2520").
+
+────────────────────────────────────────────────────────────────────────────────
+18. VITE CONFIGURATION
+    File: vite.config.ts (6 lines added/modified)
+────────────────────────────────────────────────────────────────────────────────
+
+18.1  Development Server
+──────────────────────────
+  - Port: 8080.
+  - Host: "::" (listens on all interfaces, IPv6 compatible).
+  - HMR overlay disabled (overlay: false) — prevents error overlays
+    from blocking the UI during development iteration.
+
+18.2  Proxy Configuration
+───────────────────────────
+  /trpc requests proxy to http://localhost:3001 (Deno backend):
+  - Cookie Forwarding: proxyReq handler copies cookies from browser
+    request to backend request — essential for session-based admin
+    authentication to work through the proxy.
+  - Cookie Rewriting: proxyRes handler strips "Secure" and
+    "SameSite=None" flags from set-cookie headers — since dev server
+    runs on HTTP (localhost), these flags would cause browsers to
+    reject the cookies.
+
+18.3  Build Configuration
+───────────────────────────
+  - Resolve alias: "@" → "./src" for clean imports.
+  - Deduplication: react and react-dom deduplicated to prevent
+    multiple React instances (critical with npm-linked packages).
+  - Dependency optimization (pre-bundling): react, react-dom,
+    @tanstack/react-query, @trpc/react-query — these are bundled
+    by Vite's esbuild for faster cold starts.
+
+18.4  Plugins
+───────────────
+  - @vitejs/plugin-react-swc (React with SWC compiler — faster than
+    Babel).
+  - lovable-tagger (componentTagger) — runs only in development mode.
+
+────────────────────────────────────────────────────────────────────────────────
+19. AGGREGATE SUMMARY & STATISTICS
+────────────────────────────────────────────────────────────────────────────────
+
+Total Frontend Files Changed: ~40+ files across 166 total
+
+New Files Created:
+  - 6 chat component files (ChatWidget, ChatFAB, ChatPanel,
+    ChatMessage, ProductCard, QuickReplies)
+  - 1 image mapping utility (product-images.ts)
+
+Major Rewrites:
+  - HeroSection: 5 rewrites across commits 3, 8, 9, 10, 12
+  - Products page: Major restructure in commit 4
+  - ProductDetail: Major restructure in commit 4
+  - Search page: AI integration in commits 4 and 6
+  - About page: Complete redesign in commit 8
+  - Navbar: Scroll-aware behavior rewrite in commit 9
+  - Quality page: Added QA process + CTA in commit 8
+  - Contact page: WhatsApp integration in commit 4
+  - Admin pages: AI features across commits 4-6
+
+Design System:
+  - Primary color: #35020D (deep maroon)
+  - Background: #ffffe3 (cream/ivory)
+  - Accent: #795900 (gold, hero section only)
+  - Card background: #e4e4c9 (muted sage, showcase cards)
+  - Custom font: GT Standard (5 weights) for headings
+  - Body font: DM Sans (via Google Fonts)
+
+Animation Framework:
+  - Library: framer-motion
+  - Common easing: [0.16, 1, 0.3, 1] (premium custom cubic-bezier)
+  - Patterns: whileInView for scroll-triggered,
+    AnimatePresence for mount/unmount,
+    motion elements for hover/tap
+
+Key Frontend Features Delivered:
+  1. AI Chatbot Widget — floating FAB with slide-up panel, markdown
+     rendering, typewriter effect, smart contextual chips, product
+     card display.
+  2. Home Page Hero — asymmetrical grid with animated image carousel,
+     rotating stats, decorative elements (watermark, twinkling stars).
+  3. Scroll-Aware Navbar — hides on scroll down, shows on scroll up
+     or stop, with smooth slide animation.
+  4. AI-Powered Search — natural language query understanding, smart
+     filter chips, keyword extraction.
+  5. Product Detail with AI Recommendations — similar products
+     section generated by AI.
+  6. Admin Dashboard — Recharts bar/pie charts, AI-generated business
+     insights, enquiry status breakdown.
+  7. Admin Products CRUD — product management with AI-powered
+     description generation (Wand2 button).
+  8. Responsive Design — all components work from mobile (320px) to
+     ultra-wide (1536px+) with proper breakpoints.
+  9. 107 Real Product Images — mapped dynamically via smart utility
+     function with proper URL encoding and fallback handling.
+  10. WhatsApp Quick Connect — direct CTA on contact page.
+  11. Quality Assurance Visuals — 4-step process with numbered cards
+      and icon hover animations.
+  12. Company Stats Bento Grid — 5 stat cards with watermark icons
+      and animated reveal on the About page.
+
+================================================================================
+  END OF FRONTEND WORK REPORT
+================================================================================
