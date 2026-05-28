@@ -1,7 +1,7 @@
 import Layout from "@/components/layout/Layout";
 import { motion } from "framer-motion";
 import { CheckCircle2, ShieldCheck, Ruler, Focus } from "lucide-react";
-import galleryImg from "@/assets/gallery-collection.jpg";
+import galleryImg from "@/assets/gallery-collection.webp";
 
 const Quality = () => {
   return (

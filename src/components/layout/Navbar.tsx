@@ -71,7 +71,7 @@ const Navbar = () => {
         >
           <div className="max-w-screen-2xl mx-auto px-6 md:px-12 flex items-center justify-between w-full"> 
             <Link to="/" className="flex items-center gap-3 group">
-              <img src="/IMAGES/factory/logo.png" alt="Delta Industries Logo" className="h-16 w-auto object-contain mix-blend-multiply rounded-sm" />
+              <img src="/IMAGES/factory/logo.webp" alt="Delta Industries Logo" className="h-16 w-auto object-contain mix-blend-multiply rounded-sm" />
             </Link>
 
             {/* Desktop Nav */}
