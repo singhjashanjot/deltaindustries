@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delta Recognition Hub — UI Skeletons (Figma Canvas)</title>
+<style>
+:root {
+  --sidebar-w: 240px;
+  --topbar-h: 44px;
+  --canvas-bg: #e5e5e5;
+  --sidebar-bg: #2c2c2c;
+  --sidebar-hover: #3a3a3a;
+  --sidebar-active: #0d99ff;
+  --border: #e0e0e0;
+  --text: #333;
+  --text-muted: #999;
+  --text-sidebar: #ccc;
+  --frame-shadow: 0 1px 4px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+  --frame-active-shadow: 0 4px 20px rgba(0,0,0,0.18), 0 0 0 2px #0d99ff;
+  --mono-bg: #fafafa;
+  --mono-border: #ddd;
+  --mono-dashed: #ccc;
+  --mono-text: #bbb;
+  --mono-dark: #e8e8e8;
+  --note-bg: #fffef5;
+  --note-border: #f0e060;
+  --accent: #e94560;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--canvas-bg);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  height: var(--topbar-h);
+  background: #1e1e1e;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 16px;
+  z-index: 100;
+  flex-shrink: 0;
+  border-bottom: 1px solid #333;
+}
+.topbar-logo { display:flex; align-items:center; gap:8px; }
+.topbar-logo svg { width:20px; height:20px; }
+.topbar-logo span { color:#fff; font-size:13px; font-weight:600; letter-spacing:-0.2px; }
+.topbar-sep { width:1px; height:20px; background:#444; }
+.topbar-title { color:#aaa; font-size:11px; }
+.topbar-badge { margin-left:auto; background:#333; color:#aaa; font-size:10px; padding:3px 10px; border-radius:4px; letter-spacing:1px; }
+.topbar-badge span { color:#e94560; }
+
+/* ── MAIN LAYOUT ── */
+.main { display:flex; flex:1; overflow:hidden; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--sidebar-bg);
+  flex-shrink: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #222;
+}
+.sidebar-section { padding: 12px 0; border-bottom: 1px solid #333; }
+.sidebar-section-title { padding: 4px 16px 8px; font-size: 10px; color: #777; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; }
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: background 0.12s;
+  color: var(--text-sidebar);
+  font-size: 12px;
+  border-left: 2px solid transparent;
+  user-select: none;
+}
+.sidebar-item:hover { background: var(--sidebar-hover); }
+.sidebar-item.active { background: #1a3a5c; border-left-color: var(--sidebar-active); color: #fff; }
+.sidebar-item.active .item-num { color: var(--sidebar-active); }
+.sidebar-item .item-icon { width:16px; height:16px; border-radius:3px; flex-shrink:0; border:1px solid #555; }
+.sidebar-item.active .item-icon { border-color: var(--sidebar-active); background: rgba(13,153,255,0.15); }
+.sidebar-item .item-num { font-size:9px; color:#777; width:18px; flex-shrink:0; }
+.sidebar-footer { margin-top:auto; padding:12px 16px; border-top:1px solid #333; font-size:10px; color:#555; }
+
+/* ── CANVAS ── */
+.canvas {
+  flex: 1;
+  overflow: auto;
+  background: var(--canvas-bg);
+  position: relative;
+  background-image:
+    radial-gradient(circle, #d5d5d5 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+.canvas-inner {
+  padding: 48px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: max-content;
+}
+
+/* ── FRAME (Figma artboard) ── */
+.frame {
+  background: #fff;
+  box-shadow: var(--frame-shadow);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  width: 420px;
+  overflow: hidden;
+}
+.frame:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.06); }
+.frame.active { box-shadow: var(--frame-active-shadow); }
+.frame-label {
+  position: absolute;
+  top: -28px;
+  left: 0;
+  font-size: 11px;
+  color: #555;
+  font-weight: 500;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.frame-label .dot { width:6px; height:6px; border-radius:50%; background:#999; }
+.frame.active .frame-label .dot { background: var(--sidebar-active); }
+
+/* ── SKELETON CONTENT INSIDE FRAMES ── */
+.skel-header {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 3px 0;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.skel-block {
+  border: 1.5px dashed var(--mono-dashed);
+  background: var(--mono-bg);
+  position: relative;
+}
+.skel-block-label {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  font-size: 7px;
+  color: #aaa;
+  background: rgba(255,255,255,0.9);
+  padding: 1px 4px;
+  border: 1px solid #eee;
+  z-index: 2;
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.skel-block-dark {
+  background: #eaeaea;
+  border-color: #bbb;
+}
+.skel-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border: 1.5px dashed var(--mono-dashed);
+  border-radius: 12px;
+  font-size: 8px;
+  color: #bbb;
+  background: #fafafa;
+}
+.skel-chip.active { background: #eee; border-color: #aaa; color: #888; font-weight: 600; }
+.skel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #eee;
+  border: 1.5px dashed #bbb;
+  padding: 5px 14px;
+  color: #aaa;
+  font-size: 9px;
+  font-weight: 600;
+}
+.skel-input {
+  display: block;
+  background: #f8f8f8;
+  border: 1.5px dashed var(--mono-dashed);
+  padding: 6px 8px;
+  width: 100%;
+  color: #ccc;
+  font-size: 8px;
+}
+.skel-card {
+  border: 1.5px dashed var(--mono-dashed);
+  background: #fafafa;
+  overflow: hidden;
+}
+.skel-img { background:#eee; border-bottom:1px dashed #eee; display:flex; align-items:center; justify-content:center; color:#ddd; font-size:8px; }
+.skel-info { padding:6px; }
+.skel-tag { font-size:7px; color:#ccc; text-transform:uppercase; letter-spacing:0.5px; }
+.skel-name { font-size:10px; color:#ccc; margin:2px 0; }
+.skel-price { font-size:8px; color:#ddd; }
+.skel-note {
+  background: var(--note-bg);
+  border: 1px dashed var(--note-border);
+  padding: 4px 8px;
+  font-size: 7px;
+  color: #999;
+  margin: 4px 0;
+  font-family: 'Courier New', monospace;
+}
+.skel-note::before { content: 'NOTE: '; font-weight: bold; color: #c0a020; }
+.skel-h1 { color: #ddd; font-size: 16px; font-weight: bold; }
+.skel-h2 { color: #ddd; font-size: 12px; font-weight: bold; }
+.skel-p { color: #e0e0e0; font-size: 9px; line-height: 1.5; }
+.skel-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.skel-grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; }
+.skel-grid4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:6px; }
+.skel-flex { display:flex; gap:6px; align-items:center; }
+.skel-scroll { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; }
+.skel-col { display:flex; flex-direction:column; gap:4px; }
+
+/* ── ZOOM CONTROLS ── */
+.zoom-controls {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  z-index: 200;
+  overflow: hidden;
+}
+.zoom-btn {
+  width: 32px; height: 32px;
+  border: none; background: #fff;
+  color: #555; font-size: 16px;
+  cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.zoom-btn:hover { background: #f0f0f0; }
+.zoom-label { font-size: 10px; color: #888; padding: 0 6px; min-width: 36px; text-align: center; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:#ccc; border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:#aaa; }
+
+/* ── FRAME COUNT BADGE ── */
+.frame-count { font-size:10px; color:#777; margin-left:4px; }
+</style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg viewBox="0 0 38 38" fill="none"><rect width="38" height="38" rx="10" fill="#0d99ff"/><path d="M10 14 L19 8 L28 14 L28 24 L19 30 L10 24 Z" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="19" cy="19" r="4" fill="#fff"/></svg>
+    <span>Delta Recognition Hub</span>
+  </div>
+  <div class="topbar-sep"></div>
+  <div class="topbar-title">UI Skeletons — Planning Stage</div>
+  <div class="topbar-badge"><span>●</span> 10 FRAMES</div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Pages</div>
+      <div class="sidebar-item active" data-frame="0"><span class="item-num">01</span><span>Homepage</span></div>
+      <div class="sidebar-item" data-frame="1"><span class="item-num">02</span><span>Products</span></div>
+      <div class="sidebar-item" data-frame="2"><span class="item-num">03</span><span>Contact</span></div>
+      <div class="sidebar-item" data-frame="3"><span class="item-num">04</span><span>About</span></div>
+      <div class="sidebar-item" data-frame="4"><span class="item-num">05</span><span>AI Search</span></div>
+      <div class="sidebar-item" data-frame="5"><span class="item-num">06</span><span>Quality</span></div>
+      <div class="sidebar-item" data-frame="6"><span class="item-num">07</span><span>Product Detail</span></div>
+      <div class="sidebar-item" data-frame="7"><span class="item-num">08</span><span>Custom Orders</span></div>
+      <div class="sidebar-item" data-frame="8"><span class="item-num">09</span><span>Admin Dashboard</span></div>
+      <div class="sidebar-item" data-frame="9"><span class="item-num">10</span><span>Admin Login</span></div>
+    </div>
+    <div class="sidebar-footer">based on deltaindustries.vercel.app<br>scan date: 2026-05-29</div>
+  </div>
+
+  <!-- CANVAS -->
+  <div class="canvas" id="canvas">
+    <div class="canvas-inner" id="canvasInner">
+    </div>
+  </div>
+</div>
+
+<!-- ZOOM -->
+<div class="zoom-controls">
+  <button class="zoom-btn" onclick="zoomOut()">−</button>
+  <span class="zoom-label" id="zoomLabel">100%</span>
+  <button class="zoom-btn" onclick="zoomIn()">+</button>
+  <button class="zoom-btn" onclick="zoomFit()">⊡</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// FRAME DATA — Skeleton content for each page
+// ═══════════════════════════════════════════
+const frames = [
+  // 0 — HOMEPAGE
+  `<div class="skel-header">SKELETON WIREFRAME — PLANNING STAGE</div>
+   <div class="skel-block" style="height:32px;display:flex;align-items:center;padding:0 12px;gap:16px;">
+     <span class="skel-block-label">Navbar (fixed, scroll-aware)</span>
+     <div style="width:30px;height:24px;border:1.5px dashed #ccc;display:flex;align-items:center;justify-content:center;font-size:10px;color:#ccc;">Δ</div>
+     <div style="flex:1"></div>
+     <span class="skel-chip">Our Range</span><span class="skel-chip">Manufacturing</span><span class="skel-chip">Who We Are</span><span class="skel-chip">Quality</span><span class="skel-btn">Contact</span>
+   </div>
+   <div class="skel-block" style="padding:32px 12px;">
+     <span class="skel-block-label">Section 1 — HeroSection.tsx (cream)</span>
+     <div style="text-align:center;margin-bottom:16px;">
+       <div class="skel-h1" style="margin-bottom:8px;">Premium Recognition Awards for Corporate, Sports & Academic Excellence</div>
+       <div style="font-size:8px;color:#daa520;">← gold accent on "Recognition Awards"</div>
+       <div class="skel-flex" style="justify-content:center;margin-top:12px;"><span class="skel-btn">Explore Products</span><span style="border:1.5px dashed #ccc;padding:5px 14px;color:#ccc;font-size:9px;">Contact Us</span></div>
+     </div>
+     <div class="skel-grid3" style="height:180px;">
+       <div class="skel-card" style="position:relative;"><span class="skel-block-label">Col 1 (span-5)</span><div style="padding:12px;"><div style="font-size:7px;color:#ccc;">✦ ✦ ✦</div><div style="border:1px dashed #ddd;display:inline-block;padding:1px 6px;font-size:6px;color:#ccc;margin:4px 0;">TRENDING</div><div class="skel-img" style="height:80px;">[Image Carousel — 6 photos, 3.5s]</div><span class="skel-btn" style="font-size:7px;padding:3px 8px;">View Products</span></div></div>
+       <div class="skel-card skel-block-dark" style="position:relative;"><span class="skel-block-label">Col 2 (span-4)</span><div class="skel-img" style="height:100px;">[Factory Photo]</div><div style="padding:8px;font-size:10px;color:#aaa;">In-House Manufacturing</div></div>
+       <div class="skel-col" style="gap:6px;"><div class="skel-card" style="flex:1;display:flex;align-items:center;justify-content:center;font-size:8px;color:#ccc;">Flexible Sizes</div><div class="skel-card skel-block-dark" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;"><span class="skel-block-label">Col 3 (span-3)</span><div style="font-size:18px;color:#ccc;font-weight:bold;">27+</div><div style="font-size:7px;color:#ccc;">Years | Rotating Stats</div></div></div>
+     </div>
+   </div>
+   <div class="skel-block" style="padding:24px 12px;">
+     <span class="skel-block-label">Section 2 — TrustSection.tsx</span>
+     <div class="skel-h2">Who We Are</div>
+     <div class="skel-p" style="max-width:350px;">For 27 years, we have manufactured trophies, awards, and recognition pieces — every single one made in-house at our Jalandhar facility.</div>
+     <div class="skel-flex" style="margin-top:16px;justify-content:space-between;max-width:400px;">
+       <div style="text-align:center;font-size:7px;color:#ccc;">●<br>1998<br>Founded</div><div style="flex:1;border-top:1.5px dashed #ddd;margin:0 4px;"></div>
+       <div style="text-align:center;font-size:7px;color:#ccc;">●<br>2005<br>Expanded</div><div style="flex:1;border-top:1.5px dashed #ddd;margin:0 4px;"></div>
+       <div style="text-align:center;font-size:7px;color:#ccc;">●<br>2015<br>CNC Added</div><div style="flex:1;border-top:1.5px dashed #ddd;margin:0 4px;"></div>
+       <div style="text-align:center;font-size:7px;color:#ccc;">●<br>2025<br>Pan-India</div>
+     </div>
+   </div>
+   <div class="skel-block" style="padding:24px 12px;"><span class="skel-block-label">Section 3 — Categories (9-category grid)</span><div class="skel-h2" style="margin-bottom:10px;">Materials & Categories</div><div class="skel-grid3"><div class="skel-card"><div class="skel-img" style="height:40px;">[Photo]</div><div class="skel-info"><div class="skel-tag">Wooden Trophies</div></div></div><div class="skel-card"><div class="skel-img" style="height:40px;">[Photo]</div><div class="skel-info"><div class="skel-tag">Acrylic Awards</div></div></div><div class="skel-card"><div class="skel-img" style="height:40px;">[Photo]</div><div class="skel-info"><div class="skel-tag">Metal Cups</div></div></div></div></div>
+   <div class="skel-block skel-block-dark" style="padding:24px 12px;"><span class="skel-block-label" style="color:#888;">Section 4 — Manufacturing (dark maroon)</span><div class="skel-h2" style="color:#bbb;">In-House Manufacturing & Customization</div><div class="skel-grid4" style="margin-top:12px;"><div class="skel-card skel-block-dark" style="text-align:center;padding:12px;font-size:8px;color:#bbb;">CNC Tooling</div><div class="skel-card skel-block-dark" style="text-align:center;padding:12px;font-size:8px;color:#bbb;">Laser Engrave</div><div class="skel-card skel-block-dark" style="text-align:center;padding:12px;font-size:8px;color:#bbb;">Hand Finish</div><div class="skel-card skel-block-dark" style="text-align:center;padding:12px;font-size:8px;color:#bbb;">Plating</div></div></div>
+   <div class="skel-block" style="padding:24px 12px;display:flex;gap:24px;"><span class="skel-block-label">Section 5 — WhyDelta (split layout)</span><div style="flex:0 0 100px;"><div class="skel-h2">The Delta Advantage</div><div style="font-size:7px;color:#ccc;margin-top:4px;">Sticky sidebar</div></div><div class="skel-col" style="gap:4px;flex:1;"><div class="skel-card" style="padding:6px 8px;font-size:8px;color:#ccc;">01. 27+ Years Experience</div><div class="skel-card" style="padding:6px 8px;font-size:8px;color:#ccc;">02. In-House Manufacturing</div><div class="skel-card" style="padding:6px 8px;font-size:8px;color:#ccc;">03. Pan-India Delivery</div><div class="skel-card" style="padding:6px 8px;font-size:8px;color:#ccc;">04. Custom Design & Engraving</div><div style="font-size:7px;color:#ddd;text-align:center;">+ 4 more reasons...</div></div></div>
+   <div class="skel-block skel-block-dark" style="padding:24px 12px;"><span class="skel-block-label" style="color:#888;">Section 6 — Gallery (masonry grid)</span><div class="skel-h2" style="color:#bbb;margin-bottom:10px;">Our Craftsmanship</div><div style="display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:60px 60px;gap:4px;"><div style="background:#ddd;grid-row:span 2;display:flex;align-items:center;justify-content:center;font-size:7px;color:#ccc;">[Photo 1]</div><div style="background:#ddd;display:flex;align-items:center;justify-content:center;font-size:7px;color:#ccc;">[2]</div><div style="background:#ddd;display:flex;align-items:center;justify-content:center;font-size:7px;color:#ccc;">[3]</div><div style="background:#ddd;display:flex;align-items:center;justify-content:center;font-size:7px;color:#ccc;">[4]</div><div style="background:#ddd;grid-column:span 2;display:flex;align-items:center;justify-content:center;font-size:7px;color:#ccc;">[5]</div></div></div>
+   <div class="skel-block" style="padding:24px 12px;text-align:center;"><span class="skel-block-label">Section 7 — CTABand</span><div class="skel-h2">Architecting Legacies, One Award at a Time</div><span class="skel-btn" style="margin-top:10px;padding:8px 24px;font-size:10px;">Get in Touch</span></div>
+   <div class="skel-block skel-block-dark" style="padding:16px 12px;"><span class="skel-block-label" style="color:#888;">Footer.tsx</span><div class="skel-grid4"><div style="font-size:8px;color:#bbb;">Δ Delta<br><span style="color:#ccc;">Jalandhar, PB</span></div><div style="font-size:8px;color:#bbb;">Quick Links<br><span style="color:#ccc;">Home / Products / About</span></div><div style="font-size:8px;color:#bbb;">Categories<br><span style="color:#ccc;">Wooden / Acrylic / Metal</span></div><div style="font-size:8px;color:#bbb;">Contact<br><span style="color:#ccc;">+91 8048954176</span></div></div></div>
+   <div style="position:absolute;bottom:8px;right:8px;width:28px;height:28px;border-radius:50%;background:#eee;border:2px dashed #ccc;display:flex;align-items:center;justify-content:center;font-size:8px;color:#ccc;">Δ</div>`,
+
+  // 1 — PRODUCTS
+  `<div class="skel-header">SKELETON WIREFRAME — PLANNING STAGE</div>
+   <div class="skel-block" style="height:32px;display:flex;align-items:center;padding:0 12px;"><span class="skel-block-label">Navbar</span><div style="width:30px;height:24px;border:1.5px dashed #ccc;"></div><div style="flex:1"></div><span class="skel-chip">Our Range</span><span class="skel-chip">Manufacturing</span><span class="skel-btn">Contact</span></div>
+   <div class="skel-block" style="padding:24px 12px;">
+     <span class="skel-block-label">Products Page — Products.tsx</span>
+     <div class="skel-h1" style="margin-bottom:4px;">Our Products</div>
+     <div class="skel-p" style="margin-bottom:16px;">Browse our range of trophies, awards, and recognition products</div>
+     <div class="skel-scroll" style="margin-bottom:16px;">
+       <span class="skel-chip active">All</span><span class="skel-chip">Wooden Trophies</span><span class="skel-chip">Acrylic</span><span class="skel-chip">Metal</span><span class="skel-chip">Crystal</span><span class="skel-chip">Plastic</span><span class="skel-chip">Medals</span><span class="skel-chip">Bases</span><span class="skel-chip">Corporate</span><span class="skel-chip">Shields</span>
+     </div>
+     <div class="skel-note">Horizontal scrollable. Active pill = filled maroon. URL state via useSearchParams(). 109 images.</div>
+     <div class="skel-grid4" style="margin-top:12px;">
+       <div class="skel-card"><div class="skel-img" style="height:60px;">[Product Photo]</div><div class="skel-info"><div class="skel-tag">Plastic Trophy</div><div class="skel-name">Plastic Cup PC-346</div><div class="skel-price">From Rs 40-120</div></div></div>
+       <div class="skel-card"><div class="skel-img" style="height:60px;">[Product Photo]</div><div class="skel-info"><div class="skel-tag">Plastic Trophy</div><div class="skel-name">Plastic Cup PC-345</div><div class="skel-price">From Rs 45-130</div></div></div>
+       <div class="skel-card"><div class="skel-img" style="height:60px;">[Product Photo]</div><div class="skel-info"><div class="skel-tag">Plastic Trophy</div><div class="skel-name">Plastic Cup PC-344</div><div class="skel-price">From Rs 40-120</div></div></div>
+       <div class="skel-card"><div class="skel-img" style="height:60px;">[Product Photo]</div><div class="skel-info"><div class="skel-tag">Plastic Trophy</div><div class="skel-name">Plastic Cup PC-343</div><div class="skel-price">From Rs 45-130</div></div></div>
+     </div>
+     <div style="text-align:center;padding:16px;color:#ccc;font-size:8px;">Loading: 8 skeleton cards with pulse animation | Empty: "No products found"</div>
+   </div>`,
+
+  // 2 — CONTACT
+  `<div class="skel-header">SKELETON WIREFRAME — PLANNING STAGE</div>
+   <div class="skel-block" style="height:32px;display:flex;align-items:center;padding:0 12px;"><span class="skel-block-label">Navbar</span><div style="width:30px;height:24px;border:1.5px dashed #ccc;"></div><div style="flex:1"></div><span class="skel-btn">Contact</span></div>
+   <div class="skel-block" style="padding:24px 12px;">
+     <span class="skel-block-label">Contact Page — Contact.tsx</span>
+     <div class="skel-h1" style="margin-bottom:4px;">Contact & Enquiry</div>
+     <div class="skel-p" style="margin-bottom:16px;">Ready to place a bulk order or have a custom requirement in mind?</div>
+     <div class="skel-grid2" style="gap:16px;">
+       <div class="skel-card" style="padding:16px;">
+         <span class="skel-block-label">Enquiry Form (7 fields)</span>
+         <div class="skel-grid2" style="margin-bottom:8px;"><div><div style="font-size:7px;color:#ccc;margin-bottom:2px;">Full Name *</div><div class="skel-input">Your name</div></div><div><div style="font-size:7px;color:#ccc;margin-bottom:2px;">Organization</div><div class="skel-input">Company / School</div></div></div>
+         <div class="skel-grid2" style="margin-bottom:8px;"><div><div style="font-size:7px;color:#ccc;margin-bottom:2px;">Email *</div><div class="skel-input">email@example.com</div></div><div><div style="font-size:7px;color:#ccc;margin-bottom:2px;">Phone *</div><div class="skel-input">10-digit mobile</div></div></div>
+         <div class="skel-grid2" style="margin-bottom:8px;"><div><div style="font-size:7px;color:#ccc;margin-bottom:2px;">Product Interest</div><div class="skel-input">e.g., Wooden Trophies</div></div><div><div style="font-size:7px;color:#ccc;margin-bottom:2px;">Estimated Qty</div><div class="skel-input">e.g., 100 pieces</div></div></div>
+         <div style="margin-bottom:8px;"><div style="font-size:7px;color:#ccc;margin-bottom:2px;">Message</div><div class="skel-input" style="height:50px;">Tell us about your requirements...</div></div>
+         <div class="skel-btn" style="width:100%;text-align:center;padding:8px;">Submit Enquiry</div>
+       </div>
+       <div class="skel-col" style="gap:8px;">
+         <div class="skel-card" style="padding:12px;"><div style="font-size:9px;color:#ccc;font-weight:600;">Visit Us</div><div style="font-size:7px;color:#ddd;">No. 111, Janta Colony, G.T. Road<br>Jalandhar, Punjab 144008</div></div>
+         <div class="skel-card" style="padding:12px;"><div style="font-size:9px;color:#ccc;font-weight:600;">Call Us</div><div style="font-size:7px;color:#ddd;">+91 8048954176</div></div>
+         <div class="skel-card" style="padding:12px;"><div style="font-size:9px;color:#ccc;font-weight:600;">Hours</div><div style="font-size:7px;color:#ddd;">Mon-Sat 9AM-6PM, Sun Closed</div></div>
+         <div class="skel-card" style="padding:12px;background:#f6fdf6;border-color:#c0e0c0;"><div style="font-size:9px;color:#aaa;font-weight:600;">WhatsApp</div><div style="font-size:7px;color:#ccc;">wa.me/918048954176</div></div>
+       </div>
+     </div>
+     <div class="skel-note">Form: react-hook-form + trpc.enquiry.submit. Pre-fills product from /product/:id param. Sonner toast.</div>
+   </div>`,
+
+  // 3 — ABOUT
+  `<div class="skel-header">SKELETON WIREFRAME — PLANNING STAGE</div>
+   <div class="skel-block" style="height:32px;display:flex;align-items:center;padding:0 12px;"><span class="skel-block-label">Navbar</span><div style="width:30px;height:24px;border:1.5px dashed #ccc;"></div><div style="flex:1"></div><span class="skel-btn">Contact</span></div>
+   <div class="skel-block" style="height:160px;display:flex;align-items:center;justify-content:center;flex-direction:column;background:#eee;">
+     <span class="skel-block-label">Hero Image Card</span>
+     <div style="font-size:9px;color:#bbb;">[Factory Photo Crossfade — 3 images, 3.5s]</div>
+     <div class="skel-h1" style="margin-top:8px;">About Delta Industries</div>
+     <div class="skel-p" style="max-width:350px;text-align:center;">Renowned manufacturer of high-quality Trophies, Mementos, Medals proudly serving since 1998.</div>
+     <div class="skel-note">Aspect: 4/5 mobile → 21/9 tablet → 2.5/1 desktop. Dark overlay bg-maroon/50.</div>
+   </div>
+   <div class="skel-block" style="padding:24px 12px;">
+     <span class="skel-block-label">Stats Bento Grid — 12-col responsive</span>
+     <div class="skel-h2" style="margin-bottom:10px;">Our Impact & Scale</div>
+     <div style="display:grid;grid-template-columns:7fr 5fr;gap:8px;">
+       <div class="skel-card" style="padding:24px;text-align:center;"><div style="font-size:36px;color:#eee;">27+</div><div style="color:#ccc;font-size:9px;">Years of Craft</div></div>
+       <div class="skel-card skel-block-dark" style="padding:24px;text-align:center;"><div style="font-size:28px;color:#bbb;">1.5Cr+</div><div style="color:#aaa;font-size:9px;">Trophies Delivered</div></div>
+     </div>
+     <div class="skel-grid3" style="margin-top:8px;">
+       <div class="skel-card" style="padding:16px;text-align:center;"><div style="font-size:20px;color:#eee;">1998</div><div style="color:#ccc;font-size:8px;">Established</div></div>
+       <div class="skel-card" style="padding:16px;text-align:center;"><div style="font-size:20px;color:#eee;">11-25</div><div style="color:#ccc;font-size:8px;">Artisans</div></div>
+       <div class="skel-card" style="padding:16px;text-align:center;"><div style="font-size:20px;color:#eee;">5000+</div><div style="color:#ccc;font-size:8px;">Sq Ft Facility</div></div>
+     </div>
+   </div>
+   <div class="skel-block" style="padding:16px 12px;text-align:center;"><span class="skel-block-label">Philosophy</span><div class="skel-h2">Precision in every detail. Pride in every piece.</div></div>
+   <div class="skel-block" style="padding:16px 12px;text-align:center;"><span class="skel-block-label">Team Carousel</span><div style="height:80px;background:#ddd;display:flex;align-items:center;justify-content:center;font-size:8px;color:#ccc;">[Team Photos — 2 images, 3.8s crossfade, 21:9]</div></div>
+   <div class="skel-block" style="padding:16px 12px;text-align:center;"><div class="skel-h2">Ready to create something exceptional?</div><span class="skel-btn" style="margin-top:8px;">Get in Touch</span></div>`,
+
+  // 4 — SEARCH
+  `<div class="skel-header">SKELETON WIREFRAME — PLANNING STAGE</div>
+   <div class="skel-block" style="height:32px;display:flex;align-items:center;padding:0 12px;"><span class="skel-block-label">Navbar</span><div style="width:30px;height:24px;border:1.5px dashed #ccc;"></div><div style="flex:1"></div><span class="skel-btn">Contact</span></div>
+   <div class="skel-block" style="padding:24px 12px;">
+     <span class="skel-block-label">Search Page — Search.tsx</span>
+     <div class="skel-h1" style="text-align:center;margin-bottom:16px;">Search Products</div>
+     <div class="skel-flex" style="margin-bottom:20px;justify-content:center;"><div class="skel-input" style="width:300px;padding:10px;">Try: golden trophy for cricket tournament under 500 rupees...</div><span class="skel-btn" style="padding:10px 16px;">Search</span></div>
+     <div style="text-align:center;padding:30px;color:#ddd;"><div style="font-size:32px;margin-bottom:8px;color:#eee;">⌘</div><div style="font-size:10px;color:#ccc;">Enter keywords and press Enter to search</div><div style="font-size:8px;color:#ddd;margin-top:4px;">Try natural language or product codes: WA-06, PC-20</div></div>
+     <div class="skel-card" style="padding:12px;margin-bottom:12px;background:#fffef5;">
+       <span class="skel-block-label">AI Interpretation Panel (3+ word queries)</span>
+       <div style="font-size:9px;color:#ccc;margin-bottom:8px;">✦ Search understood as: "Cricket trophies under budget of 500 rupees, golden colored"</div>
+       <div class="skel-flex"><span class="skel-chip active">Cricket</span><span class="skel-chip">Golden</span><span class="skel-chip">Budget</span><span class="skel-chip">Sports</span><span style="margin-left:auto;font-size:8px;color:#e94560;">Clear AI</span></div>
+       <div class="skel-note">AI: Groq Llama 4 Scout. Extracts category, material, budget, useCase, keywords.</div>
+     </div>
+     <div class="skel-grid4"><div class="skel-card"><div class="skel-img" style="height:50px;">[Photo]</div><div class="skel-info"><div class="skel-tag">Wooden</div><div class="skel-name">WA-06</div><div class="skel-price">Rs 350</div></div></div><div class="skel-card"><div class="skel-img" style="height:50px;">[Photo]</div><div class="skel-info"><div class="skel-tag">Plastic</div><div class="skel-name">PC-20</div><div class="skel-price">Rs 80</div></div></div><div class="skel-card"><div class="skel-img" style="height:50px;">[Photo]</div><div class="skel-info"><div class="skel-tag">Metal</div><div class="skel-name">MC-15</div><div class="skel-price">Rs 200</div></div></div><div class="skel-card"><div class="skel-img" style="height:50px;">[Photo]</div><div class="skel-info"><div class="skel-tag">Medals</div><div class="skel-name">GM-01</div><div class="skel-price">Rs 150</div></div></div></div>
+   </div>`,
+
+  // 5 — QUALITY
+  `<div class="skel-header">SKELETON WIREFRAME — PLANNING STAGE</div>
+   <div class="skel-block" style="height:32px;display:flex;align-items:center;padding:0 12px;"><span class="skel-block-label">Navbar</span><div style="width:30px;height:24px;border:1.5px dashed #ccc;"></div><div style="flex:1"></div><span class="skel-chip">Quality Focus</span><span class="skel-btn">Contact</span></div>
+   <div class="skel-block" style="padding:24px 12px;">
+     <span class="skel-block-label">Quality Page — Quality.tsx</span>
+     <div class="skel-h1" style="margin-bottom:16px;">Our Quality Mantra</div>
+     <div class="skel-grid2" style="margin-bottom:24px;">
+       <div><div class="skel-h2" style="margin-bottom:8px;">Customer Satisfaction</div><div class="skel-p">Being our motivating force, we strive to deliver excellence through rigorous quality checks.</div>
+         <div class="skel-grid2" style="margin-top:12px;"><div class="skel-card" style="text-align:center;padding:10px;"><div style="font-size:16px;color:#eee;">100%</div><div style="font-size:7px;color:#ccc;">Quality Checks</div></div><div class="skel-card" style="text-align:center;padding:10px;"><div style="font-size:16px;color:#eee;">ISO</div><div style="font-size:7px;color:#ccc;">Industry Std</div></div><div class="skel-card" style="text-align:center;padding:10px;"><div style="font-size:16px;color:#eee;">CNC</div><div style="font-size:7px;color:#ccc;">Precision</div></div><div class="skel-card" style="text-align:center;padding:10px;"><div style="font-size:16px;color:#eee;">0</div><div style="font-size:7px;color:#ccc;">Compromises</div></div></div>
+       </div>
+       <div style="background:#ddd;display:flex;align-items:center;justify-content:center;font-size:8px;color:#ccc;aspect-ratio:4/5;">[Inspection Photo]</div>
+     </div>
+     <div class="skel-h2" style="margin-bottom:12px;">Our 4-Step Assurance Process</div>
+     <div class="skel-note">The Delta Standard. Responsive: 1 col → 2 → 4.</div>
+     <div class="skel-grid4" style="margin-top:12px;">
+       <div class="skel-card" style="padding:16px;text-align:center;position:relative;"><div style="font-size:36px;color:#f5f5f5;font-weight:bold;position:absolute;top:4px;right:8px;">01</div><div style="width:32px;height:32px;border-radius:50%;border:2px dashed #ccc;margin:0 auto 6px;"></div><div style="font-size:9px;color:#ccc;font-weight:600;">Material Selection</div><div style="font-size:7px;color:#ddd;margin-top:2px;">Premium raw materials, batch inspection</div></div>
+       <div class="skel-card" style="padding:16px;text-align:center;position:relative;"><div style="font-size:36px;color:#f5f5f5;font-weight:bold;position:absolute;top:4px;right:8px;">02</div><div style="width:32px;height:32px;border-radius:50%;border:2px dashed #ccc;margin:0 auto 6px;"></div><div style="font-size:9px;color:#ccc;font-weight:600;">Precision Crafting</div><div style="font-size:7px;color:#ddd;margin-top:2px;">CNC + laser, micron accuracy</div></div>
+       <div class="skel-card" style="padding:16px;text-align:center;position:relative;"><div style="font-size:36px;color:#f5f5f5;font-weight:bold;position:absolute;top:4px;right:8px;">03</div><div style="width:32px;height:32px;border-radius:50%;border:2px dashed #ccc;margin:0 auto 6px;"></div><div style="font-size:9px;color:#ccc;font-weight:600;">Hand Finishing</div><div style="font-size:7px;color:#ddd;margin-top:2px;">Skilled artisans, polish, inspect</div></div>
+       <div class="skel-card" style="padding:16px;text-align:center;position:relative;"><div style="font-size:36px;color:#f5f5f5;font-weight:bold;position:absolute;top:4px;right:8px;">04</div><div style="width:32px;height:32px;border-radius:50%;border:2px dashed #ccc;margin:0 auto 6px;"></div><div style="font-size:9px;color:#ccc;font-weight:600;">Final Inspection</div><div style="font-size:7px;color:#ddd;margin-top:2px;">Only perfect pieces ship</div></div>
+     </div>
+   </div>`,
+
+  // 6 — PRODUCT DETAIL
+  `<div class="skel-header">SKELETON WIREFRAME — PLANNING STAGE</div>
+   <div class="skel-block" style="height:32px;display:flex;align-items:center;padding:0 12px;"><span class="skel-block-label">Navbar</span><div style="width:30px;height:24px;border:1.5px dashed #ccc;"></div><div style="flex:1"></div><span class="skel-btn">Contact</span></div>
+   <div class="skel-block" style="padding:20px 12px;">
+     <span class="skel-block-label">Product Detail — ProductDetail.tsx</span>
+     <div style="font-size:8px;color:#ccc;margin-bottom:12px;">● ← Back to Products</div>
+     <div class="skel-grid2" style="gap:20px;">
+       <div class="skel-img" style="aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;font-size:9px;">[Product Photo]<br>aspect-[4/5]<br>mix-blend-multiply<br>Fallback: Δ symbol</div>
+       <div>
+         <div class="skel-tag">Category · From Rs XXX</div>
+         <div class="skel-h1" style="margin:4px 0;">Product Name</div>
+         <div class="skel-p" style="margin-bottom:12px;">Detailed product description. Multiple paragraphs about craftsmanship, materials, and features.</div>
+         <div style="font-size:9px;color:#ccc;font-weight:600;margin-bottom:4px;">Key Features:</div>
+         <div class="skel-col" style="margin-bottom:12px;"><div style="font-size:7px;color:#ddd;">• Premium material construction</div><div style="font-size:7px;color:#ddd;">• CNC / laser engraving</div><div style="font-size:7px;color:#ddd;background:#f5f5f5;padding:1px 6px;width:fit-content;">• Fully Customizable (Logo/Text)</div></div>
+         <div class="skel-card" style="margin-bottom:12px;padding:0;"><div style="display:grid;grid-template-columns:1fr 2fr;font-size:7px;"><div style="padding:4px 8px;border-bottom:1px dashed #eee;color:#bbb;font-weight:600;">Material</div><div style="padding:4px 8px;border-bottom:1px dashed #eee;color:#ddd;">{material}</div><div style="padding:4px 8px;border-bottom:1px dashed #eee;color:#bbb;font-weight:600;">HSN Code</div><div style="padding:4px 8px;border-bottom:1px dashed #eee;color:#ddd;">83062120</div><div style="padding:4px 8px;color:#bbb;font-weight:600;">Origin</div><div style="padding:4px 8px;color:#ddd;">Made in India</div></div></div>
+         <div class="skel-btn" style="width:100%;text-align:center;padding:8px;">Request Custom Quote → /contact?product={id}</div>
+       </div>
+     </div>
+     <div style="margin-top:24px;padding-top:16px;border-top:2px dashed #eee;">
+       <div class="skel-h2" style="margin-bottom:8px;">You May Also Like</div>
+       <div class="skel-note">trpc.ai.similarProducts — same category, top 4 by viewCount</div>
+       <div class="skel-grid4"><div class="skel-card"><div class="skel-img" style="height:40px;">[Photo]</div><div class="skel-info"><div class="skel-tag">Category</div><div class="skel-name">Name</div></div></div><div class="skel-card"><div class="skel-img" style="height:40px;">[Photo]</div><div class="skel-info"><div class="skel-tag">Category</div><div class="skel-name">Name</div></div></div><div class="skel-card"><div class="skel-img" style="height:40px;">[Photo]</div><div class="skel-info"><div class="skel-tag">Category</div><div class="skel-name">Name</div></div></div><div class="skel-card"><div class="skel-img" style="height:40px;">[Photo]</div><div class="skel-info"><div class="skel-tag">Category</div><div class="skel-name">Name</div></div></div></div>
+     </div>
+   </div>`,
+
+  // 7 — CUSTOM ORDERS
+  `<div class="skel-header">SKELETON WIREFRAME — PLANNING STAGE</div>
+   <div class="skel-block" style="height:32px;display:flex;align-items:center;padding:0 12px;"><span class="skel-block-label">Navbar</span><div style="width:30px;height:24px;border:1.5px dashed #ccc;"></div><div style="flex:1"></div><span class="skel-btn">Contact</span></div>
+   <div class="skel-block" style="padding:24px 12px;">
+     <span class="skel-block-label">Custom Orders — CustomOrders.tsx</span>
+     <div class="skel-h1" style="text-align:center;margin-bottom:4px;">Bulk & Personalized Orders</div>
+     <div class="skel-p" style="text-align:center;max-width:350px;margin:0 auto 20px;">From 10 pieces to 10,000 — we handle orders of any scale with custom engraving, logo printing, and personalized packaging.</div>
+     <div class="skel-note" style="margin-bottom:16px;">4-step process. Grid layout: 1 col mobile → 2 cols desktop. Numbered with icons.</div>
+     <div class="skel-grid2" style="gap:12px;margin-bottom:16px;">
+       <div class="skel-card" style="padding:20px;"><div style="font-size:32px;color:#eee;font-weight:bold;">1</div><div style="font-size:10px;color:#ccc;font-weight:600;margin:4px 0;">Share Requirements</div><div style="font-size:8px;color:#ddd;">Tell us your event type, quantity, budget, and specific needs. Send reference images or sketches.</div></div>
+       <div class="skel-card" style="padding:20px;"><div style="font-size:32px;color:#eee;font-weight:bold;">2</div><div style="font-size:10px;color:#ccc;font-weight:600;margin:4px 0;">Design & Approval</div><div style="font-size:8px;color:#ddd;">Our team creates a digital mockup. We iterate until you are 100% satisfied.</div></div>
+       <div class="skel-card" style="padding:20px;"><div style="font-size:32px;color:#eee;font-weight:bold;">3</div><div style="font-size:10px;color:#ccc;font-weight:600;margin:4px 0;">Production</div><div style="font-size:8px;color:#ddd;">Manufacturing at our Jalandhar facility. 7-21 days. Regular progress updates.</div></div>
+       <div class="skel-card" style="padding:20px;"><div style="font-size:32px;color:#eee;font-weight:bold;">4</div><div style="font-size:10px;color:#ccc;font-weight:600;margin:4px 0;">Delivery</div><div style="font-size:8px;color:#ddd;">Final inspection, secure packaging, pan-India shipping with tracking.</div></div>
+     </div>
+     <div style="text-align:center;"><div class="skel-h2">Ready to Place a Custom Order?</div><span class="skel-btn" style="margin-top:8px;padding:8px 28px;">Contact Us</span></div>
+   </div>`,
+
+  // 8 — ADMIN DASHBOARD
+  `<div class="skel-header">SKELETON WIREFRAME — PLANNING STAGE</div>
+   <div style="display:flex;">
+     <div class="skel-block skel-block-dark" style="width:80px;flex-shrink:0;min-height:360px;"><span class="skel-block-label" style="color:#888;">Sidebar (240px)</span><div style="padding:12px 8px;"><div style="font-size:10px;color:#aaa;font-weight:bold;margin-bottom:16px;">Δ Admin</div><div style="background:#ddd;padding:5px 8px;font-size:7px;color:#888;font-weight:600;">Dashboard</div><div style="padding:5px 8px;font-size:7px;color:#bbb;">Enquiries</div><div style="padding:5px 8px;font-size:7px;color:#bbb;">Products</div><div style="padding:5px 8px;font-size:7px;color:#bbb;">Categories</div><div style="margin-top:24px;padding:5px 8px;font-size:7px;color:#bbb;">Sign Out</div></div></div>
+     <div style="flex:1;padding:16px;">
+       <span class="skel-block-label">Admin Dashboard — AdminDashboard.tsx</span>
+       <div class="skel-h2" style="margin-bottom:12px;">Dashboard</div>
+       <div class="skel-grid4" style="margin-bottom:16px;"><div class="skel-card" style="padding:10px;border-left:3px solid #f9a825;"><div style="font-size:7px;color:#ccc;">Total Enquiries</div><div style="font-size:20px;color:#eee;">156</div></div><div class="skel-card" style="padding:10px;border-left:3px solid #2196f3;"><div style="font-size:7px;color:#ccc;">New</div><div style="font-size:20px;color:#eee;">12</div></div><div class="skel-card" style="padding:10px;border-left:3px solid #4caf50;"><div style="font-size:7px;color:#ccc;">Products</div><div style="font-size:20px;color:#eee;">46</div></div><div class="skel-card" style="padding:10px;border-left:3px solid #9c27b0;"><div style="font-size:7px;color:#ccc;">Categories</div><div style="font-size:20px;color:#eee;">9</div></div></div>
+       <div class="skel-grid2" style="margin-bottom:12px;">
+         <div class="skel-card" style="padding:16px;"><div style="font-size:9px;color:#ccc;margin-bottom:8px;">Enquiry Status Breakdown</div><div style="display:flex;align-items:flex-end;gap:12px;height:60px;"><div style="flex:1;background:#eee;height:60%;"></div><div style="flex:1;background:#ddd;height:40%;"></div><div style="flex:1;background:#eee;height:80%;"></div><div style="flex:1;background:#ddd;height:20%;"></div></div><div class="skel-note">Recharts BarChart, col-span-2</div></div>
+         <div class="skel-card" style="padding:16px;display:flex;align-items:center;justify-content:center;"><div style="width:50px;height:50px;border-radius:50%;border:10px solid #eee;border-top-color:#ddd;"></div><div class="skel-note">Recharts PieChart</div></div>
+       </div>
+       <div class="skel-card" style="padding:12px;margin-bottom:12px;background:#fffef5;"><div style="font-size:9px;color:#daa520;font-weight:600;">✦ AI Insights</div><div style="font-size:8px;color:#ccc;">Enquiries up 23%. Cricket season driving demand. Peak 10AM-2PM.</div><div class="skel-note">trpc.ai.dashboardInsights — auto-triggers on stats change</div></div>
+       <div class="skel-card"><div style="padding:8px 12px;border-bottom:1px dashed #eee;font-size:8px;color:#ccc;font-weight:600;">Recent Enquiries</div><div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:6px 12px;font-size:7px;color:#ddd;"><span>Rahul Sharma</span><span>15/06/2026</span><span style="color:#f9a825;">New</span></div><div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:6px 12px;font-size:7px;color:#ddd;"><span>Priya Mehta</span><span>14/06/2026</span><span style="color:#2196f3;">In Progress</span></div></div>
+     </div>
+   </div>`,
+
+  // 9 — ADMIN LOGIN
+  `<div class="skel-header">SKELETON WIREFRAME — PLANNING STAGE</div>
+   <div style="background:#ddd;min-height:380px;display:flex;align-items:center;justify-content:center;">
+     <span class="skel-block-label" style="position:absolute;top:24px;left:8px;">AdminLogin.tsx — Full-screen dark maroon #35020D</span>
+     <div class="skel-card" style="width:240px;padding:28px;background:#fafafa;">
+       <div style="text-align:center;margin-bottom:16px;">
+         <div style="width:32px;height:32px;border-radius:50%;border:2px dashed #ccc;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:10px;color:#ccc;">🛡</div>
+         <div style="font-size:12px;color:#ccc;font-weight:600;">Delta Admin</div>
+       </div>
+       <div class="skel-col" style="gap:10px;">
+         <div><div style="font-size:7px;color:#ccc;margin-bottom:2px;">Email</div><div class="skel-input">admin@deltaindustries.in</div></div>
+         <div><div style="font-size:7px;color:#ccc;margin-bottom:2px;">Password</div><div class="skel-input">········</div></div>
+         <div class="skel-btn" style="width:100%;text-align:center;padding:8px;">Sign In</div>
+       </div>
+       <div class="skel-note" style="margin-top:12px;">trpc.admin.login.useMutation. Session cookie. Auto-redirect if already authed.</div>
+     </div>
+   </div>`
+];
+
+let currentFrame = 0;
+let currentZoom = 100;
+
+function renderFrames() {
+  const container = document.getElementById('canvasInner');
+  container.innerHTML = frames.map((html, i) => `
+    <div class="frame-wrapper" style="position:relative;">
+      <div class="frame ${i === currentFrame ? 'active' : ''}" id="frame${i}" data-idx="${i}" style="transform:scale(${currentZoom/100});transform-origin:top left;" onclick="selectFrame(${i})">
+        ${html}
+      </div>
+      <div class="frame-label"><span class="dot"></span>${String(i+1).padStart(2,'0')} — ${['Homepage','Products','Contact','About','AI Search','Quality','Product Detail','Custom Orders','Admin Dashboard','Admin Login'][i]}</div>
+    </div>
+  `).join('');
+}
+
+function selectFrame(idx) {
+  currentFrame = idx;
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item')[idx].classList.add('active');
+  document.querySelectorAll('.frame').forEach(el => el.classList.remove('active'));
+  document.getElementById('frame'+idx).classList.add('active');
+  document.getElementById('frame'+idx).scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+}
+
+function zoomIn() { currentZoom = Math.min(200, currentZoom + 20); updateZoom(); }
+function zoomOut() { currentZoom = Math.max(40, currentZoom - 20); updateZoom(); }
+function zoomFit() { currentZoom = 100; updateZoom(); }
+function updateZoom() {
+  document.getElementById('zoomLabel').textContent = currentZoom + '%';
+  document.querySelectorAll('.frame').forEach(f => { f.style.transform = `scale(${currentZoom/100})`; f.style.transformOrigin = 'top left'; });
+}
+
+// Init
+renderFrames();
+
+// Sidebar click
+document.querySelectorAll('.sidebar-item').forEach(item => {
+  item.addEventListener('click', () => selectFrame(parseInt(item.dataset.frame)));
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    currentFrame = e.key === 'ArrowDown'
+      ? Math.min(9, currentFrame + 1)
+      : Math.max(0, currentFrame - 1);
+    selectFrame(currentFrame);
+  }
+});
+
+// Click canvas background to deselect
+document.getElementById('canvas').addEventListener('click', function(e) {
+  if (e.target === this || e.target.id === 'canvasInner') {
+    // Don't deselect, just allow
+  }
+});
+</script>
+</body>
+</html>
