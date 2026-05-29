@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-3 group w-max">
-              <img src="/IMAGES/factory/logo.png" alt="Delta Industries Logo" className="h-20 w-auto object-contain rounded-md" />
+              <img src="/IMAGES/factory/logo.webp" alt="Delta Industries Logo" className="h-20 w-auto object-contain rounded-md" />
             </Link>
             <p className="text-sm font-medium text-[#ffffe3]/60 leading-relaxed max-w-xs">
               India&#39;s trusted manufacturer of premium trophies, awards, medals, and recognition products. Serving institutions and corporates since 1998.

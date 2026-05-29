@@ -2,15 +2,15 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { trpc } from "@/lib/trpc";
 
-import catWooden from "@/assets/cat-wooden.jpg";
-import catAcrylic from "@/assets/cat-acrylic.jpg";
-import catMetal from "@/assets/cat-metal.jpg";
-import catCrystal from "@/assets/cat-crystal.jpg";
-import catPlastic from "@/assets/cat-plastic.jpg";
-import catMedals from "@/assets/cat-medals.jpg";
-import catBases from "@/assets/cat-bases.jpg";
-import catCorporate from "@/assets/cat-corporate.jpg";
-import catShields from "@/assets/cat-shields.jpg";
+import catWooden from "@/assets/cat-wooden.webp";
+import catAcrylic from "@/assets/cat-acrylic.webp";
+import catMetal from "@/assets/cat-metal.webp";
+import catCrystal from "@/assets/cat-crystal.webp";
+import catPlastic from "@/assets/cat-plastic.webp";
+import catMedals from "@/assets/cat-medals.webp";
+import catBases from "@/assets/cat-bases.webp";
+import catCorporate from "@/assets/cat-corporate.webp";
+import catShields from "@/assets/cat-shields.webp";
 
 const staticImages: Record<string, string> = {
   "wooden-trophies": catWooden,

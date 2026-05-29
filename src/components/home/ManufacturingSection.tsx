@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Cog, Paintbrush, Layers, Zap } from "lucide-react";
-import manufacturingImg from "@/assets/manufacturing.jpg";
+import manufacturingImg from "@/assets/manufacturing.webp";
 
 const features = [
   { icon: Cog, title: "Advanced Machinery", desc: "CNC, laser engraving, and precision tools for consistent output." },

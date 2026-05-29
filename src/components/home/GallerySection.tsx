@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
-import galleryImg from "@/assets/gallery-collection.jpg";
-import catWooden from "@/assets/cat-wooden.jpg";
-import catCrystal from "@/assets/cat-crystal.jpg";
-import catMetal from "@/assets/cat-metal.jpg";
-import catShields from "@/assets/cat-shields.jpg";
-import catCorporate from "@/assets/cat-corporate.jpg";
-import catAcrylic from "@/assets/cat-acrylic.jpg";
+import galleryImg from "@/assets/gallery-collection.webp";
+import catWooden from "@/assets/cat-wooden.webp";
+import catCrystal from "@/assets/cat-crystal.webp";
+import catMetal from "@/assets/cat-metal.webp";
+import catShields from "@/assets/cat-shields.webp";
+import catCorporate from "@/assets/cat-corporate.webp";
+import catAcrylic from "@/assets/cat-acrylic.webp";
 
 const images = [
   { src: galleryImg, alt: "Trophy collection", span: "md:col-span-2 md:row-span-2" },

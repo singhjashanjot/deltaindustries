@@ -5,15 +5,15 @@ import { Award, Trophy, Calendar, Users, Maximize } from "lucide-react";
 const About = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = [
-    "/IMAGES/factory/factory1.JPG", 
-    "/IMAGES/factory/factory2.JPG", 
-    "/IMAGES/factory/factory3.JPG"
+    "/IMAGES/factory/factory1.webp", 
+    "/IMAGES/factory/factory2.webp", 
+    "/IMAGES/factory/factory3.webp"
   ];
 
   const [currentTeamIndex, setCurrentTeamIndex] = useState(0);
   const teamImages = [
-    "/IMAGES/factory/factory4.JPG",
-    "/IMAGES/factory/factory5.png"
+    "/IMAGES/factory/factory4.webp",
+    "/IMAGES/factory/factory5.webp"
   ];
 
   useEffect(() => {

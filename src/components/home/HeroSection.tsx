@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 const heroImages = [
-  "/IMAGES/herosection/hero1.png",
-  "/IMAGES/herosection/hero2.png",
-  "/IMAGES/herosection/hero3.png",
-  "/IMAGES/wa/bgless1.png",
-  "/IMAGES/wa/bgless2.png",
-  "/IMAGES/wa/bgless3.png",
+  "/IMAGES/herosection/hero1.webp",
+  "/IMAGES/herosection/hero2.webp",
+  "/IMAGES/herosection/hero3.webp",
+  "/IMAGES/wa/bgless1.webp",
+  "/IMAGES/wa/bgless2.webp",
+  "/IMAGES/wa/bgless3.webp",
 ];
 
 const statsData = [
@@ -135,7 +135,7 @@ const HeroSection = () => {
               {/* Clean Background Image */}
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
-                style={{ backgroundImage: `url('/IMAGES/herosection/cream_trophy_bg.png')` }}
+                style={{ backgroundImage: `url('/IMAGES/herosection/cream_trophy_bg.webp')` }}
               ></div>
               {/* Light overlay to match theme */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#e4e4c9] via-[#e4e4c9]/60 to-transparent"></div>
@@ -172,7 +172,7 @@ const HeroSection = () => {
                 <img 
                   alt="Flexible Sizes Available" 
                   className="absolute inset-0 object-contain drop-shadow-lg w-full h-full scale-x-[2.00] scale-y-[1.65] origin-center" 
-                  src="/IMAGES/herosection/image.png" 
+                  src="/IMAGES/herosection/image.webp" 
                 />
               </div>
               <div className="z-10 w-full text-center shrink-0 relative mt-2">
@@ -190,7 +190,7 @@ const HeroSection = () => {
               {/* Subtle background image texture */}
               <div 
                 className="absolute inset-0 opacity-[0.03] bg-cover bg-center mix-blend-multiply"
-                style={{ backgroundImage: `url('/IMAGES/herosection/hero1.png')` }}
+                style={{ backgroundImage: `url('/IMAGES/herosection/hero1.webp')` }}
               ></div>
 
               <div className="z-10 w-full relative h-full flex flex-col items-center justify-center">

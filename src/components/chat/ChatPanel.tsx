@@ -179,7 +179,7 @@ const ChatPanel = ({ isOpen, onClose }: ChatPanelProps) => {
           {/* Header */}
           <div className="shrink-0 px-5 py-4 border-b border-[#35020D]/10 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src="/IMAGES/factory/logo.png" alt="Delta Assistant Logo" className="w-12 h-12 object-contain rounded-sm mix-blend-multiply" />
+              <img src="/IMAGES/factory/logo.webp" alt="Delta Assistant Logo" className="w-12 h-12 object-contain rounded-sm mix-blend-multiply" />
               <div>
                 <div className="text-sm font-semibold text-[#35020D] tracking-wide">Delta Assistant</div>
                 <div className="text-[10px] text-[#35020D]/50 font-medium tracking-wide uppercase">Online</div>

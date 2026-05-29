@@ -26,6 +26,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@anthropic-ai/claude-code": "^2.1.152",
     "@hookform/resolvers": "^3.10.0",
     "@prisma/client": "^7.0.0",
     "@radix-ui/react-accordion": "^1.2.11",
@@ -109,6 +110,7 @@
     "jsdom": "^20.0.3",
     "lovable-tagger": "^1.1.13",
     "postcss": "^8.5.6",
+    "sharp": "^0.34.5",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.21.0",
     "typescript": "^5.8.3",
