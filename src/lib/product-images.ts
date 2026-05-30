@@ -76,9 +76,11 @@ export function getProductImage(product: {
 export function getProductImageUrl(imageUrl: string | null | undefined, productSlug?: string, categorySlug?: string, productId?: number): string {
   const raw = imageUrl?.startsWith("/IMAGES/") ? imageUrl : getProductImage({ id: productId, slug: productSlug, categorySlug, imageUrl });
   if (!raw) return "";
+  // Convert legacy image extensions (jpg/jpeg/png/gif) to .webp
+  const webpUrl = raw.replace(/\.(jpg|jpeg|png|gif)(\?.*)?$/i, ".webp$2");
   // Only encode if the path has literal spaces (not already %20 encoded)
-  if (raw.includes(" ") && !raw.includes("%20")) {
-    return raw.split("/").map((seg, i) => i === 0 ? seg : encodeURIComponent(seg)).join("/");
+  if (webpUrl.includes(" ") && !webpUrl.includes("%20")) {
+    return webpUrl.split("/").map((seg, i) => i === 0 ? seg : encodeURIComponent(seg)).join("/");
   }
-  return raw;
+  return webpUrl;
 }
